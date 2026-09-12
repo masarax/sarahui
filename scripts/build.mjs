@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import './build-tokens.mjs';
+import {buildSite} from '../apps/docs/site.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),dist=path.join(root,'dist');
+fs.mkdirSync(dist,{recursive:true});
+fs.cpSync(path.join(root,'packages/ui/src'),path.join(dist,'ui'),{recursive:true});
+fs.cpSync(path.join(root,'packages/ui/assets'),path.join(dist,'assets'),{recursive:true,filter:source=>!source.endsWith('.b64')&&!source.endsWith('.ttf')});
+fs.mkdirSync(path.join(dist,'tokens'),{recursive:true});
+for(const name of ['app.css','app.js'])fs.copyFileSync(path.join(root,'apps/docs',name),path.join(dist,name));
+for(const [source,name] of [['tokens/sarah.tokens.json','sarah.tokens.json'],['tokens/generated/sarah.resolved.json','sarah.resolved.json'],['tokens/generated/sarah.css','sarah.css']])fs.copyFileSync(path.join(root,source),path.join(dist,'tokens',name));
+fs.writeFileSync(path.join(dist,'index.html'),buildSite());
+fs.writeFileSync(path.join(dist,'assets/sarah-mark.svg'),'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#5B3DF5"/><path d="M28 11H18a6 6 0 0 0 0 12h4a3 3 0 0 1 0 6H12M12 29h10a6 6 0 0 0 0-12h-4a3 3 0 0 1 0-6h10" stroke="white" stroke-width="3.6" stroke-linecap="round" fill="none"/></svg>');
+console.log('sarahUI: built documentation and distributable components in dist/.');

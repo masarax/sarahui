@@ -1,0 +1,16 @@
+{
+  "name": "@masarax/sarahui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-neutral sarahUI components and design tokens",
+  "exports": {
+    ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
+    "./templates": "./src/templates.js",
+    "./styles.css": "./src/styles.css",
+    "./tokens.css": "./src/tokens.css",
+    "./fonts.css": "./src/fonts.css"
+  },
+  "files": ["src", "assets"],
+  "sideEffects": ["**/*.css"]
+}

@@ -1,0 +1,39 @@
+name: sarahUI quality
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build and verify foundations and templates
+        run: npm run check
+      - name: Check token output is reproducible
+        run: git diff --exit-code -- packages/ui/src/tokens.css tokens/generated
+      - name: Install browser test tools
+        run: npm install --no-save --package-lock=false playwright@1.62.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Verify browser interactions and capture previews
+        run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sarahui-browser-results
+          path: test-results/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sarahui-documentation
+          path: dist/
+          retention-days: 30

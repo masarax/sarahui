@@ -1,0 +1,6 @@
+node_modules/
+dist/
+test-results/
+*.b64
+.env*
+!.env.example
