@@ -96,9 +96,9 @@ try {
   await route('#start');
   await check('Installation and framework guides expose complete copyable setup',async()=>{
     assert.equal(await page.locator('#install-npm').textContent(),'npm install sarahui');
-    await page.locator('#package-manager').getByRole('tab',{name:'pnpm',exact:true}).click();
+    await page.getByRole('tablist',{name:'Package manager'}).getByRole('tab',{name:'pnpm',exact:true}).click();
     assert.equal(await page.locator('#install-pnpm').textContent(),'pnpm add sarahui');
-    await page.locator('#integration-stack').getByRole('tab',{name:'React',exact:true}).click();
+    await page.getByRole('tablist',{name:'Framework integration'}).getByRole('tab',{name:'React',exact:true}).click();
     assert.ok((await page.locator('#framework-react').textContent()).includes("import 'sarahui/css'"));
     await route('#start/theming');
     assert.equal(await page.evaluate(()=>document.activeElement.id),'start-theming');
