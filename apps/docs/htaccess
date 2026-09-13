@@ -1,0 +1,16 @@
+# sarahUI static documentation. Hash routes also work under a subdirectory.
+DirectoryIndex index.html
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  <FilesMatch "\.(html|css|js|json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(woff|woff2)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType font/woff .woff
+</IfModule>

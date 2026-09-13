@@ -1,6 +1,8 @@
 # Components and behavior
 
-Import templates from `packages/ui/src/templates.js`, or templates and behavior helpers from `packages/ui/src/index.js`. Importing the module does not access the DOM.
+Install with `npm install sarahui`. Import templates from `sarahui/templates`,
+or templates and behavior helpers from `sarahui`. Import `sarahui/css` once.
+Importing the JavaScript module does not access the DOM.
 
 Components return branded `Markup`. `render()` serializes it. Ordinary strings and arrays are escaped; `html` composes trusted markup and escaped values. Do not put user content into literal markup or script, CSS, tag-name, or event-handler contexts.
 

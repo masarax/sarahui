@@ -15,12 +15,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: npm
+      - name: Install pinned development tools
+        run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Build and verify foundations and templates
         run: npm run check
       - name: Check token output is reproducible
-        run: git diff --exit-code -- packages/ui/src/tokens.css tokens/generated
-      - name: Install browser test tools
-        run: npm install --no-save --package-lock=false playwright@1.62.1
+        run: git diff --exit-code -- packages/ui/src packages/ui/tokens packages/ui/LICENSE packages/ui/THIRD_PARTY_NOTICES.md tokens/generated
+      - name: Install the tarball in a fresh project and verify types
+        run: npm run test:package
+      - name: Check cPanel deployment safeguards
+        run: npm run test:deploy
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Verify browser interactions and capture previews
@@ -37,3 +42,29 @@ jobs:
           name: sarahui-documentation
           path: dist/
           retention-days: 30
+          include-hidden-files: true
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: sarahui-package
+          path: artifacts/npm/
+          retention-days: 30
+          if-no-files-found: error
+  publish:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/publish-npm.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  cpanel:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    uses: ./.github/workflows/deploy-cpanel.yml
+    secrets:
+      CPANEL_FTP_HOST: ${{ secrets.CPANEL_FTP_HOST }}
+      CPANEL_FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
+      CPANEL_FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
+      CPANEL_FTP_PATH: ${{ secrets.CPANEL_FTP_PATH }}

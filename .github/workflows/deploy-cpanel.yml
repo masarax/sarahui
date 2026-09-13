@@ -1,0 +1,61 @@
+name: Deploy documentation to cPanel
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      CPANEL_FTP_HOST:
+        required: false
+      CPANEL_FTP_USERNAME:
+        required: false
+      CPANEL_FTP_PASSWORD:
+        required: false
+      CPANEL_FTP_PATH:
+        required: false
+permissions:
+  contents: read
+concurrency:
+  group: sarahui-cpanel
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check whether FTP is configured
+        id: config
+        env:
+          CPANEL_FTP_HOST: ${{ secrets.CPANEL_FTP_HOST }}
+          CPANEL_FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
+          CPANEL_FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          CPANEL_FTP_PATH: ${{ secrets.CPANEL_FTP_PATH }}
+        run: |
+          python3 - <<'PY'
+          import os
+          names = ['CPANEL_FTP_HOST', 'CPANEL_FTP_USERNAME', 'CPANEL_FTP_PASSWORD', 'CPANEL_FTP_PATH']
+          missing = [name for name in names if not os.environ.get(name)]
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('ready=' + ('false' if missing else 'true') + '\n')
+          if missing:
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+                  summary.write('## cPanel deployment skipped\n\nAdd the following repository secrets, then run this workflow on main:\n\n' + '\n'.join('- `' + name + '`' for name in missing) + '\n\nSee docs/deployment.md for the FTP path and protocol settings.\n')
+          PY
+      - uses: actions/checkout@v4
+        if: steps.config.outputs.ready == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.config.outputs.ready == 'true'
+        with:
+          node-version: '24'
+      - name: Build static documentation
+        if: steps.config.outputs.ready == 'true'
+        run: npm run build
+      - name: Deploy static files
+        if: steps.config.outputs.ready == 'true'
+        run: python3 scripts/deploy-cpanel.py
+        env:
+          CPANEL_FTP_HOST: ${{ secrets.CPANEL_FTP_HOST }}
+          CPANEL_FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
+          CPANEL_FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          CPANEL_FTP_PATH: ${{ secrets.CPANEL_FTP_PATH }}
+          CPANEL_FTP_PROTOCOL: ${{ vars.CPANEL_FTP_PROTOCOL || 'ftps' }}
+          CPANEL_FTP_PORT: ${{ vars.CPANEL_FTP_PORT || '21' }}

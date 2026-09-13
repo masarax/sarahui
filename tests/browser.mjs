@@ -85,10 +85,24 @@ try {
     assert.equal(await tip.locator('[role=tooltip]').evaluate(el=>getComputedStyle(el).visibility),'visible');
     await page.keyboard.press('Escape');assert.equal(await tip.locator('[role=tooltip]').evaluate(el=>getComputedStyle(el).visibility),'hidden');
   });
-  await check('Code samples expand into copyable HTML',async()=>{
+  await check('Code samples include npm usage, properties and rendered HTML',async()=>{
     const card=page.locator('#component-button');await card.locator('[data-code-toggle]').click();assert.equal(await card.locator('.component-source').isVisible(),true);
-    assert.ok((await card.locator('pre').textContent()).includes('s-button--primary'));
+    assert.ok((await card.locator('#npm-Button').textContent()).includes("from 'sarahui'"));
+    assert.ok((await card.locator('.api-properties').textContent()).includes('variant'));
+    await card.locator('.markup-details summary').click();
+    assert.ok((await card.locator('#html-Button').textContent()).includes('s-button--primary'));
     await card.locator('[data-code-toggle]').click();
+  });
+  await route('#start');
+  await check('Installation and framework guides expose complete copyable setup',async()=>{
+    assert.equal(await page.locator('#install-npm').textContent(),'npm install sarahui');
+    await page.locator('#package-manager').getByRole('tab',{name:'pnpm',exact:true}).click();
+    assert.equal(await page.locator('#install-pnpm').textContent(),'pnpm add sarahui');
+    await page.locator('#integration-stack').getByRole('tab',{name:'React',exact:true}).click();
+    assert.ok((await page.locator('#framework-react').textContent()).includes("import 'sarahui/css'"));
+    await route('#start/theming');
+    assert.equal(await page.evaluate(()=>document.activeElement.id),'start-theming');
+    await route('#start');await page.evaluate(()=>scrollTo(0,0));await shot('getting-started-light');
   });
   await route('#patterns');
   await check('Project modal contains focus, validates, creates and restores focus',async()=>{

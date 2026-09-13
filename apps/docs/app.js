@@ -39,6 +39,7 @@ function route(initial=false){
     if(sub){const card=$$('[data-component-name]').find(c=>c.dataset.componentName.toLowerCase()===sub.toLowerCase());if(card)target=card;}
   }
   if(view==='foundations'&&sub){const candidate=document.getElementById('foundation-'+sub.toLowerCase());if(candidate)target=candidate;}
+  if(view==='start'&&sub){const candidate=document.getElementById('start-'+sub.toLowerCase());if(candidate)target=candidate;}
   const ready=()=>{document.documentElement.dataset.route='#'+view+(sub?'/'+sub:'');};
   if(!initial||sub){requestAnimationFrame(()=>{if(target){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});if(sub)target.scrollIntoView({block:'start'});else window.scrollTo({top:0,behavior:'instant'});}ready();});}else ready();
 }

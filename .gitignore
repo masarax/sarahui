@@ -1,6 +1,9 @@
 node_modules/
 dist/
 test-results/
+artifacts/
+*.tgz
+__pycache__/
 *.b64
 .env*
 !.env.example

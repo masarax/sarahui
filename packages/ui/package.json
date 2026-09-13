@@ -1,16 +1,33 @@
 {
-  "name": "@masarax/sarahui",
+  "name": "sarahui",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Framework-neutral sarahUI components and design tokens",
+  "license": "MIT",
+  "author": "MASARA X",
+  "homepage": "https://github.com/masarax/sarahui#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/masarax/sarahui.git", "directory": "packages/ui" },
+  "bugs": { "url": "https://github.com/masarax/sarahui/issues" },
+  "keywords": ["ui", "components", "design-system", "css", "design-tokens", "dark-mode", "accessible", "sarahui"],
+  "engines": { "node": ">=22" },
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "style": "./src/sarahui.css",
   "exports": {
     ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
-    "./templates": "./src/templates.js",
+    "./templates": { "types": "./src/templates.d.ts", "default": "./src/templates.js" },
+    "./tokens": { "types": "./src/theme-tokens.d.ts", "default": "./src/theme-tokens.js" },
+    "./tokens.json": "./tokens/sarah.tokens.json",
+    "./resolved-tokens.json": "./tokens/sarah.resolved.json",
+    "./css": "./src/sarahui.css",
     "./styles.css": "./src/styles.css",
     "./tokens.css": "./src/tokens.css",
-    "./fonts.css": "./src/fonts.css"
+    "./fonts.css": "./src/fonts.css",
+    "./assets/*": "./assets/*",
+    "./package.json": "./package.json"
   },
-  "files": ["src", "assets"],
-  "sideEffects": ["**/*.css"]
+  "files": ["src", "assets/fonts/*.woff", "assets/fonts/*-OFL.txt", "tokens", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
+  "sideEffects": ["**/*.css"],
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" }
 }

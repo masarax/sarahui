@@ -15,7 +15,28 @@ sarahUI is a foundation-first UI system with an original blue, indigo, and viole
 - **Zero runtime dependencies.** Use the CSS in any framework, or compose HTML templates directly.
 - Working project workspace and settings examples, token explorer, command search, and copyable component markup.
 
-## Start locally
+## Install the library
+
+~~~sh
+npm install sarahui
+~~~
+
+~~~js
+import 'sarahui/css';
+import { Button, render, enhanceUI } from 'sarahui';
+
+// Add <div id="app" class="s-ui"></div> to your HTML.
+document.querySelector('#app').innerHTML = render(
+  Button({ label: 'Create project', icon: 'plus' })
+);
+const cleanup = enhanceUI(document);
+~~~
+
+The package includes fonts, design tokens and TypeScript definitions.
+Use the CSS classes with React, Vue or Blade, or use the native HTML template
+functions directly. The templates are not JSX components.
+
+## Run the documentation locally
 
 Requires Node.js 22 or newer. No package install is required to build or serve the project.
 
@@ -37,16 +58,23 @@ npm run check        # build and run the unit tests
 Browser verification:
 
 ~~~sh
-npm install --no-save --package-lock=false playwright@1.62.1
+npm ci
 npx playwright install chromium
 npm run test:browser
+npm run test:package   # install the tarball in a fresh project and type-check
+npm run test:deploy    # deployment configuration and upload safeguards
 ~~~
 
-GitHub Actions runs both verification layers and provides downloadable **sarahui-documentation** and **sarahui-browser-results** artifacts. The documentation artifact is a complete static site. A public deployment is not configured.
+GitHub Actions verifies the build, components, browser behavior, package installation,
+TypeScript declarations and deployment script. It provides **sarahui-documentation**,
+**sarahui-browser-results** and **sarahui-package** artifacts. Successful main runs
+publish the verified npm tarball through `NPM_TOKEN`. cPanel deployment stays
+inactive until its FTP secrets are configured; see the [deployment guide](docs/deployment.md).
 
 ## Use the components
 
-After building, copy `dist/ui/` and `dist/assets/` into your application, preserving the relative structure.
+For a bundler, import `sarahui/css` once. For manual static integration, build
+the repository and copy `dist/ui/` and `dist/assets/`, preserving their relative structure.
 
 ~~~html
 <link rel="stylesheet" href="./ui/fonts.css">
@@ -69,7 +97,9 @@ const dispose = enhanceUI(document);
 
 Interpolated text is escaped. Use `html` to compose trusted markup; keep untrusted content in interpolated values. The library does not fetch data or implement backend services. Connect component events to application state.
 
-This version is distributed through the repository. **It has not been published to npm.** The package includes TypeScript declarations.
+The public package is `sarahui`; the private root project is `sarahui-workspace`.
+To generate a local installation tarball, run `npm ci` followed by `npm run pack:ui`.
+The verified archive appears in `artifacts/npm/`.
 
 ## Component inventory
 
@@ -102,6 +132,7 @@ setTheme('dark'); // 'light', 'dark', or 'system'
 - [Foundation specification](docs/foundations.md)
 - [Component API and events](docs/components.md)
 - [React and Laravel integration](docs/integration.md)
+- [npm publishing and cPanel deployment](docs/deployment.md)
 - [Accessibility and verification](docs/accessibility.md)
 - [Recorded verification and previews](docs/verification.md)
 - [Third-party font notices](THIRD_PARTY_NOTICES.md)
@@ -116,4 +147,5 @@ setTheme('dark'); // 'light', 'dark', or 'system'
 | `tests/` | Foundation, template, and browser verification |
 | `dist/` | Generated documentation, excluded from Git |
 
-Project identity and original branding belong to **MASARA X**. Bundled fonts retain their respective SIL Open Font Licenses.
+The library is [MIT licensed](LICENSE). Project identity and original branding belong
+to **MASARA X**. Bundled fonts retain their respective SIL Open Font Licenses.

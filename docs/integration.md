@@ -1,17 +1,15 @@
 # Integration examples
 
-The core is native HTML/CSS/ES modules. These are integration recipes, not separately packaged framework adapters.
+Install with `npm install sarahui`. The core is native HTML/CSS/ES modules with TypeScript declarations. These are integration recipes; the exported templates return HTML markup, not framework-specific JSX components.
 
 ## React
 
-Copy `dist/ui/` and `dist/assets/` into matching directories in your asset workflow. Preserve or adapt font paths for your bundler.
+Import the complete stylesheet through your CSS-aware bundler. The package includes the referenced font files.
 
 ~~~jsx
 import { useEffect, useRef } from 'react';
-import { enhanceUI } from './ui/index.js';
-import './ui/fonts.css';
-import './ui/tokens.css';
-import './ui/styles.css';
+import { enhanceUI } from 'sarahui';
+import 'sarahui/css';
 
 export function ProjectActions({ onCreate }) {
   const root = useRef(null);
@@ -30,7 +28,9 @@ Use framework state for controlled inputs. Choose one controller for each widget
 
 ## Laravel / Blade
 
-Copy the built directories to `public/ui/` and `public/assets/`.
+For Laravel with Vite, import `sarahui/css` and `enhanceUI` from `sarahui` in `resources/js/app.js`, call `enhanceUI(document)`, and include the entry with `@vite(['resources/js/app.js'])`.
+
+For a manual setup without Vite, build the repository and copy `dist/ui/` to `public/ui/` and `dist/assets/` to `public/assets/`, then use the following Blade example.
 
 ~~~blade
 <link rel="stylesheet" href="{{ asset('ui/fonts.css') }}">
@@ -59,12 +59,14 @@ Define your own routes, controllers, validation, authorization, and persistence.
 
 ## Plain HTML and server rendering
 
-Templates run in Node. Serialize with `render()`, include the three stylesheets, and call `enhanceUI()` after the DOM exists.
+Templates run in Node. Import them from `sarahui/templates`, serialize with `render()`, include the stylesheet, and call `enhanceUI()` after the DOM exists.
 
-The documentation's View code panels supply rendered markup. Dialog and CommandPalette triggers refer to separate dialog markup; include both in your application.
+Every View code panel supplies a complete npm recipe, component properties, interaction guidance and rendered HTML. The Dialog and CommandPalette npm examples include both the trigger and dialog.
 
 ## Static documentation
 
 `npm run build` emits a standalone `dist/` folder with relative assets and hash routing. It can be served from a subdirectory without application-route rewrites.
 
 The example workspace uses local sample data. Creating projects, changing settings, sorting, filtering, and pagination do not contact a backend. Only the theme persists across reloads.
+
+The cPanel FTP workflow and required secrets are documented in [Deployment](deployment.md).

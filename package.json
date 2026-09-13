@@ -1,16 +1,26 @@
 {
-  "name": "sarahui",
+  "name": "sarahui-workspace",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "Original sarahUI design system by MASARA X",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "check": "npm run build && npm test",
-    "test:browser": "node tests/browser.mjs"
+    "test:browser": "node tests/browser.mjs",
+    "test:package": "node scripts/check-package.mjs",
+    "pack:ui": "npm run build && npm run test:package",
+    "test:deploy": "python3 -m unittest discover -s tests -p \"test_deploy.py\"",
+    "publish:verified": "node scripts/publish-package.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "typescript": "5.9.3"
   }
 }

@@ -1,0 +1,30 @@
+name: Publish sarahui to npm
+on:
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: sarahui-npm-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org/
+      - uses: actions/download-artifact@v4
+        with:
+          name: sarahui-package
+          path: artifacts/npm/
+      - name: Publish the verified tarball and install from the public registry
+        run: npm run publish:verified
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
