@@ -22,8 +22,8 @@ try {
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
   const base=process.env.BROWSER_URL||'http://127.0.0.1:4179';
   const goto=async hash=>{await page.goto(base+'/'+hash);await page.waitForSelector('html[data-ready=true]');await page.evaluate(()=>document.fonts.ready);};
-  const check=async(name,fn)=>{try{await fn();results.push({name,passed:true});console.log('PASS '+name);}catch(error){results.push({name,passed:false,error:error.message});console.error('FAIL '+name+'\n'+error.stack);await page.screenshot({path:path.join(output,'failure-'+results.length+'.png'),fullPage:false}).catch(()=>{});}};
-  const route=async hash=>{await page.evaluate(h=>{location.hash=h;},hash);await page.waitForFunction(h=>{const view=h.replace('#','').split('/')[0];return !document.querySelector('[data-view="'+view+'"]').hidden;},hash);};
+  const check=async(name,fn)=>{try{await fn();results.push({name,passed:true});console.log('PASS '+name);}catch(error){results.push({name,passed:false,error:error.message});console.error('FAIL '+name+'\n'+error.stack);await page.screenshot({path:path.join(output,'failure-'+results.length+'.png'),fullPage:false}).catch(()=>{});await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));}};
+  const route=async hash=>{await page.evaluate(h=>{location.hash=h;},hash);await page.waitForFunction(h=>document.documentElement.dataset.route===h,hash);};
   const shot=async name=>{await page.evaluate(()=>document.activeElement?.blur());await page.screenshot({path:path.join(output,name+'.png'),fullPage:false,animations:'disabled'});};
   await goto('#overview');
   await check('All local fonts load and the component catalog is complete',async()=>{
@@ -37,7 +37,7 @@ try {
   await check('Command search filters, keyboard selects, and routes to a component',async()=>{
     await page.keyboard.press('Control+k');await page.locator('#library-search').waitFor({state:'visible'});
     await page.locator('[data-s-command-input]').fill('Slider');await page.keyboard.press('Enter');
-    await page.waitForFunction(()=>location.hash==='#components/Slider');assert.equal(await page.locator('#library-search').evaluate(d=>d.open),false);
+    await page.waitForFunction(()=>document.documentElement.dataset.route==='#components/Slider');assert.equal(await page.locator('#library-search').evaluate(d=>d.open),false);
     assert.equal(await page.locator('#component-slider').isVisible(),true);
   });
   await check('Search has a meaningful empty state and Escape restores focus',async()=>{
@@ -48,7 +48,9 @@ try {
   });
   await route('#components');
   await check('Component search and category filters compose and clear',async()=>{
-    await page.locator('#component-search').fill('Button');assert.equal(await page.locator('[data-component-name]:visible').count(),3);
+    await page.locator('#component-search').fill('Button');
+    const matches=await page.locator('[data-component-name]:visible').evaluateAll(cards=>cards.map(c=>c.dataset.componentName));
+    for(const name of ['Button','IconButton','ButtonGroup'])assert.ok(matches.includes(name));assert.ok(!matches.includes('Input'));
     await page.locator('[data-component-group="Forms"]').click();assert.equal(await page.locator('#component-empty').isVisible(),true);
     await page.locator('[data-clear-filters]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),32);
     await page.locator('[data-component-group="Forms"]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),7);

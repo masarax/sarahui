@@ -112,7 +112,7 @@ export function enhanceUI(root=globalThis.document) {
       }
     }
     const input=closest(event,'[data-s-command-input]');
-    if(input){const d=input.closest('dialog'),list=options(d),i=list.findIndex(o=>o.getAttribute('aria-selected')==='true');if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();selectCommand(d,i+(event.key==='ArrowDown'?1:-1));return;}if(event.key==='Enter'){event.preventDefault();chooseCommand(d,list[Math.max(0,i)]);return;}}
+    if(input){const d=input.closest('dialog'),list=options(d),i=list.findIndex(o=>o.getAttribute('aria-selected')==='true');if(event.key==='Escape'){event.preventDefault();event.stopPropagation();closeDialog(d);return;}if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();selectCommand(d,i+(event.key==='ArrowDown'?1:-1));return;}if(event.key==='Enter'){event.preventDefault();chooseCommand(d,list[Math.max(0,i)]);return;}}
     if(event.key==='Escape'){const tip=closest(event,'[data-s-tooltip]');if(tip)tip.dataset.dismissed='true';}
   });
   on(root,'input',event=>{const e=event.target;if(e.matches('[data-s-slider]'))e.closest('.s-slider-field').querySelector('output').value=e.value;if(e.matches('[data-s-command-input]'))filterCommand(e.closest('dialog'));});

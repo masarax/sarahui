@@ -39,7 +39,8 @@ function route(initial=false){
     if(sub){const card=$$('[data-component-name]').find(c=>c.dataset.componentName.toLowerCase()===sub.toLowerCase());if(card)target=card;}
   }
   if(view==='foundations'&&sub){const candidate=document.getElementById('foundation-'+sub.toLowerCase());if(candidate)target=candidate;}
-  if(!initial||sub){requestAnimationFrame(()=>{if(target){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});target.scrollIntoView({block:'start'});}});}
+  const ready=()=>{document.documentElement.dataset.route='#'+view+(sub?'/'+sub:'');};
+  if(!initial||sub){requestAnimationFrame(()=>{if(target){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});target.scrollIntoView({block:'start'});}ready();});}else ready();
 }
 function resetComponentRoute(){if(location.hash!=='#components')history.replaceState(null,'','#components');}
 function filteredProjects(){
