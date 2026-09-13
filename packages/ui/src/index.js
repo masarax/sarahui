@@ -123,7 +123,14 @@ export function enhanceUI(root=globalThis.document) {
   });
   on(root,'input',event=>{const e=event.target;if(e.matches('[data-s-slider]'))e.closest('.s-slider-field').querySelector('output').value=e.value;if(e.matches('[data-s-command-input]'))filterCommand(e.closest('dialog'));});
   on(root,'change',event=>{const e=event.target;if(e.matches('[data-s-select-all]')){const table=e.closest('table');table.querySelectorAll('[data-s-row-select]:not(:disabled)').forEach(b=>{b.checked=e.checked;});tableSelection(table);}else if(e.matches('[data-s-row-select]'))tableSelection(e.closest('table'));});
-  for(const type of ['focusin','pointerover'])on(root,type,event=>{const tip=closest(event,'[data-s-tooltip]');if(tip&&!tip.contains(event.relatedTarget))delete tip.dataset.dismissed;});
+  const positionTooltip=tip=>{
+    const bubble=tip.querySelector('[role=tooltip]');if(!bubble)return;
+    bubble.style.setProperty('--s-tooltip-shift','0px');const rect=bubble.getBoundingClientRect();
+    const shift=rect.left<12?12-rect.left:rect.right>win.innerWidth-12?win.innerWidth-12-rect.right:0;
+    bubble.style.setProperty('--s-tooltip-shift',shift+'px');
+  };
+  for(const type of ['focusin','pointerover'])on(root,type,event=>{const tip=closest(event,'[data-s-tooltip]');if(tip&&!tip.contains(event.relatedTarget)){delete tip.dataset.dismissed;positionTooltip(tip);}});
+  on(win,'resize',()=>root.querySelectorAll('[data-s-tooltip]:hover,[data-s-tooltip]:focus-within').forEach(positionTooltip));
   on(root,'close',event=>{const d=event.target;if(!d.matches?.('dialog'))return;const trigger=dialogTriggers.get(d);if(trigger?.isConnected&&trigger.getClientRects().length)trigger.focus({preventScroll:true});dialogTriggers.delete(d);},true);
   on(win.matchMedia('(prefers-color-scheme: dark)'),'change',()=>{if(doc.documentElement.dataset.themePreference==='system')setTheme('system',{root:doc.documentElement,persist:false});});
   const dispose=()=>{controller.abort();root.querySelectorAll('[data-s-menu]').forEach(m=>setMenu(m,false));installations.delete(root);};installations.set(root,dispose);return dispose;

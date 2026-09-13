@@ -134,8 +134,13 @@ try {
         await route('#'+view);
         const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
         if(overflow){
-          const details=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>el.getBoundingClientRect().right>innerWidth+1&&el.getClientRects().length).slice(0,12).map(el=>({tag:el.tagName,id:el.id,class:el.className,right:Math.round(el.getBoundingClientRect().right)})));
-          overflows.push({view,width,details});await shot('overflow-'+view+'-'+width);
+          const details=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>{
+            if(el.getBoundingClientRect().right<=innerWidth+1||!el.getClientRects().length)return false;
+            for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement)if(['auto','scroll','hidden','clip'].includes(getComputedStyle(p).overflowX))return false;
+            return true;
+          }).map(el=>({tag:el.tagName,id:el.id,class:String(el.className),right:Math.round(el.getBoundingClientRect().right),text:el.textContent.slice(0,60)})).slice(0,20));
+          const scrollWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
+          overflows.push({view,width,scrollWidth,details});await shot('overflow-'+view+'-'+width);
         }
       }
     }

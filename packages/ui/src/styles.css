@@ -63,3 +63,5 @@
 @media(forced-colors:active){.s-button,.s-input,.s-choice-input,.s-badge,.s-card,.s-dialog,.s-menu-panel{border:1px solid ButtonText}.s-choice-input{appearance:auto}.s-switch::after,.s-checkbox::after,.s-radio::after{display:none}.s-tab[aria-selected=true],.s-page[aria-current],.s-nav-item[aria-current]{outline:2px solid Highlight}.s-progress{appearance:auto}.s-status-dot{background:CanvasText}}
 @media(pointer:coarse){.s-button--sm,.s-page{min-height:44px}.s-icon-button.s-button--sm{width:44px}.s-chip .s-button{width:44px;min-height:44px}}
 @media(max-width:600px){.s-dialog{--s-dialog-padding:24px}.s-toast-region{bottom:16px;inset-inline-end:16px}.s-dialog-header h2{font-size:21px}.s-command footer{gap:10px;flex-wrap:wrap}.s-dialog-body .s-button{white-space:normal}}
+
+.s-tooltip-bubble{display:none;translate:var(--s-tooltip-shift,0px) 0}.s-tooltip:hover .s-tooltip-bubble,.s-tooltip:focus-within .s-tooltip-bubble{display:block}.s-tooltip[data-dismissed] .s-tooltip-bubble{display:none}.s-tooltip:dir(rtl) .s-tooltip-bubble{transform:translateX(50%)}
