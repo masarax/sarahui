@@ -40,7 +40,7 @@ function route(initial=false){
   }
   if(view==='foundations'&&sub){const candidate=document.getElementById('foundation-'+sub.toLowerCase());if(candidate)target=candidate;}
   const ready=()=>{document.documentElement.dataset.route='#'+view+(sub?'/'+sub:'');};
-  if(!initial||sub){requestAnimationFrame(()=>{if(target){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});target.scrollIntoView({block:'start'});}ready();});}else ready();
+  if(!initial||sub){requestAnimationFrame(()=>{if(target){if(!target.hasAttribute('tabindex'))target.tabIndex=-1;target.focus({preventScroll:true});if(sub)target.scrollIntoView({block:'start'});else window.scrollTo({top:0,behavior:'instant'});}ready();});}else ready();
 }
 function resetComponentRoute(){if(location.hash!=='#components')history.replaceState(null,'','#components');}
 function filteredProjects(){

@@ -96,6 +96,12 @@ export function enhanceUI(root=globalThis.document) {
   });
   on(doc,'click',event=>root.querySelectorAll('[data-s-menu]').forEach(menu=>{if(!menu.contains(event.target))setMenu(menu,false);}));
   on(root,'keydown',event=>{
+    const dialog=closest(event,'dialog[open]');
+    if(dialog&&event.key==='Tab'){
+      const focusable=[...dialog.querySelectorAll('button,input,select,textarea,a[href],[tabindex],[contenteditable="true"]')].filter(el=>!el.disabled&&el.tabIndex>=0&&el.getClientRects().length&&win.getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));
+      const first=focusable[0],last=focusable.at(-1);
+      if(first&&((event.shiftKey&&doc.activeElement===first)||(!event.shiftKey&&doc.activeElement===last))){event.preventDefault();(event.shiftKey?last:first).focus();return;}
+    }
     const tab=closest(event,'[data-s-tabs] [role=tab]');
     if(tab&&['ArrowRight','ArrowLeft','Home','End'].includes(event.key)){
       event.preventDefault();const group=tab.closest('[data-s-tabs]'),tabs=[...group.querySelectorAll('[role=tab]:not(:disabled)')].filter(t=>t.closest('[data-s-tabs]')===group),rtl=win.getComputedStyle(group).direction==='rtl';let i=tabs.indexOf(tab);

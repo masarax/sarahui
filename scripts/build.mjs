@@ -4,6 +4,7 @@ import {fileURLToPath} from 'node:url';
 import './build-tokens.mjs';
 import {buildSite} from '../apps/docs/site.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),dist=path.join(root,'dist');
+fs.rmSync(dist,{recursive:true,force:true});
 fs.mkdirSync(dist,{recursive:true});
 fs.cpSync(path.join(root,'packages/ui/src'),path.join(dist,'ui'),{recursive:true});
 fs.cpSync(path.join(root,'packages/ui/assets'),path.join(dist,'assets'),{recursive:true,filter:source=>!source.endsWith('.b64')&&!source.endsWith('.ttf')});

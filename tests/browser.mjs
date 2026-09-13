@@ -127,14 +127,19 @@ try {
     await page.emulateMedia({forcedColors:'active'});assert.equal(await page.locator('#demo-checkbox-a').evaluate(el=>getComputedStyle(el).appearance),'auto');await page.emulateMedia({forcedColors:'none'});
   });
   await check('All views fit narrow, mobile and tablet viewports',async()=>{
+    const overflows=[];
     for(const width of [320,390,768,1024]){
       await page.setViewportSize({width,height:900});
       for(const view of ['overview','foundations','components','patterns','start']){
         await route('#'+view);
         const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
-        assert.equal(overflow,false,view+' overflows at '+width+'px');
+        if(overflow){
+          const details=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>el.getBoundingClientRect().right>innerWidth+1&&el.getClientRects().length).slice(0,12).map(el=>({tag:el.tagName,id:el.id,class:el.className,right:Math.round(el.getBoundingClientRect().right)})));
+          overflows.push({view,width,details});await shot('overflow-'+view+'-'+width);
+        }
       }
     }
+    assert.deepEqual(overflows,[]);
   });
   await page.setViewportSize({width:390,height:844});await route('#overview');await page.evaluate(()=>scrollTo(0,0));await shot('overview-mobile');
   await check('Mobile navigation is a native modal and closes after navigation',async()=>{
