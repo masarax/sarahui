@@ -4,6 +4,10 @@
 
 sarahUI is a foundation-first UI system with an original blue, indigo, and violet identity. It includes reusable native HTML templates, CSS components, an ES-module interaction layer, and an interactive documentation application.
 
+![sarahUI documentation in light mode](docs/previews/overview-light.png)
+
+[Dark theme](docs/previews/overview-dark.png) · [Mobile](docs/previews/overview-mobile.png) · [Components](docs/previews/components-light.png) · [Foundations](docs/previews/foundations-light.png) · [Workspace pattern](docs/previews/patterns-light.png)
+
 - **277 token entries:** 85 primitive colors, 48 semantic roles in each theme, layout, typography, motion, layers, grid, and component aliases.
 - **32 component families**, with keyboard interactions and explicit states.
 - **Light, dark, and system preferences**, with inherited CSS custom properties.
@@ -99,6 +103,7 @@ setTheme('dark'); // 'light', 'dark', or 'system'
 - [Component API and events](docs/components.md)
 - [React and Laravel integration](docs/integration.md)
 - [Accessibility and verification](docs/accessibility.md)
+- [Recorded verification and previews](docs/verification.md)
 - [Third-party font notices](THIRD_PARTY_NOTICES.md)
 
 | Path | Purpose |

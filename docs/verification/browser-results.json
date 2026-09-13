@@ -1,0 +1,75 @@
+{
+  "passed": 17,
+  "failed": 0,
+  "results": [
+    {
+      "name": "All local fonts load and the component catalog is complete",
+      "passed": true
+    },
+    {
+      "name": "Command search filters, keyboard selects, and routes to a component",
+      "passed": true
+    },
+    {
+      "name": "Search has a meaningful empty state and Escape restores focus",
+      "passed": true
+    },
+    {
+      "name": "Component search and category filters compose and clear",
+      "passed": true
+    },
+    {
+      "name": "Tabs support arrows, Home, End, and right-to-left navigation",
+      "passed": true
+    },
+    {
+      "name": "Native range and switches expose real changing values",
+      "passed": true
+    },
+    {
+      "name": "Tables sort numerically and announce partial selection",
+      "passed": true
+    },
+    {
+      "name": "Menu arrows skip disabled options and Escape returns to trigger",
+      "passed": true
+    },
+    {
+      "name": "Tooltips dismiss with Escape while the trigger keeps focus",
+      "passed": true
+    },
+    {
+      "name": "Code samples expand into copyable HTML",
+      "passed": true
+    },
+    {
+      "name": "Project modal contains focus, validates, creates and restores focus",
+      "passed": true
+    },
+    {
+      "name": "Workspace filters, pagination and global sorting change data",
+      "passed": true
+    },
+    {
+      "name": "Settings validate and preserve the chosen theme after reload",
+      "passed": true
+    },
+    {
+      "name": "Theme controls work under reduced motion and focus is visible",
+      "passed": true
+    },
+    {
+      "name": "All views fit narrow, mobile and tablet viewports",
+      "passed": true
+    },
+    {
+      "name": "Mobile navigation is a native modal and closes after navigation",
+      "passed": true
+    },
+    {
+      "name": "No browser errors occurred",
+      "passed": true
+    }
+  ],
+  "errors": []
+}
