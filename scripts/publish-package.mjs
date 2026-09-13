@@ -4,6 +4,7 @@ import os from 'node:os';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+import {waitForPublicVersion} from './registry.mjs';
 const directory=path.resolve('artifacts/npm');
 const manifest=JSON.parse(fs.readFileSync(path.join(directory,'package-manifest.json'),'utf8'));
 const pkg=JSON.parse(fs.readFileSync('packages/ui/package.json','utf8'));
@@ -38,10 +39,28 @@ if(published){
   assert(published,'Publication completed but public registry verification is still unavailable.');
   assert.equal(published.dist.integrity,integrity);
 }
+await waitForPublicVersion(manifest.version,integrity);
 const fixture=fs.mkdtempSync(path.join(os.tmpdir(),'sarahui-registry-'));
 try{
   fs.writeFileSync(path.join(fixture,'package.json'),JSON.stringify({name:'sarahui-public-install-check',private:true,type:'module'}));
-  run(['install','sarahui@'+manifest.version,'--registry=https://registry.npmjs.org/','--ignore-scripts','--no-audit','--no-fund','--package-lock=false'],fixture);
+  const userconfig=path.join(fixture,'anonymous.npmrc');
+  fs.writeFileSync(userconfig,'');
+  const publicEnv={...process.env};
+  delete publicEnv.NODE_AUTH_TOKEN;delete publicEnv.NPM_TOKEN;
+  for(let attempt=0;attempt<6;attempt++){
+    const install=spawnSync(process.execPath,[process.env.npm_execpath,'install','sarahui@'+manifest.version,
+      '--registry=https://registry.npmjs.org/','--userconfig='+userconfig,
+      '--cache='+path.join(fixture,'npm-cache'),'--prefer-online',
+      '--ignore-scripts','--no-audit','--no-fund','--package-lock=false'],
+      {cwd:fixture,encoding:'utf8',env:publicEnv});
+    if(install.status===0){process.stdout.write(install.stdout);break;}
+    if(attempt===5||!/npm error code (E404|ETARGET)\b/.test(install.stderr||'')){
+      process.stderr.write(install.stderr||'');
+      throw new Error('Public npm installation failed with exit status '+install.status);
+    }
+    console.log('Waiting for the new version to reach the public install endpoint.');
+    await new Promise(resolve=>setTimeout(resolve,5000));
+  }
   fs.writeFileSync(path.join(fixture,'verify.mjs'),"import assert from 'node:assert/strict';import{Button,render}from'sarahui';assert.match(render(Button({label:'npm install sarahui works'})),/npm install sarahui works/);console.log('Public npm installation verified.');");
   const test=spawnSync(process.execPath,['verify.mjs'],{cwd:fixture,stdio:'inherit'});
   assert.equal(test.status,0);

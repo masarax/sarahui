@@ -22,6 +22,10 @@ After all checks pass on main, it calls **Publish sarahui to npm**:
 5. Publish that exact tarball with provenance using `NPM_TOKEN`.
 6. Verify its registry integrity and install `sarahui@<version>` from npm.
 
+The install check uses an empty npm user configuration without the publishing
+token. It waits for the public package index and retries temporary missing-version
+responses, which can occur immediately after the first publication.
+
 Publishing never runs for pull requests. The token is available only to the
 publish step, not to the build or browser tests.
 
