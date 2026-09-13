@@ -1,12 +1,13 @@
 <p align="center"><strong>sarahUI</strong><br>Thoughtful by design.<br><sub>An original design system by MASARA X</sub></p>
 
 [![Quality checks](https://github.com/masarax/sarahui/actions/workflows/ci.yml/badge.svg)](https://github.com/masarax/sarahui/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/sarahui)](https://www.npmjs.com/package/sarahui)
 
 sarahUI is a foundation-first UI system with an original blue, indigo, and violet identity. It includes reusable native HTML templates, CSS components, an ES-module interaction layer, and an interactive documentation application.
 
 ![sarahUI documentation in light mode](docs/previews/overview-light.png)
 
-[Dark theme](docs/previews/overview-dark.png) · [Mobile](docs/previews/overview-mobile.png) · [Components](docs/previews/components-light.png) · [Foundations](docs/previews/foundations-light.png) · [Workspace pattern](docs/previews/patterns-light.png)
+[Dark theme](docs/previews/overview-dark.png) · [Mobile](docs/previews/overview-mobile.png) · [Components](docs/previews/components-light.png) · [Foundations](docs/previews/foundations-light.png) · [Workspace pattern](docs/previews/patterns-light.png) · [Installation guide](docs/previews/getting-started-light.png)
 
 - **277 token entries:** 85 primitive colors, 48 semantic roles in each theme, layout, typography, motion, layers, grid, and component aliases.
 - **32 component families**, with keyboard interactions and explicit states.

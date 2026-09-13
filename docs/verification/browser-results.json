@@ -1,5 +1,5 @@
 {
-  "passed": 17,
+  "passed": 18,
   "failed": 0,
   "results": [
     {
@@ -39,7 +39,11 @@
       "passed": true
     },
     {
-      "name": "Code samples expand into copyable HTML",
+      "name": "Code samples include npm usage, properties and rendered HTML",
+      "passed": true
+    },
+    {
+      "name": "Installation and framework guides expose complete copyable setup",
       "passed": true
     },
     {
