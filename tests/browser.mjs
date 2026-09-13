@@ -134,13 +134,19 @@ try {
         await route('#'+view);
         const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);
         if(overflow){
-          const details=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>{
-            if(el.getBoundingClientRect().right<=innerWidth+1||!el.getClientRects().length)return false;
-            for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement)if(['auto','scroll','hidden','clip'].includes(getComputedStyle(p).overflowX))return false;
-            return true;
-          }).map(el=>({tag:el.tagName,id:el.id,class:String(el.className),right:Math.round(el.getBoundingClientRect().right),text:el.textContent.slice(0,60)})).slice(0,20));
+          const details=await page.evaluate(()=>[...document.querySelectorAll('body *')].flatMap(el=>{
+            if(!el.getClientRects().length)return [];
+            for(let p=el;p&&p!==document.body;p=p.parentElement)if(['auto','scroll','hidden','clip'].includes(getComputedStyle(p).overflowX))return [];
+            let right=el.getBoundingClientRect().right;
+            for(const child of el.childNodes)if(child.nodeType===Node.TEXT_NODE&&child.textContent.trim()){
+              const range=document.createRange();range.selectNodeContents(child);
+              right=Math.max(right,...[...range.getClientRects()].map(rect=>rect.right));
+            }
+            if(right<=innerWidth+1)return [];
+            return [{tag:el.tagName,id:el.id,class:String(el.className),right:Math.round(right),text:el.textContent.slice(0,90)}];
+          }).slice(0,20));
           const scrollWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
-          overflows.push({view,width,scrollWidth,details});await shot('overflow-'+view+'-'+width);
+          overflows.push({view,width,scrollWidth,details});await page.screenshot({path:output+'/'+'overflow-'+view+'-'+width+'.png',fullPage:true,animations:'disabled'});
         }
       }
     }
