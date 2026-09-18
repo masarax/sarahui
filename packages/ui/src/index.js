@@ -11,7 +11,8 @@ export function setTheme(preference='system',{root=globalThis.document?.document
   const theme=preference==='system'?(win.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):preference;
   root.dataset.theme=theme;root.dataset.themePreference=preference;
   if(persist)try{win.localStorage.setItem('sarah-theme',preference);}catch{}
-  doc.querySelectorAll('[data-s-theme-toggle]').forEach(button=>{
+  const toggleRoot=root.querySelectorAll?root:doc;
+  toggleRoot.querySelectorAll('[data-s-theme-toggle]').forEach(button=>{
     button.setAttribute('aria-label','Switch to '+(theme==='dark'?'light':'dark')+' theme');
     const glyph=button.querySelector('[data-theme-icon]');if(glyph)glyph.innerHTML=render(Icon({name:theme==='dark'?'sun':'moon',size:18}));
   });
@@ -20,9 +21,11 @@ export function setTheme(preference='system',{root=globalThis.document?.document
 export function openDialog(dialog,trigger) {
   if(!dialog||typeof dialog.showModal!=='function'||dialog.open)return;
   dialogTriggers.set(dialog,trigger||docOf(dialog).activeElement);dialog.showModal();
+  const commandInput=dialog.matches('[data-s-command]')?dialog.querySelector('[data-s-command-input]'):null;
+  if(commandInput)commandInput.setAttribute('aria-expanded','true');
   (dialog.querySelector('[data-s-autofocus],[autofocus]')||dialog.querySelector('input:not(:disabled),select:not(:disabled),textarea:not(:disabled),button:not(:disabled),[tabindex="0"]'))?.focus({preventScroll:true});
 }
-export const closeDialog=(dialog,value='')=>{if(dialog?.open)dialog.close(value);};
+export const closeDialog=(dialog,value='')=>{if(dialog?.open){const commandInput=dialog.matches?.('[data-s-command]')?dialog.querySelector('[data-s-command-input]'):null;if(commandInput)commandInput.setAttribute('aria-expanded','false');dialog.close(value);}};
 function activateTab(group,tab) {
   const tabs=[...group.querySelectorAll('[role=tab]')].filter(t=>t.closest('[data-s-tabs]')===group);
   if(!tabs.includes(tab)||tab.disabled)return;
@@ -131,7 +134,7 @@ export function enhanceUI(root=globalThis.document) {
   };
   for(const type of ['focusin','pointerover'])on(root,type,event=>{const tip=closest(event,'[data-s-tooltip]');if(tip&&!tip.contains(event.relatedTarget)){delete tip.dataset.dismissed;positionTooltip(tip);}});
   on(win,'resize',()=>root.querySelectorAll('[data-s-tooltip]:hover,[data-s-tooltip]:focus-within').forEach(positionTooltip));
-  on(root,'close',event=>{const d=event.target;if(!d.matches?.('dialog'))return;const trigger=dialogTriggers.get(d);if(trigger?.isConnected&&trigger.getClientRects().length)trigger.focus({preventScroll:true});dialogTriggers.delete(d);},true);
+  on(root,'close',event=>{const d=event.target;if(!d.matches?.('dialog'))return;const commandInput=d.matches('[data-s-command]')?d.querySelector('[data-s-command-input]'):null;if(commandInput)commandInput.setAttribute('aria-expanded','false');const trigger=dialogTriggers.get(d);if(trigger?.isConnected&&trigger.getClientRects().length)trigger.focus({preventScroll:true});dialogTriggers.delete(d);},true);
   on(win.matchMedia('(prefers-color-scheme: dark)'),'change',()=>{if(doc.documentElement.dataset.themePreference==='system')setTheme('system',{root:doc.documentElement,persist:false});});
   const dispose=()=>{controller.abort();root.querySelectorAll('[data-s-menu]').forEach(m=>setMenu(m,false));installations.delete(root);};installations.set(root,dispose);return dispose;
 }

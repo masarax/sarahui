@@ -11,7 +11,7 @@ Components return branded `Markup`. `render()` serializes it. Ordinary strings a
 | Family | Properties |
 | --- | --- |
 | Icon | `name`, `size`, `label`; decorative unless labeled |
-| Button | `label`, `variant`, `size`, `icon`, `trailing`, `disabled`, `loading`, `attrs`, `className` |
+| Button | `label`, `variant`, `size`, `icon`, `trailing`, `disabled`, `loading`, `attrs`, `className`, `type` (`button` / `submit` / `reset`) |
 | IconButton | `icon`, `label`, `variant`, `size`, `disabled`, `attrs` |
 | ButtonGroup | `label`, `children` |
 | Input | `id`, `label`, `helper`, `error`, `icon`, `type`, `attrs` |
@@ -69,7 +69,7 @@ Installation is idempotent per root. Use one installation root for each subtree,
 
 Events bubble through `CustomEvent.detail`. Tables sort their current DOM rows. For remote data or multiple pages, update application data on sort events; the workspace demonstrates sorting before pagination. Supply `row.id` for stable selection. Plain strings/numbers supply sortable values; custom markup cells can set `data-sort`.
 
-Pagination emits a selection change; it does not fetch or hide records itself.
+Pagination emits a `sarah:pagechange` event; it does not fetch or hide records itself.
 
 ## Dialogs, commands, themes, toasts
 

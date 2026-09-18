@@ -40,7 +40,7 @@ export const expressions={
   CommandPalette:'UI.html`${UI.Button({ label: "Search", icon: "search", attrs: { "data-s-dialog-open": "app-search" } })}${UI.CommandPalette({ id: "app-search", title: "Search your workspace", items: [{ label: "Projects", href: "#projects", icon: "folder" }, { label: "Settings", href: "#settings", icon: "settings" }] })}`'
 };
 const notes={
-  Button:'Use attrs.type = "submit" inside a form. Loading buttons prevent repeated submission.',
+  Button:'Use type: "submit" when the button submits a form. The default is type: "button"; loading buttons prevent repeated submission.',
   IconButton:'Always provide a label that describes the action.',
   Radio:'Keep one name for related choices and a distinct value for each option.',
   Dialog:'The example includes both the trigger and dialog. Escape closes it and returns focus.',

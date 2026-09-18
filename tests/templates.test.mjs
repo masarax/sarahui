@@ -17,9 +17,16 @@ test('Unsafe URL protocols are blocked',()=>{
 });
 test('Labeled fields expose errors and native form attributes',()=>{
   const result=render(UI.Input({id:'email',label:'Email',error:'Enter an email',type:'email',attrs:{required:true,name:'email'}}));
-  assert.match(result,/for="email"/);assert.match(result,/aria-invalid="true"/);assert.match(result,/aria-describedby="email-help"/);assert.match(result,/type="email"/);assert.match(result,/ required/);
+  assert.match(result,/for="email"/);assert.match(result,/aria-invalid="true"/);assert.match(result,/aria-describedby="email-help"/);assert.match(result,/type="email"/);assert.match(result,/ required/);assert.match(result,/name="email"/);
 });
-test('Loading buttons cannot resubmit a form',()=>{const text=render(UI.Button({loading:true,attrs:{type:'submit'}}));assert.match(text,/ disabled/);assert.match(text,/aria-busy="true"/);});
+test('Component-owned visual and state attributes override conflicting caller values',()=>{
+  const button=render(UI.Button({label:'Safe',variant:'primary',attrs:{class:'attacker',disabled:false,'aria-busy':'false',type:'submit'}}));
+  assert.match(button,/type="submit"/);assert.match(button,/class="s-button s-button--primary s-button--md /);assert.doesNotMatch(button,/aria-busy=/);assert.doesNotMatch(button,/class="attacker"/);
+  assert.match(render(UI.Button({label:'Default'})),/type="button"/);assert.match(render(UI.Button({label:'Submit',type:'submit'})),/type="submit"/);
+  const icon=render(UI.IconButton({label:'Save',attrs:{class:'attacker',disabled:false,'aria-label':'spoofed'}}));
+  assert.match(icon,/class="s-button s-icon-button/);assert.match(icon,/aria-label="Save"/);
+});
+test('Loading buttons stay disabled while preserving explicit form type',()=>{const text=render(UI.Button({loading:true,type:'submit'}));assert.match(text,/type="submit"/);assert.match(text,/ disabled/);assert.match(text,/aria-busy="true"/);});
 test('Tabs skip a disabled requested initial selection',()=>{const text=render(UI.Tabs({id:'t',active:0,items:[{label:'Disabled',content:'a',disabled:true},{label:'Enabled',content:'b'}]}));assert.match(text,/id="t-tab-1" role="tab" aria-selected="true"/);});
 test('All 32 declared families have a concrete export and rendered demo',()=>{
   const s=JSON.parse(fs.readFileSync(new URL('../tokens/sarah.tokens.json',import.meta.url),'utf8'));assert.equal(catalog.length,32);assert.deepEqual(new Set(catalog.map(c=>c.name)),new Set(s.components));
@@ -27,3 +34,9 @@ test('All 32 declared families have a concrete export and rendered demo',()=>{
 });
 test('Generated field IDs are unique within the rendering process',()=>{const a=render(UI.Input()),b=render(UI.Input());assert.notEqual(a.match(/id="([^"]+)"/)[1],b.match(/id="([^"]+)"/)[1]);});
 test('Table row IDs preserve application identity through sort',()=>{const text=render(UI.DataTable({rows:[{id:'stable-42',name:'Example'}],selectable:true}));assert.match(text,/data-row="stable-42"/);assert.match(text,/Select Example/);});
+test('Dialogs and command palettes expose synchronized modal state',()=>{
+  const dialog=render(UI.Dialog({id:'project',title:'Project'}));
+  assert.match(dialog,/aria-modal="true"/);
+  const command=render(UI.CommandPalette({id:'search',title:'Search'}));
+  assert.match(command,/aria-expanded="false"/);
+});

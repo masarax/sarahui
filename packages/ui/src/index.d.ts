@@ -14,9 +14,9 @@ export function attributes(props?: Attributes): string;
 export const ICONS: Readonly<Record<string, string>>;
 export function Icon(props?: { name?: string; size?: number; label?: string }): Markup;
 export function Logo(props?: { compact?: boolean }): Markup;
-export interface ButtonProps { label?: string; variant?: Variant; size?: Size; icon?: string; trailing?: string; disabled?: boolean; loading?: boolean; attrs?: Attributes; className?: string }
+export interface ButtonProps { label?: string; variant?: Variant; size?: Size; icon?: string; trailing?: string; disabled?: boolean; loading?: boolean; attrs?: Attributes; className?: string; type?: 'button' | 'submit' | 'reset' }
 export function Button(props?: ButtonProps): Markup;
-export function IconButton(props?: Omit<ButtonProps,'trailing' | 'loading' | 'className'>): Markup;
+export function IconButton(props?: Omit<ButtonProps,'trailing' | 'loading' | 'className' | 'type'>): Markup;
 export function ButtonGroup(props?: { label?: string; children?: Content }): Markup;
 export interface FieldProps { id?: string; label?: string; helper?: string; error?: string; attrs?: Attributes }
 export function Input(props?: FieldProps & { icon?: string; type?: 'text' | 'email' | 'password' | 'number' | 'search' | 'tel' | 'url' | 'date' | 'time' }): Markup;
