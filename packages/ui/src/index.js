@@ -45,7 +45,8 @@ function sortTable(button) {
   table.querySelectorAll('[aria-sort]').forEach(el=>el.removeAttribute('aria-sort'));th.setAttribute('aria-sort',ascending?'ascending':'descending');
   const value=row=>{const td=[...row.cells].find(td=>td.dataset.column===key);return td?.dataset.sort??td?.textContent.trim()??'';};
   const collator=new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
-  [...table.tBodies[0].rows].sort((a,b)=>{const x=value(a),y=value(b);const n=x!==''&&y!==''&&Number.isFinite(Number(x))&&Number.isFinite(Number(y))?Number(x)-Number(y):collator.compare(x,y);return ascending?n:-n;}).forEach(row=>table.tBodies[0].append(row));
+  const rows=table.tBodies?.[0]?.rows;if(!rows||!rows.length)return;
+  [...rows].sort((a,b)=>{const x=value(a),y=value(b);const n=x!==''&&y!==''&&Number.isFinite(Number(x))&&Number.isFinite(Number(y))?Number(x)-Number(y):collator.compare(x,y);return ascending?n:-n;}).forEach(row=>table.tBodies[0].append(row));
   emit(table,'sortchange',{key,direction:ascending?'ascending':'descending'});
 }
 function paginate(nav,value) {
@@ -85,7 +86,8 @@ export function enhanceUI(root=globalThis.document) {
     if((b=closest(event,'[data-s-theme-toggle]'))){handled.add(event);setTheme(doc.documentElement.dataset.theme==='dark'?'light':'dark',{root:doc.documentElement});return;}
     if((b=closest(event,'[data-s-dialog-open]'))){handled.add(event);event.preventDefault();const d=doc.getElementById(b.dataset.sDialogOpen);openDialog(d,b);if(d?.matches('[data-s-command]'))filterCommand(d);return;}
     if((b=closest(event,'[data-s-dialog-close]'))){handled.add(event);closeDialog(b.closest('dialog'));return;}
-    if(event.target.matches?.('dialog')){const d=event.target,r=d.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(d);}
+    if(event.target.matches?.('dialog')){const d=event.target;if(d.hasAttribute('data-s-static'))return;const r=d.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(d);}
+    if((b=closest(event,'[data-s-alert-close]'))){handled.add(event);const a=b.closest('.s-alert');if(a)a.remove();return;}
     if((b=closest(event,'[data-s-tabs] [role=tab]'))){handled.add(event);activateTab(b.closest('[data-s-tabs]'),b);return;}
     if((b=closest(event,'[data-s-pagination] [data-page]'))){handled.add(event);if(!b.disabled)paginate(b.closest('[data-s-pagination]'),b.dataset.page);return;}
     if((b=closest(event,'[data-s-sort]'))){handled.add(event);sortTable(b);return;}
@@ -121,7 +123,7 @@ export function enhanceUI(root=globalThis.document) {
     if(input){const d=input.closest('dialog'),list=options(d),i=list.findIndex(o=>o.getAttribute('aria-selected')==='true');if(event.key==='Escape'){event.preventDefault();event.stopPropagation();closeDialog(d);return;}if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();selectCommand(d,i+(event.key==='ArrowDown'?1:-1));return;}if(event.key==='Enter'){event.preventDefault();chooseCommand(d,list[Math.max(0,i)]);return;}}
     if(event.key==='Escape'){const tip=closest(event,'[data-s-tooltip]');if(tip)tip.dataset.dismissed='true';}
   });
-  on(root,'input',event=>{const e=event.target;if(e.matches('[data-s-slider]'))e.closest('.s-slider-field').querySelector('output').value=e.value;if(e.matches('[data-s-command-input]'))filterCommand(e.closest('dialog'));});
+  on(root,'input',event=>{const e=event.target;if(e.matches('[data-s-slider]')){const out=e.closest('.s-slider-field')?.querySelector('output');if(out)out.value=e.value;}if(e.matches('[data-s-command-input]'))filterCommand(e.closest('dialog'));});
   on(root,'change',event=>{const e=event.target;if(e.matches('[data-s-select-all]')){const table=e.closest('table');table.querySelectorAll('[data-s-row-select]:not(:disabled)').forEach(b=>{b.checked=e.checked;});tableSelection(table);}else if(e.matches('[data-s-row-select]'))tableSelection(e.closest('table'));});
   const positionTooltip=tip=>{
     const bubble=tip.querySelector('[role=tooltip]');if(!bubble)return;

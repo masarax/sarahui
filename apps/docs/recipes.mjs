@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import * as UI from '../../packages/ui/src/templates.js';
 const props={};
-for(const line of fs.readFileSync(new URL('../../docs/components.md',import.meta.url),'utf8').split('\n')){
+for(const line of fs.readFileSync(new URL('../../docs/components.md',import.meta.url),'utf8').split(/\r?\n/)){
   const match=line.match(/^\| ([^|]+) \| (.+) \|$/);
   if(match)for(const name of match[1].split(' / '))props[name.trim()]=match[2];
 }

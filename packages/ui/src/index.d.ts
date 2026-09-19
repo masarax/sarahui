@@ -18,10 +18,10 @@ export interface ButtonProps { label?: string; variant?: Variant; size?: Size; i
 export function Button(props?: ButtonProps): Markup;
 export function IconButton(props?: Omit<ButtonProps,'trailing' | 'loading' | 'className'>): Markup;
 export function ButtonGroup(props?: { label?: string; children?: Content }): Markup;
-export interface FieldProps { id?: string; label?: string; helper?: string; error?: string; attrs?: Attributes }
+export interface FieldProps { id?: string; label?: string; helper?: string; error?: string; required?: boolean; attrs?: Attributes }
 export function Input(props?: FieldProps & { icon?: string; type?: 'text' | 'email' | 'password' | 'number' | 'search' | 'tel' | 'url' | 'date' | 'time' }): Markup;
 export function Textarea(props?: FieldProps & { value?: string }): Markup;
-export function Select(props?: Omit<FieldProps,'error'> & { options?: (string | { label: string; value: string | number; disabled?: boolean })[]; value?: string | number }): Markup;
+export function Select(props?: FieldProps & { options?: (string | { label: string; value: string | number; disabled?: boolean })[]; value?: string | number }): Markup;
 export interface ChoiceProps { id?: string; label?: string; description?: string; checked?: boolean; disabled?: boolean; attrs?: Attributes }
 export function Checkbox(props?: ChoiceProps): Markup;
 export function Radio(props?: ChoiceProps): Markup;
@@ -29,13 +29,13 @@ export function Switch(props?: ChoiceProps): Markup;
 export function Slider(props?: { id?: string; label?: string; value?: number; min?: number; max?: number; step?: number; attrs?: Attributes }): Markup;
 export function Badge(props?: { label?: string; tone?: Tone | 'brand' | 'neutral'; dot?: boolean }): Markup;
 export function Chip(props?: { label?: string; removable?: boolean; selected?: boolean }): Markup;
-export function Avatar(props?: { name?: string; initials?: string; size?: Size; tone?: 'brand' | 'info' | 'success' | 'warning'; status?: boolean }): Markup;
+export function Avatar(props?: { name?: string; initials?: string; size?: Size; tone?: 'brand' | 'info' | 'success' | 'warning'; status?: boolean; src?: string }): Markup;
 export function Card(props?: { title?: string; description?: string; children?: Content; footer?: Content; className?: string }): Markup;
-export function Alert(props?: { title?: string; description?: string; tone?: Tone; live?: boolean }): Markup;
+export function Alert(props?: { title?: string; description?: string; tone?: Tone; live?: boolean; dismissible?: boolean; icon?: string }): Markup;
 export function Tabs(props?: { id?: string; label?: string; items?: { label: string; content: Content; disabled?: boolean }[]; active?: number; variant?: 'line' | 'pill' }): Markup;
 export function Breadcrumb(props?: { items?: { label: string; href?: string }[]; label?: string }): Markup;
 export function Pagination(props?: { pages?: number; current?: number; label?: string }): Markup;
-export function NavItem(props?: { label?: string; href?: string; icon?: string; active?: boolean; badge?: string }): Markup;
+export function NavItem(props?: { label?: string; href?: string; icon?: string | null | false; active?: boolean; badge?: string }): Markup;
 export function DataTable(props?: { id?: string; caption?: string; columns?: { key: string; label: string; sortable?: boolean }[]; rows?: Record<string,Content>[]; selectable?: boolean }): Markup;
 export function Accordion(props?: { items?: { title: string; content: Content; open?: boolean }[] }): Markup;
 export function Dialog(props?: { id?: string; title?: string; description?: string; children?: Content; footer?: Content }): Markup;

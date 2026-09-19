@@ -27,3 +27,8 @@ test('All 32 declared families have a concrete export and rendered demo',()=>{
 });
 test('Generated field IDs are unique within the rendering process',()=>{const a=render(UI.Input()),b=render(UI.Input());assert.notEqual(a.match(/id="([^"]+)"/)[1],b.match(/id="([^"]+)"/)[1]);});
 test('Table row IDs preserve application identity through sort',()=>{const text=render(UI.DataTable({rows:[{id:'stable-42',name:'Example'}],selectable:true}));assert.match(text,/data-row="stable-42"/);assert.match(text,/Select Example/);});
+test('Select exposes errors and invalid state matching input parity',()=>{const result=render(UI.Select({id:'workspace',error:'Please pick a workspace',options:['Team','Personal']}));assert.match(result,/aria-invalid="true"/);assert.match(result,/class="s-field-help s-field-error"/);assert.match(result,/Please pick a workspace/);});
+test('NavItem without icon does not render fallback icon',()=>{const text=render(UI.NavItem({label:'Clean item',icon:''}));assert.ok(!text.includes('s-icon'));assert.match(text,/Clean item/);});
+test('Avatar supports optional profile images with fallback initials',()=>{const text=render(UI.Avatar({name:'Sarah Khan',src:'/photo.jpg'}));assert.match(text,/class="s-avatar-img"/);assert.match(text,/src="\/photo.jpg"/);assert.match(text,/SK/);});
+test('Alert uses role=alert for danger tone and supports dismissible',()=>{const danger=render(UI.Alert({tone:'danger',live:true,dismissible:true}));assert.match(danger,/role="alert"/);assert.match(danger,/data-s-alert-close/);const info=render(UI.Alert({tone:'info',live:true}));assert.match(info,/role="status"/);});
+
