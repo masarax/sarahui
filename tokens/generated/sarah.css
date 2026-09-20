@@ -1,20 +1,20 @@
 /* Generated from tokens/sarah.tokens.json. Run npm run tokens. */
 :root {
   --s-primitive-neutral-0: #FFFFFF;
-  --s-primitive-neutral-25: #FCFCFD;
-  --s-primitive-neutral-50: #F8F9FB;
-  --s-primitive-neutral-100: #F1F3F8;
-  --s-primitive-neutral-200: #E2E6EF;
-  --s-primitive-neutral-300: #C7CFDD;
-  --s-primitive-neutral-400: #96A3B9;
-  --s-primitive-neutral-500: #64748B;
-  --s-primitive-neutral-600: #4B5A73;
-  --s-primitive-neutral-700: #34415A;
-  --s-primitive-neutral-800: #242E43;
-  --s-primitive-neutral-850: #191F32;
-  --s-primitive-neutral-900: #12182A;
-  --s-primitive-neutral-950: #0D1020;
-  --s-primitive-neutral-975: #080B15;
+  --s-primitive-neutral-25: #FAFAFA;
+  --s-primitive-neutral-50: #F4F4F5;
+  --s-primitive-neutral-100: #E4E4E7;
+  --s-primitive-neutral-200: #D4D4D8;
+  --s-primitive-neutral-300: #C4C4CC;
+  --s-primitive-neutral-400: #A1A1AA;
+  --s-primitive-neutral-500: #71717A;
+  --s-primitive-neutral-600: #52525B;
+  --s-primitive-neutral-700: #3F3F46;
+  --s-primitive-neutral-800: #27272A;
+  --s-primitive-neutral-850: #18181B;
+  --s-primitive-neutral-900: #121215;
+  --s-primitive-neutral-950: #09090B;
+  --s-primitive-neutral-975: #050506;
   --s-primitive-neutral-1000: #000000;
   --s-primitive-blue-50: #EFF8FF;
   --s-primitive-blue-100: #DDEFFF;

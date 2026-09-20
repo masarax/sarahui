@@ -21,8 +21,8 @@ test('Labeled fields expose errors and native form attributes',()=>{
 });
 test('Loading buttons cannot resubmit a form',()=>{const text=render(UI.Button({loading:true,attrs:{type:'submit'}}));assert.match(text,/ disabled/);assert.match(text,/aria-busy="true"/);});
 test('Tabs skip a disabled requested initial selection',()=>{const text=render(UI.Tabs({id:'t',active:0,items:[{label:'Disabled',content:'a',disabled:true},{label:'Enabled',content:'b'}]}));assert.match(text,/id="t-tab-1" role="tab" aria-selected="true"/);});
-test('All 32 declared families have a concrete export and rendered demo',()=>{
-  const s=JSON.parse(fs.readFileSync(new URL('../tokens/sarah.tokens.json',import.meta.url),'utf8'));assert.equal(catalog.length,32);assert.deepEqual(new Set(catalog.map(c=>c.name)),new Set(s.components));
+test('All 120 declared families have a concrete export and rendered demo',()=>{
+  const s=JSON.parse(fs.readFileSync(new URL('../tokens/sarah.tokens.json',import.meta.url),'utf8'));assert.equal(catalog.length,120);assert.deepEqual(new Set(catalog.map(c=>c.name)),new Set(s.components));
   for(const item of catalog){assert.equal(typeof UI[item.name],'function');assert.ok(render(item.demo('test-'+item.name)).length>30);}
 });
 test('Generated field IDs are unique within the rendering process',()=>{const a=render(UI.Input()),b=render(UI.Input());assert.notEqual(a.match(/id="([^"]+)"/)[1],b.match(/id="([^"]+)"/)[1]);});

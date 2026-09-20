@@ -4,7 +4,7 @@ import * as templates from '../packages/ui/src/templates.js';
 import {catalog} from '../apps/docs/catalog.mjs';
 import {expressions,recipe,properties} from '../apps/docs/recipes.mjs';
 import {setupExamples} from '../apps/docs/start.mjs';
-test('All 32 copyable npm recipes render and include complete widget relationships',()=>{
+test('All 120 copyable npm recipes render and include complete widget relationships',()=>{
   assert.equal(Object.keys(expressions).length,catalog.length);
   for(const {name} of catalog){
     const mount={innerHTML:'',addEventListener(){}};

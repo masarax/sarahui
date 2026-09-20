@@ -1,32 +1,47 @@
 import fs from 'node:fs';
 import * as U from '../../packages/ui/src/templates.js';
-import {catalog,categories,demos} from './catalog.mjs';
+import {catalog,categories,demos,componentVariants,componentBadges} from './catalog.mjs';
 import {startPage,installCommand} from './start.mjs';
-import {properties,recipe,usageNote} from './recipes.mjs';
-const {html,render,Icon,Logo,Button,Input,Select,Textarea,Switch,Badge,Avatar,Progress,Dialog,CommandPalette,IconButton}=U;
+import {properties,recipe,usageNote,getComponentTsx} from './recipes.mjs';
+import {highlightCode} from './highlighter.mjs';
+const {html,render,raw,Icon,Logo,Button,Input,Select,Textarea,Switch,Badge,Avatar,Progress,Dialog,CommandPalette,IconButton}=U;
 const spec=JSON.parse(fs.readFileSync(new URL('../../tokens/sarah.tokens.json',import.meta.url),'utf8'));
-const navItems=[{label:'Overview',href:'#overview',icon:'grid'},{label:'Foundations',href:'#foundations',icon:'palette',badge:'277'},{label:'Components',href:'#components',icon:'layers',badge:'32'},{label:'Patterns',href:'#patterns',icon:'folder'},{label:'Get started',href:'#start',icon:'code'}];
+const navItems=[{label:'Overview',href:'#overview',icon:'grid'},{label:'Foundations',href:'#foundations',icon:'palette',badge:'277'},{label:'Components',href:'#components',icon:'layers',badge:String(catalog.length)},{label:'Patterns',href:'#patterns',icon:'folder'},{label:'Get started',href:'#start',icon:'code'}];
 const nav=()=>html`<nav class="docs-nav" aria-label="Documentation">${navItems.map(U.NavItem)}</nav>`;
+const componentNav=()=>html`<div class="sidebar-components-nav">
+  <div class="sidebar-components-heading"><span>COMPONENTS</span><span class="sidebar-counter">${catalog.length}</span></div>
+  ${categories.slice(1).map(cat=>html`<div class="sidebar-cat-group">${cat==='Components'?'':html`<span class="sidebar-cat-title">${cat}</span>`}<ul class="sidebar-cat-list">${catalog.filter(c=>c.group===cat).map(c=>{
+    const b=componentBadges[c.name];
+    return html`<li><a href="#components/${c.name}" class="sidebar-comp-link" data-component-nav="${c.name}"><span>${c.name}</span>${b?html`<span class="sidebar-badge sidebar-badge--${b.toLowerCase()}">${b}</span>`:''}</a></li>`;
+  })}</ul></div>`)}
+</div>`;
 const link=(label,href,variant='primary',icon='arrow')=>html`<a class="s-button s-button--${variant} s-button--md" href="${href}"><span>${label}</span>${icon?Icon({name:icon,size:18}):''}</a>`;
 const eyebrow=text=>html`<p class="eyebrow">${text}</p>`;
 const heading=(label,title,description)=>html`<header class="page-heading">${eyebrow(label)}<h1 tabindex="-1">${title}</h1><p>${description}</p></header>`;
-const code=(id,text,label='JavaScript')=>html`<div class="code-block"><div><span>${label}</span>${Button({label:'Copy',icon:'copy',variant:'ghost',size:'sm',attrs:{'data-copy-id':id}})}</div><pre id="${id}" tabindex="0"><code>${text}</code></pre></div>`;
+const code=(id,text,label='JavaScript')=>html`<div class="code-block"><div class="code-block-header"><span>${label}</span>${Button({label:'Copy',icon:'copy',variant:'ghost',size:'sm',attrs:{'data-copy-id':id}})}</div><pre id="${id}" tabindex="0"><code class="token-code">${raw(highlightCode(text,label))}</code></pre></div>`;
 function overview(){
   return html`<section data-view="overview" aria-label="Overview">
-    <div class="release-banner"><span><i></i> Meet sarahUI 0.1</span><span>A little more thoughtful. A lot more you.</span><a href="#start">Explore the release ${Icon({name:'arrow',size:15})}</a></div>
+    <div class="release-banner"><span class="pill-sparkle">✨</span><span>Introducing sarahUI · ${catalog.length} Components & Magical Effects</span><a href="#components">Browse components ${Icon({name:'arrow',size:14})}</a></div>
     <div class="hero">
-      <div class="hero-copy"><p class="hero-eyebrow">${Icon({name:'spark',size:16})} YOUR IDEAS. BEAUTIFULLY BUILT.</p><h1 tabindex="-1">Great interfaces<br>start with<br><span>good foundations.</span></h1><p class="hero-description">A considered design system for the things you’re about to create. Beautiful components. Thoughtful details. Entirely yours to shape.</p><div class="hero-actions">${link('Explore components','#components')}${link('Meet the foundations','#foundations','outline','')}</div><div class="hero-trust"><span>${Icon({name:'check',size:14})} Light & dark</span><span>${Icon({name:'check',size:14})} Keyboard ready</span><span>${Icon({name:'check',size:14})} Framework neutral</span></div>${installCommand()}</div>
+      <div class="hero-copy">
+        <p class="hero-eyebrow">${Icon({name:'spark',size:15})} UI LIBRARY FOR DESIGN ENGINEERS</p>
+        <h1 tabindex="-1">Magical components<br>built for the<br><span class="magic-text-gradient">modern web.</span></h1>
+        <p class="hero-description"><strong>${catalog.length} free and production-grade</strong> components, special effects, and animations built with pure CSS and zero runtime dependencies. Complete cross-UI design token interoperability.</p>
+        <div class="hero-actions">${link('Explore '+catalog.length+' components','#components','primary','arrow')}${link('Get started','#start','outline','')}</div>
+        <div class="hero-trust"><span>${Icon({name:'check',size:14})} 0 Runtime Dependencies</span><span>${Icon({name:'check',size:14})} TypeScript Included</span><span>${Icon({name:'check',size:14})} Standard CSS Variables</span><span>${Icon({name:'check',size:14})} Pure CSS & Web APIs</span></div>
+        ${installCommand()}
+      </div>
       <div class="hero-stage" aria-label="Interactive component preview">
         <div class="stage-grid" aria-hidden="true"></div><div class="stage-orbit" aria-hidden="true"></div>
-        <div class="floating-note"><span class="note-check">${Icon({name:'check',size:17})}</span><div><strong>It’s all coming together</strong><span>Small details. A better experience.</span></div><i></i></div>
-        <article class="hero-project"><div class="s-between"><span class="project-icon">${Icon({name:'layers',size:26})}</span>${Badge({label:'In progress',tone:'brand'})}</div><h2>A little more possibility.</h2><p>Your next great idea has a home.</p><div class="project-divider"></div>${Progress({value:72,label:'Design system'})}<div class="project-footer"><div class="avatar-stack">${Avatar({name:'Sarah Khan',size:'sm'})}${Avatar({name:'Alex Morgan',size:'sm',tone:'info'})}${Avatar({name:'Jamie Kim',size:'sm',tone:'success'})}<span>+2</span></div><small>Made together</small></div>${Button({label:'Create something good',icon:'plus',attrs:{'data-s-dialog-open':'create-project'}})}</article>
-        <div class="floating-colors"><span>THE SARAH PALETTE</span><div>${['#178BFF','#5B3DF5','#A020FF','#E2E6EF'].map(v=>html`<button style="--swatch:${v}" data-copy-value="${v}" aria-label="Copy color ${v}"></button>`)}</div></div>
-        <div class="floating-mode">${Switch({id:'hero-theme',label:'A different perspective',attrs:{'data-theme-switch':true}})}<span>Same attention to detail.</span></div>
-        <span class="stage-caption">DESIGNED TO FEEL JUST RIGHT.</span>
+        <div class="floating-note"><span class="note-check">${Icon({name:'check',size:17})}</span><div><strong>${catalog.length} Components Ready</strong><span>ShineBorder, Dock, Meteors, BentoGrid & more.</span></div><i></i></div>
+        <article class="hero-project"><div class="s-between"><span class="project-icon">${Icon({name:'layers',size:26})}</span>${Badge({label:catalog.length+' components',tone:'brand'})}</div><h2>Build with confidence.</h2><p>Zero dependencies. Drop-in shadcn variable interop.</p><div class="project-divider"></div>${Progress({value:100,label:'Production ready'})}<div class="project-footer"><div class="avatar-stack">${Avatar({name:'Sarah Khan',size:'sm'})}${Avatar({name:'Alex Morgan',size:'sm',tone:'info'})}${Avatar({name:'Jamie Kim',size:'sm',tone:'success'})}<span>+${catalog.length-3}</span></div><small>All ${catalog.length} exported</small></div>${Button({label:'Create something good',icon:'plus',attrs:{'data-s-dialog-open':'create-project'}})}</article>
+        <div class="floating-colors"><span>THE SARAH PALETTE</span><div>${['#178BFF','#5B3DF5','#A020FF','#00E5FF'].map(v=>html`<button style="--swatch:${v}" data-copy-value="${v}" aria-label="Copy color ${v}"></button>`)}</div></div>
+        <div class="floating-mode">${Switch({id:'hero-theme',label:'Appearance mode',attrs:{'data-theme-switch':true}})}<span>Light & Dark synchronized.</span></div>
+        <span class="stage-caption">CRAFTED FOR SPEED AND ELEGANCE.</span>
       </div>
     </div>
-    <div class="system-stats">${[['277','tokens','One connected foundation','#foundations'],['32','components','Considered down to the last detail','#components'],['02','themes','Beautiful in a different light','#foundations/colors'],['00','dependencies','At runtime. Simply yours.','#start']].map(([value,label,desc,href])=>html`<a href="${href}"><strong>${value}<span> / ${label}</span></strong><p>${desc}</p></a>`)}</div>
-    <div class="section-title"><div>${eyebrow('THE BUILDING BLOCKS')}<h2>Small pieces. Endless possibilities.</h2><p>Familiar patterns, with a little more care.</p></div><a class="text-link" href="#components">All 32 components ${Icon({name:'arrow',size:17})}</a></div>
+    <div class="system-stats">${[['277','tokens','One connected foundation','#foundations'],[String(catalog.length),'components','Considered down to the last detail','#components'],['02','themes','Beautiful in a different light','#foundations/colors'],['00','dependencies','At runtime. Simply yours.','#start']].map(([value,label,desc,href])=>html`<a href="${href}"><strong>${value}<span> / ${label}</span></strong><p>${desc}</p></a>`)}</div>
+    <div class="section-title"><div>${eyebrow('THE BUILDING BLOCKS')}<h2>Small pieces. Endless possibilities.</h2><p>Familiar patterns, with a little more care.</p></div><a class="text-link" href="#components">All ${catalog.length} components ${Icon({name:'arrow',size:17})}</a></div>
     <div class="preview-grid">
       <article class="preview-tile"><div class="preview-canvas centered">${Button({label:'Make it happen',trailing:'arrow',attrs:{'data-s-dialog-open':'create-project'}})}<div class="s-row">${Button({label:'Take a look',variant:'outline',size:'sm',attrs:{'data-go':'#components/Button'}})}${IconButton({icon:'heart',label:'Favorite this preview',size:'sm',attrs:{'data-favorite':true,'aria-pressed':'false'}})}</div></div><a href="#components/Button"><div><h3>Actions with intention</h3><p>Buttons & interactions</p></div>${Icon({name:'arrow',size:18})}</a></article>
       <article class="preview-tile"><div class="preview-canvas">${Input({id:'overview-email',label:'A good place to start',type:'email',icon:'mail',attrs:{placeholder:'hello@yourstudio.com'}})}${Switch({id:'overview-updates',label:'Keep the good things coming',checked:true})}</div><a href="#components/Input"><div><h3>Details that feel right</h3><p>Forms & controls</p></div>${Icon({name:'arrow',size:18})}</a></article>
@@ -40,7 +55,7 @@ function foundations(){
   return html`<section data-view="foundations" hidden aria-label="Foundations">
     ${heading('01 / THE FOUNDATION','Good design starts here.','A shared language for every surface, every state, and every little detail.')}
     <nav class="local-nav" aria-label="Foundation sections">${['Colors','Typography','Spacing','Shape','Motion'].map(n=>html`<a href="#foundations/${n.toLowerCase()}">${n}</a>`)}</nav>
-    <article class="doc-section" id="foundation-colors"><div class="section-title"><div><h2>Color, with a purpose.</h2><p>85 primitives. 48 semantic roles per theme. One consistent visual language.</p></div>${link('Download tokens','./tokens/sarah.tokens.json','outline','download')}</div>
+    <article class="doc-section" id="foundation-colors"><div class="section-title"><div><h2>Color, with a purpose.</h2><p>85 primitives. 48 semantic roles per theme. One consistent visual language.</p></div><button type="button" class="install-command" data-copy-value="npm i sarahui" aria-label="Copy npm install sarahui"><span aria-hidden="true">$</span><code>npm i sarahui</code>${Icon({name:'copy',size:15})}</button></div>
       <div class="brand-spectrum"><div><span>THE SARAH SIGNATURE</span><h3>Optimism. Clarity.<br>A little imagination.</h3><p>Blue / Indigo / Violet</p></div><div class="spectrum-values"><span>#178BFF</span><span>#5B3DF5</span><span>#A020FF</span></div></div>
       <div class="palette-list">${['neutral','blue','indigo','violet','emerald','amber','red','alpha'].map(name=>html`<div class="palette-row"><h3>${name[0].toUpperCase()+name.slice(1)}</h3><div class="color-scale" tabindex="0" role="region" aria-label="${name} palette">${Object.entries(spec.primitives).filter(([k])=>k.startsWith(name+'/')).map(([key,value])=>html`<button class="color-swatch" data-copy-value="${value}" aria-label="Copy ${key}: ${value}"><span style="--swatch:${value}"></span><strong>${key.split('/')[1]}</strong><code>${value}</code></button>`)}</div></div>`)}</div>
       <div class="subsection-heading"><h3>Use roles, keep the meaning.</h3><p>Components consume semantic aliases. Change a theme without rewriting a component.</p></div>
@@ -60,10 +75,212 @@ function foundations(){
 }
 function components(){
   return html`<section data-view="components" hidden aria-label="Components">
-    ${heading('02 / THE COMPONENTS','Made to work together.','32 considered building blocks. Real interactions, meaningful states, and a shared foundation.')}
-    <div class="component-tools">${Input({id:'component-search',label:'Find a component',type:'search',icon:'search',attrs:{placeholder:'Search buttons, forms, navigation…','data-component-search':true}})}<span id="component-count" aria-live="polite">32 components</span></div>
-    <div class="filter-chips" role="group" aria-label="Component category">${categories.map((c,i)=>html`<button type="button" data-component-group="${c}" aria-pressed="${i===0}">${c}</button>`)}</div>
-    <div class="component-grid">${catalog.map((item,i)=>{const demo=item.demo('demo-'+item.name.toLowerCase());return html`<article class="component-card ${item.name==='DataTable'?'wide':''}" id="component-${item.name.toLowerCase()}" data-component-name="${item.name}" data-component-category="${item.group}" data-component-description="${item.description}"><header><div><div class="component-meta"><span class="component-index">${String(i+1).padStart(2,'0')} / ${item.group}</span><span class="component-category-badge" data-category="${item.group}">${item.group}</span></div><h2>${item.name}</h2><p>${item.description}</p></div><a href="#components/${item.name}" class="component-anchor" aria-label="Link to ${item.name}">${Icon({name:'link',size:17})}</a></header><div class="component-demo"><div class="component-demo-bar"><span class="demo-canvas-tag">${Icon({name:'spark',size:13})} Interactive Preview</span><span class="demo-canvas-group">${item.group}</span></div>${demo}</div><footer><div class="card-footer-tags"><span>${Icon({name:'check',size:14})} Light & dark</span><span class="card-tag-pill">Accessible</span></div><button type="button" data-code-toggle aria-expanded="false" aria-controls="source-${item.name}">${Icon({name:'code',size:16})} View code</button></footer><div id="source-${item.name}" class="component-source" hidden><h3>Use with npm</h3><p>Add <code>&lt;div id="app"&gt;&lt;/div&gt;</code> to your HTML, then use this JavaScript entry.</p>${code('npm-'+item.name,recipe(item.name),'JavaScript / npm')}<h3>Properties</h3>${properties(item.name)}<p class="component-usage">${usageNote(item.name)}</p><details class="markup-details"><summary>View rendered HTML</summary>${code('html-'+item.name,render(demo),'HTML')}</details><p><a href="#start">Installation and framework guide →</a></p></div></article>`;})}</div>
+    <div class="component-catalog-header">
+      ${heading('02 / THE COMPONENTS','Made to work together.',String(catalog.length)+' considered building blocks. Real interactions, meaningful states, and a shared foundation.')}
+      <div class="component-tools">${Input({id:'component-search',label:'Find a component',type:'search',icon:'search',attrs:{placeholder:'Search buttons, motion, forms, navigation…','data-component-search':true}})}<span id="component-count" aria-live="polite">${catalog.length} components</span></div>
+      <div class="filter-chips" role="group" aria-label="Component category">${categories.map((c,i)=>html`<button type="button" data-component-group="${c}" aria-pressed="${i===0}">${c}</button>`)}</div>
+    </div>
+    <div class="component-layout-row">
+      <div class="component-grid">${catalog.map((item,i)=>{
+        const demo=item.demo('demo-'+item.name.toLowerCase());
+        const variants=componentVariants[item.name]||[{title:'Default State',description:item.description,preview:()=>demo,code:recipe(item.name)}];
+        const prevItem=catalog[i===0?catalog.length-1:i-1];
+        const nextItem=catalog[i===catalog.length-1?0:i+1];
+        return html`<article class="component-card ${item.name==='DataTable'||item.name==='BentoGrid'?'wide':''}" id="component-${item.name.toLowerCase()}" data-component-name="${item.name}" data-component-category="${item.group}" data-component-description="${item.description}">
+          <div class="component-detail-breadcrumbs-bar">
+            <nav class="detail-breadcrumbs" aria-label="Breadcrumb">
+              <a href="#components" class="detail-back-link">Docs</a>
+              <span class="breadcrumb-slash">/</span>
+              <span class="detail-cat-link">${item.group}</span>
+              <span class="breadcrumb-slash">/</span>
+              <span class="detail-current-name">${item.name}</span>
+            </nav>
+            <div class="detail-header-nav-actions">
+              <a href="#components/${prevItem.name}" class="nav-arrow-btn" aria-label="Previous component" title="Previous: ${prevItem.name}">${Icon({name:'chevron',size:13,style:'transform:rotate(180deg);'})}</a>
+              <a href="#components/${nextItem.name}" class="nav-arrow-btn" aria-label="Next component" title="Next: ${nextItem.name}">${Icon({name:'chevron',size:13})}</a>
+              <button type="button" class="copy-page-btn" data-copy-page="true">${Icon({name:'copy',size:13})} <span>Copy page</span></button>
+            </div>
+          </div>
+          <header id="sec-${item.name.toLowerCase()}-overview" class="component-card-top">
+            <div class="component-card-top-left">
+              <div class="component-title-row">
+                <h2><a href="#components/${item.name}" class="component-title-link">${item.name}</a></h2>
+                ${componentBadges[item.name]?html`<span class="component-header-badge badge-${componentBadges[item.name].toLowerCase()}">${componentBadges[item.name]}</span>`:''}
+                <button type="button" class="component-anchor" data-copy-page="true" aria-label="Copy page link" title="Copy link to ${item.name}">${Icon({name:'link',size:16})}</button>
+              </div>
+              <p class="component-lead">${item.description}</p>
+            </div>
+          </header>
+          <div class="component-preview-box" id="sec-${item.name.toLowerCase()}-preview">
+            <div class="component-preview-header">
+              <div class="preview-tabs">
+                <button type="button" class="preview-tab active" data-preview-tab="preview">${Icon({name:'spark',size:13})} <span>Preview</span></button>
+                <button type="button" class="preview-tab" data-preview-tab="code">${Icon({name:'code',size:13})} <span>Code</span></button>
+              </div>
+              <div class="preview-header-actions">
+                <button type="button" class="preview-tool-btn preview-open-code-btn" data-preview-open-code title="View source code">${Icon({name:'code',size:13})} <span>Open in Code</span></button>
+                <button type="button" class="preview-tool-btn" data-replay-component="${item.name}" title="Restart animation">${Icon({name:'refresh',size:14})}</button>
+                <button type="button" class="preview-tool-btn" data-copy-snippet="${encodeURIComponent(getComponentTsx(item.name))}" title="Copy code">${Icon({name:'copy',size:14})} <span>Copy</span></button>
+              </div>
+            </div>
+            <div class="component-demo tab-panel-preview" id="preview-canvas-${item.name.toLowerCase()}">
+              ${demo}
+            </div>
+            <div class="component-code-panel tab-panel-code" hidden>
+              <div class="code-preview-inner">
+                <div class="code-preview-bar">
+                  <span>${item.name}.tsx</span>
+                  <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(getComponentTsx(item.name))}" aria-label="Copy code">
+                    ${Icon({name:'copy',size:13})} <span>Copy code</span>
+                  </button>
+                </div>
+                <pre tabindex="0"><code class="token-code">${raw(highlightCode(getComponentTsx(item.name),'typescript',{showLineNumbers:true}))}</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="component-detail-sections">
+            <section class="detail-section" id="sec-${item.name.toLowerCase()}-installation">
+              <div class="detail-section-title">
+                <div>
+                  <h3>Installation</h3>
+                  <p>Install sarahUI from npm to use <code>${item.name}</code> with zero configuration.</p>
+                </div>
+              </div>
+              <div class="install-terminal-box">
+                <div class="install-terminal-header">
+                  <div class="install-terminal-tabs">
+                    <button type="button" class="install-term-tab active" data-term-cmd="npm install sarahui">npm</button>
+                    <button type="button" class="install-term-tab" data-term-cmd="pnpm add sarahui">pnpm</button>
+                    <button type="button" class="install-term-tab" data-term-cmd="yarn add sarahui">yarn</button>
+                    <button type="button" class="install-term-tab" data-term-cmd="bun add sarahui">bun</button>
+                  </div>
+                  <button type="button" class="install-term-copy-btn" data-copy-value="npm install sarahui" aria-label="Copy command">
+                    ${Icon({name:'copy',size:13})} <span>Copy</span>
+                  </button>
+                </div>
+                <div class="install-terminal-body">
+                  <code><span class="term-prompt">$</span> <span class="term-command-text">npm install sarahui</span></code>
+                </div>
+              </div>
+              <div class="quick-import-box">
+                <span class="quick-import-label">QUICK IMPORT</span>
+                <code class="token-code">${raw(highlightCode("import { "+item.name+" } from 'sarahui';", 'typescript'))}</code>
+                <button type="button" class="quick-copy-btn" data-copy-value="import { ${item.name} } from 'sarahui';" aria-label="Copy import statement">
+                  ${Icon({name:'copy',size:14})}
+                </button>
+              </div>
+            </section>
+
+            <section class="detail-section" id="sec-${item.name.toLowerCase()}-examples" aria-label="${item.name} examples">
+              <div class="detail-section-title">
+                <div>
+                  <h3>Examples</h3>
+                  <p>Explore different visual styles, interactive behaviors, and presets for ${item.name}.</p>
+                </div>
+                <span class="variants-count-badge">${variants.length} example${variants.length===1?'':'s'}</span>
+              </div>
+              <div class="variants-specimen-grid">
+                ${(item.name === 'Spinner' ? [{title:'Accessible Indeterminate Indicator',description:'Paired with descriptive label text for inline data synchronization and polite status announcements.',code:"Spinner({ label: 'Syncing workspace' })"}] : variants).map((v,vi)=>html`
+                  <div class="variant-specimen-card" id="specimen-${item.name.toLowerCase()}-${vi}">
+                    <div class="variant-specimen-top">
+                      <div>
+                        <h4>${v.title}</h4>
+                        <p>${v.description}</p>
+                      </div>
+                      <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(v.code)}" aria-label="Copy code for ${v.title}">
+                        ${Icon({name:'copy',size:13})} <span>Copy code</span>
+                      </button>
+                    </div>
+                    ${v.preview ? html`<div class="variant-specimen-preview">${v.preview()}</div>` : ''}
+                    <div class="variant-specimen-code-preview">
+                      <pre tabindex="0"><code class="token-code">${raw(highlightCode(v.code, 'typescript', {showLineNumbers:true}))}</code></pre>
+                    </div>
+                  </div>
+                `)}
+              </div>
+            </section>
+
+            <section class="detail-section" id="sec-${item.name.toLowerCase()}-props">
+              <div class="detail-section-title">
+                <div>
+                  <h3>Props</h3>
+                  <p>Configuration parameters and properties for <code>${item.name}</code>.</p>
+                </div>
+              </div>
+              ${properties(item.name)}
+              <p class="component-usage-note" style="margin-top:16px;">${usageNote(item.name)}</p>
+            </section>
+          </div>
+          <nav class="detail-nav-footer" aria-label="Component page navigation">
+            <a href="#components/${prevItem.name}" class="detail-nav-footer-btn" aria-label="Previous component: ${prevItem.name}">
+              ${Icon({name:'arrow',size:13,style:'transform:rotate(180deg);'})}
+              <div class="detail-nav-footer-copy">
+                <small>PREVIOUS COMPONENT</small>
+                <strong>${prevItem.name}</strong>
+              </div>
+            </a>
+            <a href="#components" class="detail-nav-footer-center" aria-label="Back to component directory">
+              ${Icon({name:'grid',size:14})} <span>All ${catalog.length} components</span>
+            </a>
+            <a href="#components/${nextItem.name}" class="detail-nav-footer-btn next" aria-label="Next component: ${nextItem.name}">
+              <div class="detail-nav-footer-copy">
+                <small>NEXT COMPONENT</small>
+                <strong>${nextItem.name}</strong>
+              </div>
+              ${Icon({name:'arrow',size:13})}
+            </a>
+          </nav>
+          <footer class="catalog-card-footer">
+            <div class="card-footer-tags">
+              <span>${Icon({name:'check',size:14})} Light & dark</span>
+              <span class="card-tag-pill">Accessible</span>
+              <a href="#components/${item.name}" class="explore-variants-link">Explore all ${variants.length} variants →</a>
+            </div>
+            <button type="button" data-code-toggle aria-expanded="false" aria-controls="source-${item.name}">${Icon({name:'code',size:16})} View code</button>
+          </footer>
+          <div id="source-${item.name}" class="component-source" hidden>
+            <h3>Use with npm</h3>
+            <p>Add <code>&lt;div id="app"&gt;&lt;/div&gt;</code> to your HTML, then use this JavaScript entry.</p>
+            ${code('npm-'+item.name,recipe(item.name),'JavaScript / npm')}
+            <h3>Properties</h3>
+            <p class="component-properties-note">Complete parameters detailed in <a href="#sec-${item.name.toLowerCase()}-props">Props</a>.</p>
+            <p class="component-usage">${usageNote(item.name)}</p>
+            <details class="markup-details">
+              <summary>View rendered HTML</summary>
+              ${code('html-'+item.name,render(demo),'HTML')}
+            </details>
+            <p><a href="#start">Installation and framework guide →</a></p>
+          </div>
+        </article>`;
+      })}</div>
+      <aside class="docs-toc" id="detail-toc" aria-label="Table of contents" hidden>
+        <div class="docs-toc-sticky">
+          <p class="docs-toc-title">ON THIS PAGE</p>
+          <nav class="docs-toc-nav" id="toc-nav-list">
+            <a href="#overview" class="docs-toc-link active" data-toc="overview">Overview</a>
+            <a href="#preview" class="docs-toc-link" data-toc="preview">Interactive Preview</a>
+            <a href="#installation" class="docs-toc-link" data-toc="installation">Installation</a>
+            <a href="#examples" class="docs-toc-link" data-toc="examples">Examples</a>
+            <div class="docs-toc-sublinks" id="toc-examples-sublinks"></div>
+            <a href="#props" class="docs-toc-link" data-toc="props">Props</a>
+          </nav>
+          <div class="docs-toc-divider"></div>
+          <div class="docs-toc-community">
+            <span class="docs-toc-subtitle">CONTRIBUTE</span>
+            <a href="https://github.com/masarax/sarahui/issues/new" target="_blank" rel="noreferrer" class="docs-toc-action-link">${Icon({name:'alert',size:13})} <span>Report an issue</span></a>
+            <a href="https://github.com/masarax/sarahui/discussions/new" target="_blank" rel="noreferrer" class="docs-toc-action-link">${Icon({name:'spark',size:13})} <span>Request a feature</span></a>
+            <a href="https://github.com/masarax/sarahui" target="_blank" rel="noreferrer" class="docs-toc-action-link">${Icon({name:'code',size:13})} <span>Edit this page</span></a>
+          </div>
+          <div class="docs-toc-divider"></div>
+          <div class="community-promo-card">
+            <div class="community-promo-sparkle">★</div>
+            <strong>100% Free & Open Source</strong>
+            <p>120+ free animated components, special effects, and landing page blocks. Star on GitHub!</p>
+            <a href="https://github.com/masarax/sarahui" target="_blank" rel="noreferrer" class="community-promo-btn">Star on GitHub →</a>
+          </div>
+        </div>
+      </aside>
+    </div>
     <div id="component-empty" class="no-results" hidden>${Icon({name:'search',size:30})}<h2>No components found</h2><p>Try another name or show all categories.</p>${Button({label:'Clear filters',variant:'outline',attrs:{'data-clear-filters':true}})}</div>
   </section>`;
 }
@@ -77,11 +294,75 @@ function patterns(){
 function start(){return startPage({heading,code,link});}
 export function buildSite(){
   const createForm=html`<form id="create-project-form" class="s-stack">${Input({id:'new-project-name',label:'Project name',helper:'Give your idea a name. You can refine it later.',attrs:{name:'name',placeholder:'Something good',required:true,minlength:2,maxlength:60,'data-s-autofocus':true}})}${Select({id:'new-project-category',label:'Category',options:['Design system','Product','Branding','Development'],attrs:{name:'category'}})}${Textarea({id:'new-project-description',label:'A little context',attrs:{name:'description',placeholder:'What would you like to make?',rows:2,maxlength:300}})}<p class="s-small s-muted">This sample project stays in your current browser session.</p><div class="dialog-actions">${Button({label:'Cancel',variant:'outline',attrs:{'data-s-dialog-close':true}})}${Button({label:'Create project',icon:'plus',attrs:{type:'submit'}})}</div></form>`;
-  return '<!doctype html>\n'+render(html`<html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="sarahUI by MASARA X. A thoughtful design system with 277 tokens, 32 component families, light and dark themes, and no runtime dependencies."><meta name="theme-color" content="#5B3DF5"><title>sarahUI — Thoughtful by design</title><link rel="icon" href="./assets/sarah-mark.svg" type="image/svg+xml"><link rel="preload" href="./assets/fonts/inter-variable.woff" as="font" type="font/woff" crossorigin><link rel="preload" href="./assets/fonts/poppins-semibold.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="./ui/fonts.css"><link rel="stylesheet" href="./ui/tokens.css"><link rel="stylesheet" href="./ui/styles.css"><link rel="stylesheet" href="./app.css"><script>try{const p=localStorage.getItem('sarah-theme')||'system';document.documentElement.dataset.theme=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;}catch{}</script></head><body class="s-ui"><a class="skip-link" href="#main-content">Skip to content</a>
-    <aside class="sidebar"><a href="#overview" class="brand-home" aria-label="sarahUI home">${Logo()}<span class="version-tag">0.1</span></a><p class="sidebar-label">THE DESIGN SYSTEM</p>${nav()}<div class="sidebar-note"><span>MADE WITH INTENTION</span><p>A foundation for<br>your next good thing.</p><a href="#start">Let’s build something ${Icon({name:'arrow',size:15})}</a><div class="note-drawing" aria-hidden="true"><i></i><i></i><i></i></div></div><footer class="sidebar-footer"><span class="maker-avatar">M<span>×</span></span><div><strong>By MASARA X</strong><span>Original, down to the details.</span></div></footer></aside>
-    <div class="app-shell"><header class="topbar"><div class="topbar-location">${IconButton({icon:'menu',label:'Open navigation',variant:'ghost',size:'sm',attrs:{'data-s-dialog-open':'mobile-navigation'}})}<span class="topbar-product">Documentation</span>${Icon({name:'chevron',size:13})}<span id="route-name">Overview</span></div><div class="topbar-actions"><button type="button" class="search-trigger" data-s-dialog-open="library-search">${Icon({name:'search',size:17})}<span>Search the library…</span><kbd>⌘ K</kbd></button><button type="button" class="theme-button" data-s-theme-toggle aria-label="Switch to dark theme"><span data-theme-icon>${Icon({name:'moon',size:18})}</span></button><span class="topbar-divider"></span><a class="github-link" href="https://github.com/masarax/sarahui" target="_blank" rel="noreferrer">GitHub ${Icon({name:'arrow',size:16})}</a></div></header>
-    <main id="main-content" class="main-content" tabindex="-1">${overview()}${foundations()}${components()}${patterns()}${start()}<footer class="docs-footer"><div>${Logo({compact:true})}<span>Thoughtful by design.</span></div><p>sarahUI · An original by <strong>MASARA X</strong></p><a href="#start">Built for what’s next. ${Icon({name:'arrow',size:15})}</a></footer></main></div>
-    ${Dialog({id:'mobile-navigation',title:'Explore sarahUI',description:'',children:nav()})}
+  return '<!doctype html>\n'+render(html`<html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="sarahUI by MASARA X. A thoughtful design system with 277 tokens, 120 components, light and dark themes, and no runtime dependencies."><meta name="theme-color" content="#5B3DF5"><title>sarahUI — Thoughtful by design</title><link rel="icon" href="./assets/sarah-mark.svg" type="image/svg+xml"><link rel="preload" href="./assets/fonts/inter-variable.woff" as="font" type="font/woff" crossorigin><link rel="preload" href="./assets/fonts/poppins-semibold.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="./ui/fonts.css"><link rel="stylesheet" href="./ui/tokens.css"><link rel="stylesheet" href="./ui/styles.css"><link rel="stylesheet" href="./app.css"><script>try{const p=localStorage.getItem('sarah-theme')||'system';document.documentElement.dataset.theme=p==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):p;}catch{}</script></head><body class="s-ui">
+    <div class="subtle-ambient-mesh" aria-hidden="true"></div>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <aside class="top-announcement-banner" aria-label="Announcement">
+      <a href="#components" class="announcement-inner">
+        <span class="announcement-sparkle">✨</span>
+        <span class="announcement-text">Introducing <strong>sarahUI</strong> — 120+ free & open-source animated components & effects for the modern web</span>
+        <span class="announcement-arrow">→</span>
+      </a>
+    </aside>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-brand-section">
+          ${IconButton({icon:'menu',label:'Open navigation',variant:'ghost',size:'sm',attrs:{'data-s-dialog-open':'mobile-navigation',class:'mobile-nav-trigger'}})}
+          <a href="#overview" class="brand-home" aria-label="sarahUI home">${Logo()}<span class="version-tag">0.1</span></a>
+          <span id="route-name" class="s-sr-only">Overview</span>
+          <nav class="topbar-nav" aria-label="Main navigation">
+            <a href="#components" class="topbar-link" data-topbar-link="components">Components</a>
+            <a href="#foundations" class="topbar-link" data-topbar-link="foundations">Foundations</a>
+            <a href="#patterns" class="topbar-link" data-topbar-link="patterns">Patterns</a>
+            <a href="#start" class="topbar-link" data-topbar-link="start">Getting started</a>
+          </nav>
+        </div>
+        <div class="topbar-actions">
+          <button type="button" class="search-trigger" data-s-dialog-open="library-search">${Icon({name:'search',size:15})}<span>Search documentation…</span><kbd>⌘ K</kbd></button>
+          <a class="topbar-gh-star" href="https://github.com/masarax/sarahui" target="_blank" rel="noreferrer" aria-label="GitHub Repository">
+            <span class="gh-star-icon">★</span> <span>Star</span> <span class="gh-star-count">22,328</span>
+          </a>
+          <button type="button" class="theme-button" data-s-theme-toggle aria-label="Switch theme"><span data-theme-icon>${Icon({name:'moon',size:18})}</span></button>
+        </div>
+      </div>
+    </header>
+    <div class="docs-container">
+      <aside class="sidebar">
+        <div class="sidebar-scrollable">
+          <div class="sidebar-group">
+            <span class="sidebar-cat-title">Getting Started</span>
+            <ul class="sidebar-cat-list">
+              <li><a href="#overview" class="sidebar-comp-link" data-route-link="overview"><span>Introduction</span></a></li>
+              <li><a href="#start" class="sidebar-comp-link" data-route-link="start"><span>Installation</span></a></li>
+              <li><a href="#foundations" class="sidebar-comp-link" data-route-link="foundations"><span>Foundations</span></a></li>
+              <li><a href="#patterns" class="sidebar-comp-link" data-route-link="patterns"><span>Patterns</span></a></li>
+            </ul>
+          </div>
+          ${componentNav()}
+          <div class="sidebar-note">
+            <span>MADE WITH INTENTION</span>
+            <p>A foundation for<br>your next good thing.</p>
+            <a href="#start">Let’s build something ${Icon({name:'arrow',size:15})}</a>
+            <div class="note-drawing" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
+          <footer class="sidebar-footer">
+            <span class="maker-avatar">M<span>×</span></span>
+            <div><strong>By MASARA X</strong><span>Original, down to the details.</span></div>
+          </footer>
+        </div>
+      </aside>
+      <div class="app-shell">
+        <main id="main-content" class="main-content" tabindex="-1">
+          ${overview()}${foundations()}${components()}${patterns()}${start()}
+          <footer class="docs-footer">
+            <div>${Logo({compact:true})}<span>Thoughtful by design.</span></div>
+            <p>sarahUI · An original by <strong>MASARA X</strong></p>
+            <a href="#start">Built for what’s next. ${Icon({name:'arrow',size:15})}</a>
+          </footer>
+        </main>
+      </div>
+    </div>
+    ${Dialog({id:'mobile-navigation',title:'Explore sarahUI',description:'',children:html`<div class="mobile-nav-scroll">${nav()}${componentNav()}</div>`})}
     ${Dialog({id:'create-project',title:'A new beginning.',description:'Give your next idea a place to grow.',children:createForm})}
     ${CommandPalette({id:'library-search',items:[...navItems,...catalog.map(c=>({label:c.name,href:'#components/'+c.name,icon:c.group==='Forms'?'settings':'layers',keywords:c.name+' '+c.group+' '+c.description}))]})}
     <script type="module" src="./app.js"></script></body></html>`);

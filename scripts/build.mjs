@@ -10,7 +10,7 @@ fs.mkdirSync(dist,{recursive:true});
 fs.cpSync(path.join(root,'packages/ui/src'),path.join(dist,'ui'),{recursive:true});
 fs.cpSync(path.join(root,'packages/ui/assets'),path.join(dist,'assets'),{recursive:true,filter:source=>!source.endsWith('.b64')&&!source.endsWith('.ttf')});
 fs.mkdirSync(path.join(dist,'tokens'),{recursive:true});
-for(const name of ['app.css','app.js'])fs.copyFileSync(path.join(root,'apps/docs',name),path.join(dist,name));
+for(const name of ['app.css','app.js','highlighter.mjs'])fs.copyFileSync(path.join(root,'apps/docs',name),path.join(dist,name));
 for(const [source,name] of [['tokens/sarah.tokens.json','sarah.tokens.json'],['tokens/generated/sarah.resolved.json','sarah.resolved.json'],['tokens/generated/sarah.css','sarah.css']])fs.copyFileSync(path.join(root,source),path.join(dist,'tokens',name));
 fs.writeFileSync(path.join(dist,'index.html'),buildSite());
 fs.copyFileSync(path.join(root,'apps/docs/htaccess'),path.join(dist,'.htaccess'));

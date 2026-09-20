@@ -28,7 +28,7 @@ try {
   await goto('#overview');
   await check('All local fonts load and the component catalog is complete',async()=>{
     for(const family of ['Inter','Poppins','Roboto Mono','Noto Sans Bengali','Noto Sans Arabic'])assert.equal(await page.evaluate(async f=>{await document.fonts.load('600 16px "'+f+'"');return document.fonts.check('600 16px "'+f+'"');},family),true,family);
-    assert.equal(await page.locator('[data-component-name]').count(),32);
+    assert.equal(await page.locator('[data-component-name]').count(),120);
     const broken=await page.evaluate(()=>[...document.querySelectorAll('[aria-controls],[aria-labelledby],[aria-describedby]')].flatMap(el=>['aria-controls','aria-labelledby','aria-describedby'].flatMap(attr=>(el.getAttribute(attr)||'').split(/\s+/).filter(Boolean).filter(id=>!document.getElementById(id)))));
     assert.deepEqual(broken,[]);
     const duplicates=await page.evaluate(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return ids.filter((id,i)=>ids.indexOf(id)!==i);});assert.deepEqual(duplicates,[]);
@@ -51,13 +51,13 @@ try {
     await page.locator('#component-search').fill('Button');
     const matches=await page.locator('[data-component-name]:visible').evaluateAll(cards=>cards.map(c=>c.dataset.componentName));
     for(const name of ['Button','IconButton','ButtonGroup'])assert.ok(matches.includes(name));assert.ok(!matches.includes('Input'));
-    await page.locator('[data-component-group="Forms"]').click();assert.equal(await page.locator('#component-empty').isVisible(),true);
-    await page.locator('[data-clear-filters]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),32);
-    await page.locator('[data-component-group="Forms"]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),7);
+    await page.locator('[data-component-group="Forms & Inputs"]').click();assert.equal(await page.locator('#component-empty').isVisible(),true);
+    await page.locator('[data-clear-filters]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),120);
+    await page.locator('[data-component-group="Forms & Inputs"]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),7);
     await page.locator('[data-component-group="All components"]').click();
   });
   await check('Tabs support arrows, Home, End, and right-to-left navigation',async()=>{
-    const group=page.locator('#component-tabs'),tabs=group.getByRole('tab');
+    const group=page.locator('#component-tabs .s-tabs').first(),tabs=group.getByRole('tab');
     await tabs.nth(0).focus();await page.keyboard.press('ArrowRight');assert.equal(await tabs.nth(1).getAttribute('aria-selected'),'true');
     await page.keyboard.press('End');assert.equal(await tabs.nth(2).getAttribute('aria-selected'),'true');
     await page.keyboard.press('Home');assert.equal(await tabs.nth(0).getAttribute('aria-selected'),'true');
@@ -92,6 +92,23 @@ try {
     await card.locator('.markup-details summary').click();
     assert.ok((await card.locator('#html-Button').textContent()).includes('s-button--primary'));
     await card.locator('[data-code-toggle]').click();
+  });
+  await check('Component detail view displays preview/code tabs, syntax highlighting, and 3-column TOC',async()=>{
+    await route('#components/Button');
+    assert.equal(await page.locator('#detail-toc').isVisible(),true);
+    const card=page.locator('#component-button');
+    assert.equal(await card.locator('.tab-panel-preview').isVisible(),true);
+    assert.equal(await card.locator('.tab-panel-code').isVisible(),false);
+    await card.locator('[data-preview-tab="code"]').click();
+    assert.equal(await card.locator('.tab-panel-preview').isVisible(),false);
+    assert.equal(await card.locator('.tab-panel-code').isVisible(),true);
+    assert.ok(await card.locator('.tab-panel-code .token-keyword').count() > 0);
+    assert.ok(await card.locator('.tab-panel-code .token-string').count() > 0);
+    await card.locator('[data-preview-tab="preview"]').click();
+    assert.equal(await card.locator('.tab-panel-preview').isVisible(),true);
+    assert.equal(await page.locator('#component-marquee').count(),1);
+    assert.equal(await page.locator('#component-borderbeam').count(),1);
+    assert.equal(await page.locator('#component-ripple').count(),1);
   });
   await route('#start');
   await check('Installation and framework guides expose complete copyable setup',async()=>{
@@ -134,6 +151,12 @@ try {
   await route('#patterns');await page.evaluate(()=>scrollTo(0,0));await shot('patterns-light');
   await route('#foundations');await page.evaluate(()=>scrollTo(0,0));await shot('foundations-light');
   await route('#components');await page.evaluate(()=>scrollTo(0,0));await shot('components-light');
+  await route('#components/Button');await page.evaluate(()=>scrollTo(0,0));await shot('button-dedicated-light');
+  await page.locator('[data-s-theme-toggle]').click();
+  await shot('button-dedicated-dark');
+  await route('#components');await page.evaluate(()=>scrollTo(0,0));await shot('components-catalog-dark');
+  await page.locator('[data-s-theme-toggle]').click();
+  await route('#components');
   await check('Theme controls work under reduced motion and focus is visible',async()=>{
     const button=page.locator('[data-s-theme-toggle]');await button.focus();await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
     assert.notEqual(await button.evaluate(el=>getComputedStyle(el).outlineStyle),'none');
@@ -169,7 +192,7 @@ try {
   await page.setViewportSize({width:390,height:844});await route('#overview');await page.evaluate(()=>scrollTo(0,0));await shot('overview-mobile');
   await check('Mobile navigation is a native modal and closes after navigation',async()=>{
     await page.getByRole('button',{name:'Open navigation'}).click();assert.equal(await page.locator('#mobile-navigation').evaluate(d=>d.open),true);
-    await page.locator('#mobile-navigation').getByRole('link',{name:'Components 32'}).click();await page.waitForFunction(()=>!document.getElementById('mobile-navigation').open);assert.equal(await page.locator('[data-view=components]').isVisible(),true);
+    await page.locator('#mobile-navigation').getByRole('link',{name:/Components/}).click();await page.waitForFunction(()=>!document.getElementById('mobile-navigation').open);assert.equal(await page.locator('[data-view=components]').isVisible(),true);
   });
   await check('No browser errors occurred',async()=>assert.deepEqual(errors,[]));
 } finally {

@@ -40,6 +40,94 @@ Components return branded `Markup`. `render()` serializes it. Ordinary strings a
 | Toast | `title`, `description`, `tone`; use `toast()` to announce |
 | Menu | `id`, `label`, `items`: `label`, `icon`, `value`, `danger`, `disabled` |
 | CommandPalette | `id`, `title`, `items`: `label`, `href`, `icon`, `keywords` |
+| Toggle | `label`, `icon`, `pressed`, `size`, `attrs` |
+| ToggleGroup | `label`, `items`: `label`, `icon`, `pressed`, `size`, `type`, `attrs` |
+| Kbd | `keys`, `label`, `size`, `attrs` |
+| AspectRatio | `ratio`, `children`, `attrs` |
+| BentoGrid | `children`, `columns`, `attrs` |
+| Drawer | `id`, `title`, `description`, `children`, `position`, `attrs` |
+| Popover | `id`, `trigger`, `content`, `attrs` |
+| Marquee | `children`, `direction`, `reverse`, `pauseOnHover`, `speed`, `attrs` |
+| BorderBeam | `size`, `duration`, `colorFrom`, `colorTo`, `attrs` |
+| AnimatedShinyText | `text`, `shimmerWidth`, `attrs` |
+| NumberTicker | `value`, `direction`, `delay`, `decimalPlaces`, `attrs` |
+| Ripple | `mainCircleSize`, `numCircles`, `attrs` |
+| RetroGrid | `angle`, `attrs` |
+| ShineBorder | `children`, `borderWidth`, `duration`, `color`, `attrs` |
+| Meteors | `number`, `attrs` |
+| Particles | `quantity`, `staticity`, `ease`, `color`, `attrs` |
+| Confetti | `label`, `icon`, `attrs` |
+| MagicCard | `children`, `gradientColor`, `attrs` |
+| TypingAnimation | `text`, `duration`, `delay`, `attrs` |
+| WordRotate | `words`, `duration`, `attrs` |
+| BlurFade | `children`, `delay`, `duration`, `yOffset`, `blur`, `attrs` |
+| ShimmerButton | `label`, `icon`, `trailing`, `attrs` |
+| RainbowButton | `label`, `icon`, `trailing`, `attrs` |
+| Dock | `items`: `icon`, `label`, `attrs` |
+| AvatarCircles | `numPeople`, `avatars`, `attrs` |
+| AnimatedBeam | `duration`, `delay`, `attrs` |
+| Terminal | `children`, `command`, `output`, `attrs` |
+| OrbitingCircles | `children`, `radius`, `duration`, `delay`, `reverse`, `attrs` |
+| Globe | `size`, `attrs` |
+| AnimatedList | `items`, `attrs` |
+| InteractiveHoverButton | `label`, `icon`, `attrs` |
+| PulsatingButton | `label`, `pulseColor`, `attrs` |
+| SparklesText | `text`, `sparklesCount`, `attrs` |
+| TextReveal | `text`, `attrs` |
+| GridPattern | `width`, `height`, `x`, `y`, `squares`, `attrs` |
+| DotPattern | `width`, `height`, `cr`, `attrs` |
+| AnimatedGridPattern | `width`, `height`, `numSquares`, `maxOpacity`, `attrs` |
+| FlickeringGrid | `squareSize`, `gridGap`, `flickerChance`, `color`, `maxOpacity`, `attrs` |
+| WarpBackground | `children`, `beams`, `attrs` |
+| NeonGradientCard | `children`, `neonColors`, `borderRadius`, `borderSize`, `attrs` |
+| CoolMode | `children`, `particle`, `attrs` |
+| ScrollProgress | `height`, `color`, `attrs` |
+| ProgressiveBlur | `direction`, `blurAmount`, `attrs` |
+| HyperText | `text`, `duration`, `attrs` |
+| MorphingText | `texts`, `attrs` |
+| AnimatedGradientText | `text`, `attrs` |
+| LineShadowText | `text`, `shadowColor`, `attrs` |
+| AuroraText | `text`, `attrs` |
+| Sheet | `id`, `title`, `description`, `position`, `children`, `footer`, `attrs` |
+| ContextMenu | `id`, `items`: `label`, `icon`, `value`, `danger`, `trigger`, `attrs` |
+| HoverCard | `trigger`, `content`, `attrs` |
+| Collapsible | `title`, `content`, `open`, `attrs` |
+| Android | `children`, `src`, `width`, `height`, `className`, `attrs` |
+| Iphone | `children`, `src`, `width`, `height`, `className`, `attrs` |
+| Safari | `url`, `children`, `width`, `height`, `className`, `attrs` |
+| GlareHover | `children`, `className`, `attrs` |
+| Backlight | `children`, `color`, `blur`, `spread`, `className`, `attrs` |
+| Floating3DParticles | `count`, `fov`, `depthRange`, `color`, `className`, `attrs` |
+| LightRays | `count`, `color`, `intensity`, `speed`, `className`, `attrs` |
+| AnimatedThemeToggler | `className`, `attrs` |
+| ComicText | `text`, `fontSize`, `className`, `attrs` |
+| KineticText | `text`, `velocity`, `className`, `attrs` |
+| DiaTextReveal | `text`, `className`, `attrs` |
+| SpinningText | `text`, `radius`, `duration`, `className`, `attrs` |
+| Text3DFlip | `frontText`, `backText`, `duration`, `className`, `attrs` |
+| TextAnimate | `text`, `animation`, `delay`, `className`, `attrs` |
+| VideoText | `text`, `videoSrc`, `fontSize`, `className`, `attrs` |
+| Highlighter | `children`, `color`, `strokeWidth`, `className`, `attrs` |
+| ScrollBasedVelocity | `text`, `defaultVelocity`, `className`, `attrs` |
+| AnimatedSubscribeButton | `initialText`, `subscribedText`, `className`, `attrs` |
+| ShinyButton | `label`, `icon`, `trailing`, `className`, `attrs` |
+| RippleButton | `label`, `icon`, `trailing`, `className`, `attrs` |
+| CodeComparison | `beforeCode`, `afterCode`, `beforeTitle`, `afterTitle`, `language`, `className`, `attrs` |
+| FileTree | `tree`, `initialExpanded`, `className`, `attrs` |
+| HeroVideoDialog | `videoSrc`, `thumbnailSrc`, `thumbnailAlt`, `previewGraphic`, `className`, `attrs` |
+| IconCloud | `icons`, `size`, `className`, `attrs` |
+| Lens | `children`, `zoom`, `lensSize`, `className`, `attrs` |
+| PixelImage | `src`, `alt`, `pixelSize`, `width`, `height`, `className`, `attrs` |
+| GlyphMatrix | `characters`, `speed`, `color`, `fontSize`, `className`, `attrs` |
+| DottedMap | `points`, `className`, `attrs` |
+| Pointer | `label`, `color`, `className`, `attrs` |
+| SmoothCursor | `color`, `size`, `className`, `attrs` |
+| TweetCard | `avatar`, `name`, `handle`, `content`, `date`, `likes`, `retweets`, `verified`, `className`, `attrs` |
+| AnimatedCircularProgressBar | `value`, `max`, `min`, `gaugePrimaryColor`, `gaugeSecondaryColor`, `className`, `attrs` |
+| HexagonPattern | `size`, `strokeWidth`, `color`, `className`, `attrs` |
+| StripedPattern | `width`, `height`, `angle`, `color`, `className`, `attrs` |
+| InteractiveGridPattern | `width`, `height`, `squares`, `className`, `attrs` |
+| NoiseTexture | `opacity`, `patternSize`, `className`, `attrs` |
 
 Sizes: `sm`, `md`, `lg`. Button variants: `primary`, `secondary`, `outline`, `ghost`, `danger`. Feedback tones: `success`, `warning`, `danger`, `info`; Badge also supports `brand` and `neutral`.
 

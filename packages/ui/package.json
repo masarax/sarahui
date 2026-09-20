@@ -24,6 +24,8 @@
     "./styles.css": "./src/styles.css",
     "./tokens.css": "./src/tokens.css",
     "./fonts.css": "./src/fonts.css",
+    "./tailwind-preset": "./src/tailwind-preset.js",
+    "./tailwind": "./src/tailwind-preset.js",
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"
   },
