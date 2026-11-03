@@ -2,17 +2,17 @@ import fs from 'node:fs';
 import * as U from '../../packages/ui/src/templates.js';
 import {catalog,categories,demos,componentVariants,componentBadges} from './catalog.mjs';
 import {startPage,installCommand} from './start.mjs';
-import {properties,recipe,usageNote,getComponentTsx} from './recipes.mjs';
+import {properties,recipe,usageNote,getComponentTsx,getComponentUsage,extraAfterUsage,extraAfterProps} from './recipes.mjs';
 import {highlightCode} from './highlighter.mjs';
-const {html,render,raw,Icon,Logo,Button,Input,Select,Textarea,Switch,Badge,Avatar,Progress,Dialog,CommandPalette,IconButton}=U;
+const {html,render,raw,Icon,Logo,Button,Input,Select,Textarea,Switch,Badge,Avatar,Progress,Dialog,CommandPalette,IconButton,formatComponentName}=U;
 const spec=JSON.parse(fs.readFileSync(new URL('../../tokens/sarah.tokens.json',import.meta.url),'utf8'));
 const navItems=[{label:'Overview',href:'#overview',icon:'grid'},{label:'Foundations',href:'#foundations',icon:'palette',badge:'277'},{label:'Components',href:'#components',icon:'layers',badge:String(catalog.length)},{label:'Patterns',href:'#patterns',icon:'folder'},{label:'Get started',href:'#start',icon:'code'}];
 const nav=()=>html`<nav class="docs-nav" aria-label="Documentation">${navItems.map(U.NavItem)}</nav>`;
 const componentNav=()=>html`<div class="sidebar-components-nav">
   <div class="sidebar-components-heading"><span>COMPONENTS</span><span class="sidebar-counter">${catalog.length}</span></div>
-  ${categories.slice(1).map(cat=>html`<div class="sidebar-cat-group">${cat==='Components'?'':html`<span class="sidebar-cat-title">${cat}</span>`}<ul class="sidebar-cat-list">${catalog.filter(c=>c.group===cat).map(c=>{
+  ${categories.slice(1).map(cat=>html`<div class="sidebar-cat-group"><span class="sidebar-cat-title">${cat}</span><ul class="sidebar-cat-list">${catalog.filter(c=>c.group===cat).map(c=>{
     const b=componentBadges[c.name];
-    return html`<li><a href="#components/${c.name}" class="sidebar-comp-link" data-component-nav="${c.name}"><span>${c.name}</span>${b?html`<span class="sidebar-badge sidebar-badge--${b.toLowerCase()}">${b}</span>`:''}</a></li>`;
+    return html`<li><a href="#components/${c.name}" class="sidebar-comp-link" data-component-nav="${c.name}"><span>${formatComponentName(c.name)}</span>${b?html`<span class="sidebar-badge sidebar-badge--${b.toLowerCase()}">${b}</span>`:''}</a></li>`;
   })}</ul></div>`)}
 </div>`;
 const link=(label,href,variant='primary',icon='arrow')=>html`<a class="s-button s-button--${variant} s-button--md" href="${href}"><span>${label}</span>${icon?Icon({name:icon,size:18}):''}</a>`;
@@ -86,6 +86,11 @@ function components(){
         const variants=componentVariants[item.name]||[{title:'Default State',description:item.description,preview:()=>demo,code:recipe(item.name)}];
         const prevItem=catalog[i===0?catalog.length-1:i-1];
         const nextItem=catalog[i===catalog.length-1?0:i+1];
+        const kebabName=item.name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+        const npmCmd=`npx sarahui add ${kebabName}`;
+        const pnpmCmd=`pnpm dlx sarahui add ${kebabName}`;
+        const yarnCmd=`npx sarahui add ${kebabName}`;
+        const bunCmd=`bunx --bun sarahui add ${kebabName}`;
         return html`<article class="component-card ${item.name==='DataTable'||item.name==='BentoGrid'?'wide':''}" id="component-${item.name.toLowerCase()}" data-component-name="${item.name}" data-component-category="${item.group}" data-component-description="${item.description}">
           <div class="component-detail-breadcrumbs-bar">
             <nav class="detail-breadcrumbs" aria-label="Breadcrumb">
@@ -93,20 +98,19 @@ function components(){
               <span class="breadcrumb-slash">/</span>
               <span class="detail-cat-link">${item.group}</span>
               <span class="breadcrumb-slash">/</span>
-              <span class="detail-current-name">${item.name}</span>
+              <span class="detail-current-name">${formatComponentName(item.name)}</span>
             </nav>
             <div class="detail-header-nav-actions">
-              <a href="#components/${prevItem.name}" class="nav-arrow-btn" aria-label="Previous component" title="Previous: ${prevItem.name}">${Icon({name:'chevron',size:13,style:'transform:rotate(180deg);'})}</a>
-              <a href="#components/${nextItem.name}" class="nav-arrow-btn" aria-label="Next component" title="Next: ${nextItem.name}">${Icon({name:'chevron',size:13})}</a>
+              <a href="#components/${prevItem.name}" class="nav-arrow-btn" aria-label="Previous component" title="Previous: ${formatComponentName(prevItem.name)}">${Icon({name:'chevron',size:13,style:'transform:rotate(180deg);'})}</a>
+              <a href="#components/${nextItem.name}" class="nav-arrow-btn" aria-label="Next component" title="Next: ${formatComponentName(nextItem.name)}">${Icon({name:'chevron',size:13})}</a>
               <button type="button" class="copy-page-btn" data-copy-page="true">${Icon({name:'copy',size:13})} <span>Copy page</span></button>
             </div>
           </div>
           <header id="sec-${item.name.toLowerCase()}-overview" class="component-card-top">
             <div class="component-card-top-left">
               <div class="component-title-row">
-                <h2><a href="#components/${item.name}" class="component-title-link">${item.name}</a></h2>
+                <h2>${formatComponentName(item.name)}</h2>
                 ${componentBadges[item.name]?html`<span class="component-header-badge badge-${componentBadges[item.name].toLowerCase()}">${componentBadges[item.name]}</span>`:''}
-                <button type="button" class="component-anchor" data-copy-page="true" aria-label="Copy page link" title="Copy link to ${item.name}">${Icon({name:'link',size:16})}</button>
               </div>
               <p class="component-lead">${item.description}</p>
             </div>
@@ -143,57 +147,94 @@ function components(){
               <div class="detail-section-title">
                 <div>
                   <h3>Installation</h3>
-                  <p>Install sarahUI from npm to use <code>${item.name}</code> with zero configuration.</p>
+                  <p>Add <code>${item.name}</code> to your project.</p>
                 </div>
               </div>
               <div class="install-terminal-box">
                 <div class="install-terminal-header">
                   <div class="install-terminal-tabs">
-                    <button type="button" class="install-term-tab active" data-term-cmd="npm install sarahui">npm</button>
-                    <button type="button" class="install-term-tab" data-term-cmd="pnpm add sarahui">pnpm</button>
-                    <button type="button" class="install-term-tab" data-term-cmd="yarn add sarahui">yarn</button>
-                    <button type="button" class="install-term-tab" data-term-cmd="bun add sarahui">bun</button>
+                    <button type="button" class="install-term-tab active" data-term-cmd="${npmCmd}">npm</button>
+                    <button type="button" class="install-term-tab" data-term-cmd="${pnpmCmd}">pnpm</button>
+                    <button type="button" class="install-term-tab" data-term-cmd="${yarnCmd}">yarn</button>
+                    <button type="button" class="install-term-tab" data-term-cmd="${bunCmd}">bun</button>
                   </div>
-                  <button type="button" class="install-term-copy-btn" data-copy-value="npm install sarahui" aria-label="Copy command">
+                  <button type="button" class="install-term-copy-btn" data-copy-value="${npmCmd}" aria-label="Copy command">
                     ${Icon({name:'copy',size:13})} <span>Copy</span>
                   </button>
                 </div>
                 <div class="install-terminal-body">
-                  <code><span class="term-prompt">$</span> <span class="term-command-text">npm install sarahui</span></code>
+                  <code><span class="term-prompt">$</span> <span class="term-command-text">${npmCmd}</span></code>
                 </div>
               </div>
-              <div class="quick-import-box">
-                <span class="quick-import-label">QUICK IMPORT</span>
-                <code class="token-code">${raw(highlightCode("import { "+item.name+" } from 'sarahui';", 'typescript'))}</code>
-                <button type="button" class="quick-copy-btn" data-copy-value="import { ${item.name} } from 'sarahui';" aria-label="Copy import statement">
-                  ${Icon({name:'copy',size:14})}
-                </button>
+            </section>
+
+            <section class="detail-section" id="sec-${item.name.toLowerCase()}-usage">
+              <div class="detail-section-title">
+                <div>
+                  <h3>Usage</h3>
+                </div>
+              </div>
+              <div class="usage-code-blocks" style="display:flex;flex-direction:column;gap:16px;">
+                <div class="usage-code-box">
+                  <div class="code-preview-bar">
+                    <span style="opacity:0.6;">import</span>
+                    <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(getComponentUsage(item.name).import)}" aria-label="Copy import statement">
+                      ${Icon({name:'copy',size:13})} <span>Copy</span>
+                    </button>
+                  </div>
+                  <pre tabindex="0"><code class="token-code">${raw(highlightCode(getComponentUsage(item.name).import, 'typescript', {showLineNumbers:true}))}</code></pre>
+                </div>
+                <div class="usage-code-box">
+                  <div class="code-preview-bar">
+                    <span style="opacity:0.6;">usage.tsx</span>
+                    <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(getComponentUsage(item.name).usage)}" aria-label="Copy usage snippet">
+                      ${Icon({name:'copy',size:13})} <span>Copy</span>
+                    </button>
+                  </div>
+                  <pre tabindex="0"><code class="token-code">${raw(highlightCode(getComponentUsage(item.name).usage, 'typescript', {showLineNumbers:true}))}</code></pre>
+                </div>
               </div>
             </section>
+
+            ${extraAfterUsage ? extraAfterUsage(item.name, highlightCode) : ''}
 
             <section class="detail-section" id="sec-${item.name.toLowerCase()}-examples" aria-label="${item.name} examples">
               <div class="detail-section-title">
                 <div>
                   <h3>Examples</h3>
-                  <p>Explore different visual styles, interactive behaviors, and presets for ${item.name}.</p>
                 </div>
-                <span class="variants-count-badge">${variants.length} example${variants.length===1?'':'s'}</span>
               </div>
-              <div class="variants-specimen-grid">
-                ${(item.name === 'Spinner' ? [{title:'Accessible Indeterminate Indicator',description:'Paired with descriptive label text for inline data synchronization and polite status announcements.',code:"Spinner({ label: 'Syncing workspace' })"}] : variants).map((v,vi)=>html`
-                  <div class="variant-specimen-card" id="specimen-${item.name.toLowerCase()}-${vi}">
-                    <div class="variant-specimen-top">
-                      <div>
-                        <h4>${v.title}</h4>
-                        <p>${v.description}</p>
-                      </div>
-                      <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(v.code)}" aria-label="Copy code for ${v.title}">
-                        ${Icon({name:'copy',size:13})} <span>Copy code</span>
-                      </button>
+              <div class="examples-list">
+                ${variants.map((v,vi)=>html`
+                  <div class="example-item" id="specimen-${item.name.toLowerCase()}-${vi}">
+                    <div class="example-item-header">
+                      <h4 class="example-title">${v.title}</h4>
                     </div>
-                    ${v.preview ? html`<div class="variant-specimen-preview">${v.preview()}</div>` : ''}
-                    <div class="variant-specimen-code-preview">
-                      <pre tabindex="0"><code class="token-code">${raw(highlightCode(v.code, 'typescript', {showLineNumbers:true}))}</code></pre>
+                    <div class="component-preview-box">
+                      <div class="component-preview-header">
+                        <div class="preview-tabs">
+                          <button type="button" class="preview-tab active" data-preview-tab="preview">${Icon({name:'spark',size:13})} <span>Preview</span></button>
+                          <button type="button" class="preview-tab" data-preview-tab="code">${Icon({name:'code',size:13})} <span>Code</span></button>
+                        </div>
+                        <div class="preview-header-actions">
+                          <button type="button" class="preview-tool-btn" data-replay-component="${item.name}" title="Restart animation">${Icon({name:'refresh',size:14})}</button>
+                          <button type="button" class="preview-tool-btn" data-copy-snippet="${encodeURIComponent(v.code)}" title="Copy code">${Icon({name:'copy',size:14})} <span>Copy</span></button>
+                        </div>
+                      </div>
+                      <div class="component-demo tab-panel-preview">
+                        ${v.preview ? v.preview() : ''}
+                      </div>
+                      <div class="component-code-panel tab-panel-code" hidden>
+                        <div class="code-preview-inner">
+                          <div class="code-preview-bar">
+                            <span>${item.name}.tsx</span>
+                            <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(v.code)}" aria-label="Copy code">
+                              ${Icon({name:'copy',size:13})} <span>Copy code</span>
+                            </button>
+                          </div>
+                          <pre tabindex="0"><code class="token-code">${raw(highlightCode(v.code, 'typescript', {showLineNumbers:true}))}</code></pre>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 `)}
@@ -208,24 +249,26 @@ function components(){
                 </div>
               </div>
               ${properties(item.name)}
-              <p class="component-usage-note" style="margin-top:16px;">${usageNote(item.name)}</p>
+              ${usageNote(item.name)?html`<p class="component-usage-note" style="margin-top:16px;">${usageNote(item.name)}</p>`:''}
             </section>
+
+            ${extraAfterProps ? extraAfterProps(item.name, highlightCode) : ''}
           </div>
           <nav class="detail-nav-footer" aria-label="Component page navigation">
-            <a href="#components/${prevItem.name}" class="detail-nav-footer-btn" aria-label="Previous component: ${prevItem.name}">
+            <a href="#components/${prevItem.name}" class="detail-nav-footer-btn" aria-label="Previous component: ${formatComponentName(prevItem.name)}">
               ${Icon({name:'arrow',size:13,style:'transform:rotate(180deg);'})}
               <div class="detail-nav-footer-copy">
                 <small>PREVIOUS COMPONENT</small>
-                <strong>${prevItem.name}</strong>
+                <strong>${formatComponentName(prevItem.name)}</strong>
               </div>
             </a>
             <a href="#components" class="detail-nav-footer-center" aria-label="Back to component directory">
               ${Icon({name:'grid',size:14})} <span>All ${catalog.length} components</span>
             </a>
-            <a href="#components/${nextItem.name}" class="detail-nav-footer-btn next" aria-label="Next component: ${nextItem.name}">
+            <a href="#components/${nextItem.name}" class="detail-nav-footer-btn next" aria-label="Next component: ${formatComponentName(nextItem.name)}">
               <div class="detail-nav-footer-copy">
                 <small>NEXT COMPONENT</small>
-                <strong>${nextItem.name}</strong>
+                <strong>${formatComponentName(nextItem.name)}</strong>
               </div>
               ${Icon({name:'arrow',size:13})}
             </a>
@@ -244,7 +287,7 @@ function components(){
             ${code('npm-'+item.name,recipe(item.name),'JavaScript / npm')}
             <h3>Properties</h3>
             <p class="component-properties-note">Complete parameters detailed in <a href="#sec-${item.name.toLowerCase()}-props">Props</a>.</p>
-            <p class="component-usage">${usageNote(item.name)}</p>
+            ${usageNote(item.name)?html`<p class="component-usage">${usageNote(item.name)}</p>`:''}
             <details class="markup-details">
               <summary>View rendered HTML</summary>
               ${code('html-'+item.name,render(demo),'HTML')}
@@ -260,6 +303,7 @@ function components(){
             <a href="#overview" class="docs-toc-link active" data-toc="overview">Overview</a>
             <a href="#preview" class="docs-toc-link" data-toc="preview">Interactive Preview</a>
             <a href="#installation" class="docs-toc-link" data-toc="installation">Installation</a>
+            <a href="#usage" class="docs-toc-link" data-toc="usage">Usage</a>
             <a href="#examples" class="docs-toc-link" data-toc="examples">Examples</a>
             <div class="docs-toc-sublinks" id="toc-examples-sublinks"></div>
             <a href="#props" class="docs-toc-link" data-toc="props">Props</a>
@@ -364,6 +408,6 @@ export function buildSite(){
     </div>
     ${Dialog({id:'mobile-navigation',title:'Explore sarahUI',description:'',children:html`<div class="mobile-nav-scroll">${nav()}${componentNav()}</div>`})}
     ${Dialog({id:'create-project',title:'A new beginning.',description:'Give your next idea a place to grow.',children:createForm})}
-    ${CommandPalette({id:'library-search',items:[...navItems,...catalog.map(c=>({label:c.name,href:'#components/'+c.name,icon:c.group==='Forms'?'settings':'layers',keywords:c.name+' '+c.group+' '+c.description}))]})}
+    ${CommandPalette({id:'library-search',items:[...navItems,...catalog.map(c=>({label:formatComponentName(c.name),href:'#components/'+c.name,icon:c.group==='Forms'?'settings':'layers',keywords:c.name+' '+formatComponentName(c.name)+' '+c.group+' '+c.description}))]})}
     <script type="module" src="./app.js"></script></body></html>`);
 }

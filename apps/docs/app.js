@@ -1,4 +1,4 @@
-import {html,render,Icon,Badge,Avatar,DataTable,Pagination,Progress,EmptyState,Button,enhanceUI,setTheme,openDialog,closeDialog,toast,copyText} from './ui/index.js';
+import {html,render,Icon,Badge,Avatar,DataTable,Pagination,Progress,EmptyState,Button,enhanceUI,setTheme,openDialog,closeDialog,toast,copyText,formatComponentName} from './ui/index.js';
 const $=(s,root=document)=>root.querySelector(s);
 const $$=(s,root=document)=>[...root.querySelectorAll(s)];
 const projectData=[
@@ -50,19 +50,31 @@ function route(initial=false){
           c.classList.toggle('is-detail-active',c===card);
         });
         enhanceUI(card);
-        if(rn)rn.textContent='Components / '+name;
-        document.title=name+' · sarahUI';
+        const formattedName = typeof formatComponentName === 'function' ? formatComponentName(name) : name;
+        if(rn)rn.textContent='Components / '+formattedName;
+        document.title=formattedName+' · sarahUI';
         const toc=$('#detail-toc');
         if(toc){
           toc.hidden=false;
           const sublinks=$('#toc-examples-sublinks');
           if(sublinks){
-            const specimens=card.querySelectorAll('.variant-specimen-card');
-            sublinks.innerHTML=Array.from(specimens).map((sp,idx)=>{
-              const h4=sp.querySelector('h4');
+            const specimens=card.querySelectorAll('.example-item');
+            const extraSections=card.querySelectorAll('.detail-section[id]:not([id*="-installation"]):not([id*="-usage"]):not([id*="-examples"]):not([id*="-props"])');
+            let htmlStr = Array.from(specimens).map((sp,idx)=>{
+              const h4=sp.querySelector('.example-title, h4, h3');
               const title=h4?h4.textContent.trim():`Example ${idx+1}`;
               return `<a href="#${sp.id}" class="docs-toc-sublink" data-toc-specimen="${sp.id}">${title}</a>`;
             }).join('');
+
+            if (extraSections.length > 0) {
+              htmlStr += Array.from(extraSections).map(sec => {
+                const h3 = sec.querySelector('h3, h4');
+                const title = h3 ? h3.textContent.trim() : sec.id;
+                return `<a href="#${sec.id}" class="docs-toc-sublink" data-toc-specimen="${sec.id}">${title}</a>`;
+              }).join('');
+            }
+
+            sublinks.innerHTML = htmlStr;
           }
         }
         $$('[data-component-nav]').forEach(a=>{
@@ -139,9 +151,9 @@ document.addEventListener('click',event=>{
     }
   }
   if((b=target.closest('[data-replay-component]'))){
-    const card=b.closest('.component-card');
-    if(card){
-      const canvas=card.querySelector('.tab-panel-preview');
+    const box=b.closest('.component-preview-box') || b.closest('.component-card');
+    if(box){
+      const canvas=box.querySelector('.tab-panel-preview');
       if(canvas){
         const htmlContent=canvas.innerHTML;
         canvas.innerHTML='';
@@ -153,23 +165,23 @@ document.addEventListener('click',event=>{
     }
   }
   if((b=target.closest('[data-preview-open-code]'))){
-    const card=b.closest('.component-card');
-    if(card){
-      const codeBtn=card.querySelector('.preview-tab[data-preview-tab="code"]');
+    const box=b.closest('.component-preview-box') || b.closest('.component-card');
+    if(box){
+      const codeBtn=box.querySelector('.preview-tab[data-preview-tab="code"]');
       if(codeBtn)codeBtn.click();
     }
   }
   if((b=target.closest('[data-preview-tab]'))){
     const tabType=b.dataset.previewTab;
-    const card=b.closest('.component-card');
-    if(card){
-      card.querySelectorAll('.preview-tab').forEach(t=>{
+    const box=b.closest('.component-preview-box');
+    if(box){
+      box.querySelectorAll('.preview-tab').forEach(t=>{
         const isMatch=t.dataset.previewTab===tabType;
         t.classList.toggle('active',isMatch);
         t.setAttribute('aria-selected',String(isMatch));
       });
-      const previewPanel=card.querySelector('.tab-panel-preview');
-      const codePanel=card.querySelector('.tab-panel-code');
+      const previewPanel=box.querySelector('.tab-panel-preview');
+      const codePanel=box.querySelector('.tab-panel-code');
       if(previewPanel&&codePanel){
         previewPanel.hidden=tabType!=='preview';
         codePanel.hidden=tabType!=='code';
@@ -214,6 +226,7 @@ document.addEventListener('click',event=>{
         if(tocKey==='overview')el=activeCard.querySelector('header');
         else if(tocKey==='preview')el=activeCard.querySelector('.component-preview-box');
         else if(tocKey==='installation')el=activeCard.querySelector('#sec-'+name+'-installation');
+        else if(tocKey==='usage')el=activeCard.querySelector('#sec-'+name+'-usage');
         else if(tocKey==='examples'||tocKey==='variants')el=activeCard.querySelector('#sec-'+name+'-examples')||activeCard.querySelector('#sec-'+name+'-variants')||activeCard.querySelector('.component-variants-showcase');
         else if(tocKey==='props')el=activeCard.querySelector('#sec-'+name+'-props');
       }

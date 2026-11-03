@@ -62,10 +62,10 @@ export const expressions={
   ShimmerButton:'UI.ShimmerButton({ label: "Get Started Now", icon: "spark" })',
   RainbowButton:'UI.RainbowButton({ label: "Explore Pro Components", icon: "spark" })',
   Dock:'UI.Dock({ items: [{ icon: "folder", label: "Projects" }, { icon: "spark", label: "Effects" }, { icon: "settings", label: "Settings" }] })',
-  AvatarCircles:'UI.AvatarCircles({ numPeople: 99, avatars: ["SK", "AM", "JD", "RB"] })',
+  AvatarCircles:'UI.AvatarCircles({ numPeople: 99, avatarUrls: ["https://avatars.githubusercontent.com/u/55315718", "https://avatars.githubusercontent.com/u/20110627", "https://avatars.githubusercontent.com/u/106103625", "https://avatars.githubusercontent.com/u/59228569"] })',
   AnimatedBeam:'UI.AnimatedBeam({ duration: 3 })',
   Terminal:'UI.Terminal({ command: "npm install sarahui", output: "Added 1 package in 0.12s." })',
-  OrbitingCircles:'UI.OrbitingCircles({ radius: 80, children: UI.Icon({ name: "spark", size: 24 }) })',
+  OrbitingCircles:'UI.OrbitingCircles({ radius: 80, icons: ["whatsapp", "notion", "openai", "drive", "github"] })',
   Globe:'UI.Globe({ size: 280 })',
   AnimatedList:'UI.AnimatedList({ items: [UI.Badge({ label: "Payment received" }), UI.Badge({ label: "Deployment complete" })] })',
   InteractiveHoverButton:'UI.InteractiveHoverButton({ label: "Get Started" })',
@@ -113,7 +113,7 @@ export const expressions={
   CodeComparison:'UI.CodeComparison({ beforeCode: "const a = 1;", afterCode: "const b = 2;", beforeTitle: "Before", afterTitle: "After" })',
   FileTree:'UI.FileTree({ tree: [{ name: "src", type: "folder", children: [{ name: "index.js", type: "file" }] }] })',
   HeroVideoDialog:'UI.HeroVideoDialog({ videoSrc: "https://www.youtube.com/embed/dQw4w9WgXcQ", thumbnailAlt: "Showcase" })',
-  IconCloud:'UI.IconCloud({ icons: ["spark", "layers", "palette", "globe"], size: 240 })',
+  IconCloud:'UI.IconCloud({ iconSlugs: ["typescript", "javascript", "dart", "java", "react", "flutter", "android", "html5", "css3", "nodedotjs", "express", "nextdotjs", "prisma", "amazonaws", "postgresql", "firebase", "nginx", "vercel", "docker", "git", "github", "figma"], size: 280 })',
   Lens:'UI.Lens({ zoom: 1.8, children: UI.html`<div style="padding:20px;">Inspectable Surface</div>` })',
   PixelImage:'UI.PixelImage({ pixelSize: 8, width: 240, height: 160 })',
   GlyphMatrix:'UI.GlyphMatrix({ color: "#5B3DF5" })',
@@ -142,8 +142,9 @@ const notes={
   Chip:'Removing a chip emits sarah:chipremove on its parent. Update your application state too.'
 };
 import { getComponentProps, getComponentTsx } from './registry-data.mjs';
+import { getComponentUsage } from './usage-data.mjs';
 
-export { getComponentProps, getComponentTsx };
+export { getComponentProps, getComponentTsx, getComponentUsage };
 
 export function properties(name){
   const tables = getComponentProps(name);
@@ -182,5 +183,174 @@ export function recipe(name){
   const extra=name==='Toast'?"\ndocument.querySelector('#notify-button').addEventListener('click', () => {\n  UI.toast('Your changes are ready.', { title: 'Saved', tone: 'success' });\n});":name==='Pagination'?"\ndocument.addEventListener('sarah:pagechange', event => {\n  console.log('Render page', event.detail.page);\n});":name==='Menu'?"\ndocument.addEventListener('sarah:menuaction', event => {\n  console.log('Selected action', event.detail.value);\n});":'';
   return "import 'sarahui/css';\nimport * as UI from 'sarahui';\n\nconst component = "+(expressions[name]||`UI.${name}({})`)+";\n\ndocument.querySelector('#app').innerHTML = UI.render(\n  UI.html`<main class=\"s-ui\">${component}</main>`\n);\nconst cleanup = UI.enhanceUI(document);"+extra+"\n// Call cleanup() when your application unmounts.";
 }
-export const usageNote=name=>notes[name]||'Zero runtime dependencies. Use as a standalone Web component or with any framework.';
+export const usageNote=name=>notes[name]||'';
+
+export function extraAfterUsage(name, highlightCode) {
+  if (name === 'SmoothCursor') {
+    const globalCss = `* {\n  cursor: none !important;\n}`;
+    const inputCss = `input,\ntextarea,\nselect {\n  cursor: text !important;\n}`;
+    const tailwindSnippet = `<div className="cursor-none">\n  <SmoothCursor />\n  {/* your app */}\n</div>`;
+
+    return UI.html`
+      <section class="detail-section" id="sec-smoothcursor-hiding-cursor">
+        <div class="detail-section-title">
+          <div>
+            <h3>Hiding Default Browser Cursor</h3>
+            <p>To prevent the default browser cursor from overlapping with the custom cursor, add the following CSS globally:</p>
+          </div>
+        </div>
+        <div class="usage-code-box">
+          <div class="code-preview-bar">
+            <span>globals.css</span>
+            <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(globalCss)}" aria-label="Copy CSS snippet">
+              ${UI.Icon({name:'copy',size:13})} <span>Copy</span>
+            </button>
+          </div>
+          <pre tabindex="0"><code class="token-code">${UI.raw(highlightCode(globalCss, 'css', {showLineNumbers:true}))}</code></pre>
+        </div>
+
+        <div style="margin-top:24px;">
+          <h4 style="font-size:15px;font-weight:600;margin:0 0 8px;color:var(--s-text-primary);">Optional: Keep text cursor for inputs</h4>
+          <p class="s-small s-muted" style="margin:0 0 12px;line-height:1.5;">To preserve the standard text selection I-beam cursor when hovering over input fields, text areas, and select menus:</p>
+          <div class="usage-code-box">
+            <div class="code-preview-bar">
+              <span>globals.css</span>
+              <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(inputCss)}" aria-label="Copy CSS snippet">
+                ${UI.Icon({name:'copy',size:13})} <span>Copy</span>
+              </button>
+            </div>
+            <pre tabindex="0"><code class="token-code">${UI.raw(highlightCode(inputCss, 'css', {showLineNumbers:true}))}</code></pre>
+          </div>
+        </div>
+
+        <div class="docs-pro-tip-card">
+          <div class="docs-pro-tip-header">
+            <div class="docs-pro-tip-badge">
+              <span class="docs-pro-tip-icon">💡</span>
+              <span>Tailwind CSS Tip</span>
+            </div>
+          </div>
+          <p class="docs-pro-tip-desc">
+            If you're using Tailwind CSS, you can apply <code>cursor-none</code> to your layout wrapper or body element to cleanly hide the default browser pointer:
+          </p>
+          <div class="docs-pro-tip-code-box">
+            <div class="code-preview-bar">
+              <span>layout.tsx</span>
+              <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(tailwindSnippet)}" aria-label="Copy snippet">
+                ${UI.Icon({name:'copy',size:13})} <span>Copy</span>
+              </button>
+            </div>
+            <pre tabindex="0"><code class="token-code">${UI.raw(highlightCode(tailwindSnippet, 'typescript'))}</code></pre>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  return '';
+}
+
+export function extraAfterProps(name, highlightCode) {
+  if (name === 'SmoothCursor') {
+    const typeCode = `interface SpringConfig {\n  damping: number;    // Controls how quickly the animation settles\n  stiffness: number;  // Controls the spring stiffness\n  mass: number;       // Controls the virtual mass of the cursor\n  restDelta: number;  // Threshold to consider animation complete\n}`;
+    const defaultConfig = `const defaultSpringConfig = {\n  damping: 45,\n  stiffness: 400,\n  mass: 1,\n  restDelta: 0.001,\n};`;
+
+    return UI.html`
+      <section class="detail-section" id="sec-smoothcursor-spring-config">
+        <div class="detail-section-title">
+          <div>
+            <h3>SpringConfig Type & Default Spring Configuration</h3>
+            <p>Customize the smooth cursor inertia, tension, and friction dynamics with spring physics.</p>
+          </div>
+        </div>
+        <div class="side-by-side-code-grid">
+          <div class="side-by-side-code-card">
+            <div class="side-by-side-code-header">
+              <span class="side-by-side-badge">TypeScript</span>
+              <h4>SpringConfig Interface</h4>
+            </div>
+            <div class="usage-code-box">
+              <div class="code-preview-bar">
+                <span>types.ts</span>
+                <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(typeCode)}" aria-label="Copy code">
+                  ${UI.Icon({name:'copy',size:13})} <span>Copy</span>
+                </button>
+              </div>
+              <pre tabindex="0"><code class="token-code">${UI.raw(highlightCode(typeCode, 'typescript', {showLineNumbers:true}))}</code></pre>
+            </div>
+          </div>
+          <div class="side-by-side-code-card">
+            <div class="side-by-side-code-header">
+              <span class="side-by-side-badge">Constants</span>
+              <h4>Default Spring Configuration</h4>
+            </div>
+            <div class="usage-code-box">
+              <div class="code-preview-bar">
+                <span>config.ts</span>
+                <button type="button" class="variant-snippet-copy" data-copy-snippet="${encodeURIComponent(defaultConfig)}" aria-label="Copy code">
+                  ${UI.Icon({name:'copy',size:13})} <span>Copy</span>
+                </button>
+              </div>
+              <pre tabindex="0"><code class="token-code">${UI.raw(highlightCode(defaultConfig, 'typescript', {showLineNumbers:true}))}</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="detail-section" id="sec-smoothcursor-browser-support">
+        <div class="detail-section-title">
+          <div>
+            <h3>Browser Support</h3>
+            <p>Compatible with all modern desktop and laptop browsers supporting:</p>
+          </div>
+        </div>
+        <ul style="margin:0 0 16px 20px;padding:0;line-height:1.75;color:var(--s-text-secondary);font-size:14px;">
+          <li><code>requestAnimationFrame</code> for 60fps/120fps hardware-accelerated movement</li>
+          <li>CSS 3D transforms (<code>translate3d</code>, <code>rotate</code>, <code>scale</code>)</li>
+          <li>W3C Pointer Events (<code>pointermove</code>, <code>pointerleave</code>)</li>
+          <li>Hover-capable fine pointers (mouse or trackpad)</li>
+        </ul>
+        <div class="docs-device-callout-card">
+          <div class="docs-device-callout-header">
+            <div class="docs-device-callout-badge">
+              <span class="docs-device-callout-icon">📱</span>
+              <span>Touch-First & Mobile Devices</span>
+            </div>
+            <span class="docs-device-callout-tag">Auto-detected</span>
+          </div>
+          <p class="docs-device-callout-desc">
+            Touch screens, tablets, and mobile devices with coarse pointers are automatically bypassed. This prevents the custom animated cursor from getting stuck or popping up after touch taps, keeping native mobile gestures smooth and fluid.
+          </p>
+        </div>
+      </section>
+
+      <section class="detail-section" id="sec-smoothcursor-accessibility">
+        <div class="detail-section-title">
+          <div>
+            <h3>Accessibility</h3>
+            <p>Inclusive motion design and assistive technology considerations:</p>
+          </div>
+        </div>
+        <ul style="margin:0 0 16px 20px;padding:0;line-height:1.75;color:var(--s-text-secondary);font-size:14px;">
+          <li><strong>Keyboard Navigation:</strong> Users navigating via keyboard will not see or be obstructed by the custom cursor (follower container is explicitly marked with <code>aria-hidden="true"</code>).</li>
+          <li><strong>Focus Indicators:</strong> Ensure visible focus rings and alternative visual cues remain prominent for interactive elements.</li>
+          <li><strong>Motion Sensitivity:</strong> Automatically respects <code>prefers-reduced-motion: reduce</code> to ensure users with vestibular sensitivities have a comfortable browsing experience.</li>
+        </ul>
+      </section>
+
+      <section class="detail-section" id="sec-smoothcursor-credits" style="padding-bottom:12px;">
+        <div class="detail-section-title">
+          <div>
+            <h3>Credits</h3>
+            <p>Credit to <a href="https://twitter.com/Code_Parth" target="_blank" rel="noreferrer" style="color:var(--s-color-brand-500);text-decoration:underline;">@Code_Parth</a> for the original concept and implementation.</p>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  return '';
+}
+
+
 

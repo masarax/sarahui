@@ -8,7 +8,7 @@ if(!process.argv.includes('--no-build')){const result=spawnSync(process.execPath
 const dist=path.join(root,'dist'),port=Number(process.env.PORT)||4173,host=process.env.SARAH_HOST||'127.0.0.1';
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.woff':'font/woff','.txt':'text/plain; charset=utf-8'};
 const SECURITY_HEADERS={
-  'Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
+  'Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; media-src 'self' data: https:; frame-src 'self' https:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';",
   'Strict-Transport-Security':'max-age=31536000; includeSubDomains; preload',
   'X-Frame-Options':'DENY',
   'X-Content-Type-Options':'nosniff',
