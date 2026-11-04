@@ -43,10 +43,10 @@ jobs:
           names = ['CPANEL_FTP_HOST', 'CPANEL_FTP_USERNAME', 'CPANEL_FTP_PASSWORD', 'CPANEL_FTP_PATH']
           missing = [name for name in names if not os.environ.get(name)]
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write('ready=' + ('false' if missing else 'true') + '\\n')
+              output.write('ready=' + ('false' if missing else 'true') + '\n')
           if missing:
               with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-                  summary.write('## cPanel deployment skipped\\n\\nAdd the following repository secrets, then run this workflow on main:\\n\\n' + '\\n'.join('- \`' + name + '\`' for name in missing) + '\\n\\nSee the repository deployment settings for the FTP path and protocol.\\n')
+                  summary.write('## cPanel deployment skipped\n\nAdd the following repository secrets, then run this workflow on main:\n\n' + '\n'.join('- `' + name + '`' for name in missing) + '\n\nSee the repository deployment settings for the FTP path and protocol.\n')
           PY
 
       - uses: actions/checkout@v4
