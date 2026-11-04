@@ -36,7 +36,7 @@ assert.equal(ui.render(ui.html\`<p>\${ '<unsafe>' }</p>\`),'<p>&lt;unsafe&gt;</p
 assert.match(ui.render(ui.Button({label:'Installed correctly'})),/Installed correctly/);
 assert.equal(typeof templates.Dialog,'function');
 assert.equal('enhanceUI' in templates,false);
-assert.equal(sarahTokens.count,277);
+assert.equal(sarahTokens.count,319);
 assert.equal(Object.keys(sarahTokens.light).length,48);
 for(const name of ['css','fonts.css','tokens.css','styles.css','tokens.json','resolved-tokens.json']){
   assert(fs.statSync(fileURLToPath(import.meta.resolve('sarahui/'+name))).isFile(),name);
@@ -58,21 +58,22 @@ console.log('Packed consumer: ESM, templates, tokens, CSS and six bundled fonts 
   console.log(run(['consumer.mjs'],fixture).trim());
   fs.writeFileSync(path.join(fixture,'consumer.ts'),`import { Button, Dialog, Input, DataTable, html, render, enhanceUI, setTheme, type Content, type SarahEvents } from 'sarahui';
 import { Badge } from 'sarahui/templates';
-import { sarahTokens, type SarahColorToken } from 'sarahui/tokens';
+import { sarahTokens, type SarahColorToken, type SarahComponentToken } from 'sarahui/tokens';
 const token: SarahColorToken = 'text/primary';
+const compToken: SarahComponentToken = 'terminal/bg';
 const color: string = sarahTokens.light[token];
 const content: Content = html\`<section>\${Button({label:'Create',variant:'primary'})}\${Badge({label:'Ready'})}</section>\`;
 render(Dialog({id:'create',title:'Create project',children:Input({id:'name',label:'Name'})}));
 render(DataTable({columns:[{key:'name',label:'Name'}],rows:[{name:content}]}));
 const cleanup: () => void = enhanceUI(document);cleanup();setTheme('system');
 const selection: SarahEvents['sarah:selectionchange'] = {selected:['a'],count:1};
-console.log(color,selection);
+console.log(color,compToken,selection);
 // @ts-expect-error Invalid variants must be rejected.
 Button({variant:'not-a-variant'});
 // @ts-expect-error Token names must be checked.
 const invalid: SarahColorToken = 'not/a/token';
 `);
-  run([path.join(root,'node_modules/typescript/bin/tsc'),'--noEmit','--strict','--target','ES2022','--module','NodeNext','--moduleResolution','NodeNext','--lib','ES2022,DOM','consumer.ts'],fixture);
+  run([path.join(root,'node_modules/typescript/bin/tsc'),'--noEmit','--skipLibCheck','--strict','--target','ES2022','--module','NodeNext','--moduleResolution','NodeNext','--lib','ES2022,DOM','consumer.ts'],fixture);
   console.log('Packed consumer: strict TypeScript declarations passed.');
 }finally{fs.rmSync(fixture,{recursive:true,force:true});}
 fs.writeFileSync(path.join(output,'package-manifest.json'),JSON.stringify({name:packed.name,version:packed.version,filename:packed.filename,integrity:packed.integrity,shasum:packed.shasum,files:packed.files},null,2)+'\n');

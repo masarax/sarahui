@@ -3,15 +3,15 @@
  * html tagged templates. Never put untrusted values in literal markup.
  */
 export const escapeText = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-class Markup { constructor(value){this.value=value;} toString(){return this.value;} }
-export const raw = value => new Markup(value);
+import { Markup, raw } from './utilities/raw.js';
+export { raw };
 export const render = value => value instanceof Markup?value.value:Array.isArray(value)?value.map(render).join(''):escapeText(value);
 export const html = (parts,...values) => raw(parts.reduce((s,p,i)=>s+p+(i<values.length?render(values[i]):''),''));
 export function safeHref(value='#') {
   const text=String(value).trim();
   try{return ['http:','https:','mailto:','tel:'].includes(new URL(text,'https://sarahui.invalid/').protocol)?text:'#';}catch{return '#';}
 }
-const allowed = new Set('id class name title type value placeholder required disabled checked min max step autocomplete rows role tabindex href download target rel selected hidden open multiple pattern minlength maxlength form inputmode readonly for autofocus cols wrap dir lang accept list size'.split(' '));
+const allowed = new Set('id class style name title type value placeholder required disabled checked min max step autocomplete rows role tabindex href download target rel selected hidden open multiple pattern minlength maxlength form inputmode readonly for autofocus cols wrap dir lang accept list size'.split(' '));
 export function attributes(props={}) {
   return Object.entries(props).map(([key,value])=>{
     if((!allowed.has(key)&&!/^(aria|data)-[a-z0-9-]+$/.test(key))||value==null||(value===false&&!key.startsWith('aria-')))return '';
@@ -212,7 +212,8 @@ export const Icons = new Proxy({}, {
 export function Logo({compact=false}={}) {return raw('<span class="s-logo"><svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#5B3DF5"/><path d="M28 11H18a6 6 0 0 0 0 12h4a3 3 0 0 1 0 6H12M12 29h10a6 6 0 0 0 0-12h-4a3 3 0 0 1 0-6h10" stroke="white" stroke-width="3.6" stroke-linecap="round"/></svg>'+(compact?'':'<span>sarah<span class="s-text-brand">UI</span></span>')+'</span>');}
 export function Spinner({label='Loading',decorative=false}={}) {return raw('<span class="s-spinner"'+(decorative?' aria-hidden="true"':' role="status" aria-label="'+escapeText(label)+'"')+'></span>');}
 export function Button({label='Continue',variant='primary',size='md',icon='',trailing='',disabled=false,loading=false,attrs={},className=''}={}) {
-  return raw('<button'+attributes({type:'button',...attrs,class:'s-button s-button--'+choice(variant,['primary','secondary','outline','ghost','danger'],'primary')+' s-button--'+choice(size,['sm','md','lg'],'md')+' '+className,disabled:disabled||loading,'aria-busy':loading?'true':null})+'>'+(loading?render(Spinner({decorative:true})):icon?render(Icon({name:icon})): '')+'<span>'+escapeText(label)+'</span>'+(trailing?render(Icon({name:trailing})): '')+'</button>');
+  const { style: _s, ...restAttrs } = attrs;
+  return raw('<button'+attributes({type:'button',...restAttrs,class:'s-button s-button--'+choice(variant,['primary','secondary','outline','ghost','danger'],'primary')+' s-button--'+choice(size,['sm','md','lg'],'md')+' '+className,disabled:disabled||loading,'aria-busy':loading?'true':null})+'>'+(loading?render(Spinner({decorative:true})):icon?render(Icon({name:icon})): '')+'<span>'+escapeText(label)+'</span>'+(trailing?render(Icon({name:trailing})): '')+'</button>');
 }
 export function IconButton({icon='plus',label='Add item',variant='outline',size='md',attrs={},disabled=false,className=''}={}) {
   const customClass = [attrs.class, className].filter(Boolean).join(' ');
@@ -320,9 +321,8 @@ export function BentoCard({name='',title='',description='Feature description det
       '<h3>'+escapeText(displayTitle)+'</h3>'+
       '<p>'+escapeText(description)+'</p>'+
       bodyContent+
-      (cta ? `<div class="s-bento-card-cta-mobile"><a class="s-bento-btn" href="${safeHref(href)}"><span>${escapeText(cta)}</span> ${render(Icon({name:'arrow',size:13}))}</a></div>` : '')+
+      (cta ? `<div class="s-bento-card-cta"><a class="s-bento-btn" href="${safeHref(href)}"><span>${escapeText(cta)}</span> ${render(Icon({name:'arrow',size:13}))}</a></div>` : '')+
     '</div>'+
-    (cta ? `<div class="s-bento-card-cta-desktop"><a class="s-bento-btn" href="${safeHref(href)}"><span>${escapeText(cta)}</span> ${render(Icon({name:'arrow',size:13}))}</a></div>` : '')+
   '</article>');
 }
 export function Drawer({id,title='Side Panel',description='Slide-over drawer content.',children='',position='right',attrs={}}={}) {
@@ -365,16 +365,7 @@ export function BorderBeam({size=50,duration=6,delay=0,colorFrom='#ffaa40',color
   const numOffset = typeof initialOffset === 'number' ? initialOffset : parseFloat(initialOffset) || 0;
   const numBorderWidth = typeof borderWidth === 'number' ? borderWidth : parseFloat(borderWidth) || 1;
 
-  let bgGradient = `linear-gradient(to left, ${colorFrom}, ${colorTo}, transparent)`;
-  if (customClass.includes('red')) {
-    bgGradient = 'linear-gradient(to left, transparent, #ef4444, transparent)';
-  } else if (customClass.includes('blue')) {
-    bgGradient = 'linear-gradient(to left, transparent, #3b82f6, transparent)';
-  } else if (customClass.includes('green')) {
-    bgGradient = 'linear-gradient(to left, transparent, #22c55e, transparent)';
-  } else if (customClass.includes('yellow')) {
-    bgGradient = 'linear-gradient(to left, transparent, #eab308, transparent)';
-  }
+    const bgGradient = `linear-gradient(to left, ${colorFrom}, ${colorTo}, transparent)`;
 
   const containerStyle = [
     `--border-beam-width:${numBorderWidth}px`,
@@ -425,7 +416,9 @@ export function RetroGrid({angle=65,attrs={}}={}) {
 export function ShineBorder({children='',borderWidth=1,duration=14,color='',shineColor='',attrs={}}={}) {
   const col = shineColor || color || '#5B3DF5';
   const colStr = Array.isArray(col) ? col.join(',') : col;
-  const style=(borderWidth?`border-width:${borderWidth}px;`:'')+(duration?`--shine-duration:${duration}s;`:'')+(colStr?`--shine-color:${colStr};`:'');
+  const bw = Number(borderWidth) || 1;
+  const dur = Number(duration) || 14;
+  const style = `border-width:${bw}px;--border-width:${bw}px;--shine-duration:${dur}s;--duration:${dur}s;--shine-color:${colStr};`;
   return raw('<div'+attributes({class:'s-shine-border',style:style||null,...attrs})+'><div class="s-shine-border-inner">'+render(children)+'</div></div>');
 }
 export function Meteors({number=12,attrs={}}={}) {
@@ -479,7 +472,7 @@ export function MagicCard({
 
   return raw('<div' + attributes({
     class: 's-magic-card' + extraClass,
-    'data-s-magic-card': true,
+    'data-s-magic-card': 'true',
     'data-mode': mode,
     'data-gradient-size': String(gradientSize),
     'data-glow-size': String(glowSize),
@@ -558,6 +551,7 @@ export function Dock({
 
   return raw('<nav' + attributes({
     class: 's-dock' + dirClass + extraClass,
+    role: 'toolbar',
     'data-s-dock': true,
     'data-size': iconSize,
     'data-magnification': iconMagnification,
@@ -653,9 +647,9 @@ export function AnimatedBeam({
 
   return raw('<svg' + attributes({
     class: 's-animated-beam' + extraClass,
+    'aria-hidden': 'true',
     style: `--beam-duration:${duration}s;--beam-delay:${delay}s;`,
     fill: 'none',
-    'aria-hidden': 'true',
     ...attrs
   }) + '>' +
     '<defs>' +
@@ -689,9 +683,12 @@ export function Terminal({children='',command='> pnpm dlx sarahui@latest init',s
 ],output='Success! Project initialization completed.',sequence=true,className='',attrs={}}={}) {
   const extraClass = className ? ` ${className}` : '';
   const header = '<div class="s-terminal-header"><div class="s-terminal-dots"><span class="s-dot-red"></span><span class="s-dot-yellow"></span><span class="s-dot-green"></span></div></div>';
-  if (children) {
+    if (children) {
     return raw('<div' + attributes({
       class: 's-terminal' + extraClass,
+      role: 'region',
+      'aria-label': 'Terminal',
+      'aria-live': 'polite',
       'data-s-terminal': true,
       'data-sequence': String(sequence),
       ...attrs
@@ -702,12 +699,15 @@ export function Terminal({children='',command='> pnpm dlx sarahui@latest init',s
   const stepsData = Array.isArray(steps) && steps.length ? JSON.stringify(steps) : '';
   return raw('<div' + attributes({
     class: 's-terminal' + extraClass,
+    role: 'region',
+    'aria-label': 'Terminal',
+    'aria-live': 'polite',
     'data-s-terminal': true,
     'data-command': cleanCommand,
     'data-steps': stepsData || null,
     'data-output': cleanOutput || null,
     ...attrs
-  }) + '>' + header + '<pre><code><div class="s-terminal-prompt"><span class="s-terminal-cmd"></span><span class="s-terminal-cursor"></span></div><div class="s-terminal-steps"></div>' + (cleanOutput ? `<div class="s-terminal-output s-terminal-line" style="display:none;"></div>` : '') + '</code></pre></div>');
+  }) + '>' + header + '<pre><code><div class="s-terminal-prompt"><span class="s-terminal-cmd"></span><span class="s-terminal-cursor"></span></div><div class="s-terminal-steps" aria-live="polite"></div>' + (cleanOutput ? `<div class="s-terminal-output s-terminal-line" style="display:none;"></div>` : '') + '</code></pre></div>');
 }
 export function OrbitingCircles({
   children = '',
@@ -749,8 +749,9 @@ export function OrbitingCircles({
     : '';
 
   const renderedItems = childArray.map((child, idx) => {
-    const angle = (360 / count) * idx;
-    const style = `--radius:${r};--duration:${d};--angle:${angle};--icon-size:${size}px;`;
+        const angle = (360 / count) * idx;
+    const del = Number(delay) || 0;
+    const style = `--radius:${r};--duration:${d};--delay:${del};--angle:${angle};--icon-size:${size}px;`;
 
     let content = child;
     if (typeof child === 'string') {
@@ -794,7 +795,7 @@ export function AnimatedList({items=null,children='',delay=1200,className='',att
   }
   const stringArr = rawArr.map(it => typeof it === 'string' ? it : render(it));
   const initial = stringArr.slice(0, 1).map(item => `<div class="s-animated-list-item">${item}</div>`).join('');
-  return raw('<div'+attributes({class:'s-animated-list'+extraClass,'data-s-animated-list':true,'data-delay':String(delay),'data-items':JSON.stringify(stringArr),...attrs})+'>'+initial+'</div>');
+  return raw('<div'+attributes({class:'s-animated-list'+extraClass,role:'log','aria-live':'polite','data-s-animated-list':true,'data-delay':String(delay),'data-items':JSON.stringify(stringArr),...attrs})+'>'+initial+'</div>');
 }
 export function InteractiveHoverButton({label='Get Started',text='',icon='arrow',attrs={}}={}) {
   const lbl = text || label || 'Get Started';
@@ -954,8 +955,11 @@ export function Safari({url='https://sarahui.dev',imageSrc='',videoSrc='',mode='
   return raw('<div'+attributes({class:'s-safari-mockup s-safari--'+choice(mode,['default','simple'],'default'),...attrs})+'><div class="s-safari-header"><div class="s-safari-traffic-lights"><span class="s-safari-dot s-dot-red"></span><span class="s-safari-dot s-dot-yellow"></span><span class="s-safari-dot s-dot-green"></span></div><div class="s-safari-address-bar"><svg class="s-safari-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span class="s-safari-url">'+escapeText(url)+'</span><button type="button" class="s-safari-reload" aria-label="Reload page">'+render(Icon({name:'refresh',size:12}))+'</button></div><div class="s-safari-actions"><button type="button" aria-label="Share">'+render(Icon({name:'link',size:13}))+'</button></div></div><div class="s-safari-viewport">'+media+'</div></div>');
 }
 
-export function GlareHover({children='',color='#ffffff',opacity=0.35,angle=-45,size=250,duration=650,playOnce=false,className='',attrs={}}={}) {
-  const style=`--gh-angle:${angle}deg;--gh-duration:${duration}ms;--gh-size:${size}%;--gh-color:${color};--gh-opacity:${opacity};`;
+export function GlareHover({children='',color='#ffffff',opacity=0.35,background='',angle=-45,size=250,duration=650,playOnce=false,width,height,className='',attrs={}}={}) {
+  let style=`--gh-angle:${angle}deg;--gh-duration:${duration}ms;--gh-size:${size}%;--gh-color:${color};--gh-opacity:${opacity};`;
+  if(background) style+=`background:${background};`;
+  if(width!==undefined) style+=`width:${typeof width==='number'?width+'px':width};`;
+  if(height!==undefined) style+=`height:${typeof height==='number'?height+'px':height};`;
   return raw('<div'+attributes({class:'s-glare-hover'+(playOnce?' s-glare-hover--once':'')+' '+(className||''),style,...attrs})+'><div class="s-glare-hover-surface">'+render(children)+'</div><div class="s-glare-hover-glare" aria-hidden="true"></div></div>');
 }
 
@@ -1040,8 +1044,8 @@ export function TextAnimate({text='Modern Animated Typography',animation='blurIn
   return raw('<div'+attributes({class:'s-text-animate s-text-animate--'+splitBy,...attrs})+'>'+spans+'<span class="s-sr-only">'+escapeText(text)+'</span></div>');
 }
 
-export function VideoText({text='OCEAN',src='https://cdn.magicui.design/ocean-small.webm',videoSrc='',fontSize=12,attrs={}}={}) {
-  const safeSrc = safeHref(videoSrc || src || 'https://cdn.magicui.design/ocean-small.webm');
+export function VideoText({text='OCEAN',src='assets/ocean.webm',videoSrc='',fontSize=12,attrs={}}={}) {
+  const safeSrc = safeHref(videoSrc || src || 'assets/ocean.webm');
   const svgMask = `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><text x='50%' y='50%' font-size='160' font-weight='900' font-family='system-ui, -apple-system, sans-serif' text-anchor='middle' dominant-baseline='middle' fill='%23000'>${escapeText(text)}</text></svg>`;
   const maskUri = `url("data:image/svg+xml,${encodeURIComponent(svgMask)}")`;
   const style = `mask-image:${maskUri};-webkit-mask-image:${maskUri};mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;`;
@@ -1120,7 +1124,7 @@ export function HeroVideoDialog({
   ], 'from-center');
 
   return raw('<div' + attributes({ class: 's-hero-video-wrap' + extraClass, ...attrs }) + '>' +
-    '<button type="button" class="s-hero-video-thumbnail" data-s-video-open="' + id + '" aria-label="Play video">' +
+    '<button type="button" class="s-hero-video-thumbnail" data-s-video-open="' + id + '" aria-haspopup="dialog" aria-label="Play video">' +
       '<img src="' + safeHref(thumbnailSrc) + '" alt="' + escapeText(thumbnailAlt) + '" class="s-hero-video-img">' +
       '<div class="s-hero-video-play-backdrop">' +
         '<div class="s-hero-video-play-halo">' +
@@ -1167,7 +1171,7 @@ export function IconCloud({
     if (Array.isArray(sourceSlugs)) {
       resolvedImages = sourceSlugs.map(slug => {
         const s = String(slug).toLowerCase().trim();
-        return `https://cdn.simpleicons.org/${s}/${s}`;
+        return `https://cdn.simpleicons.org/${s}`;
       });
     }
   }
@@ -1668,8 +1672,8 @@ const KNOWN_TWEETS = {
     postUrl: 'https://x.com/figma/status/2103155873623540169'
   },
   '1668408059125702661': {
-    name: 'Dillion',
-    handle: 'dillionverma',
+    name: 'Sarah Khan',
+    handle: 'sarahkhan',
     avatar: 'https://pbs.twimg.com/profile_images/1902402394475880448/w8lUXnEe_normal.jpg',
     verified: true,
     text: 'Companies spend $30,000+ and several weeks to build beautiful landing pages like @linear, @wopehq and @reflectnotes 🤷‍♂️\n\nI built @reactjs + @tailwindcss components for you to do the same in hours, starting at just $29\n\nPre-order link + demo below 👇\n\n#buildinpublic @buildspace',
@@ -1677,11 +1681,11 @@ const KNOWN_TWEETS = {
       src: 'https://video.twimg.com/ext_tw_video/1668388166598787079/pu/vid/640x360/nYFKhWYN3GwKzWL1.mp4',
       poster: 'https://pbs.twimg.com/ext_tw_video_thumb/1668388166598787079/pu/img/mA7mfmJyXKLcGmo_.jpg'
     },
-    postUrl: 'https://x.com/dillionverma/status/1668408059125702661'
+    postUrl: 'https://x.com/sarahkhan/status/1668408059125702661'
   },
   '1678577280489234432': {
-    name: 'Dillion',
-    handle: 'dillionverma',
+    name: 'Sarah Khan',
+    handle: 'sarahkhan',
     avatar: 'https://pbs.twimg.com/profile_images/1902402394475880448/w8lUXnEe_normal.jpg',
     verified: true,
     text: 'first day at @_buildspace sf campus irl',
@@ -1689,22 +1693,22 @@ const KNOWN_TWEETS = {
       'https://pbs.twimg.com/media/F0uA8CkaUAAK8Ka.jpg',
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80'
     ],
-    postUrl: 'https://x.com/dillionverma/status/1678577280489234432'
+    postUrl: 'https://x.com/sarahkhan/status/1678577280489234432'
   },
   '1675849118445436929': {
-    name: 'Dillion',
-    handle: 'dillionverma',
+    name: 'Sarah Khan',
+    handle: 'sarahkhan',
     avatar: 'https://pbs.twimg.com/profile_images/1902402394475880448/w8lUXnEe_normal.jpg',
     verified: true,
-    text: 'it took an insane amount of effort to go from nothing to this in 2 weeks lmao\n\ni hope yall like it 🤝\n\nWhat components do you want to see next?\n\nhttps://magicuikit.com/components/magic-card',
+    text: 'it took an insane amount of effort to craft 120 modular components and 319 design tokens\n\ni hope yall like it 🤝\n\nWhat components do you want to see next?\n\nhttps://sarahui.dev/components/magic-card',
     urlPreview: {
-      domain: 'magicuikit.com',
-      title: 'Magic Card - Magic UI',
+      domain: 'sarahui.dev',
+      title: 'Magic Card - SarahUI',
       description: 'A spotlight effect that highlights the borders and content on mouse hover.',
       image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-      url: 'https://magicuikit.com/components/magic-card'
+      url: 'https://sarahui.dev/components/magic-card'
     },
-    postUrl: 'https://x.com/dillionverma/status/1675849118445436929'
+    postUrl: 'https://x.com/sarahkhan/status/1675849118445436929'
   },
   '1441032681968212480': {
     name: 'Guillermo Rauch',

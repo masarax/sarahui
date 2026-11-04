@@ -48,7 +48,7 @@ export const expressions={
   Marquee:'UI.Marquee({ children: UI.Badge({ label: "SarahUI Infinite Marquee" }) })',
   BorderBeam:'UI.html`<div style="position:relative;padding:24px;border:1px solid var(--s-border-default);">${UI.BorderBeam({ size: 160 })}<span>Animated Border</span></div>`',
   AnimatedShinyText:'UI.AnimatedShinyText({ text: "Luminous metallic shimmer effect" })',
-  NumberTicker:'UI.NumberTicker({ value: 277 })',
+  NumberTicker:'UI.NumberTicker({ value: 319 })',
   Ripple:'UI.Ripple({ numCircles: 4 })',
   RetroGrid:'UI.RetroGrid({ angle: 65 })',
   ShineBorder:'UI.ShineBorder({ children: "Card with animated dynamic shining border" })',
@@ -341,8 +341,8 @@ export function extraAfterProps(name, highlightCode) {
       <section class="detail-section" id="sec-smoothcursor-credits" style="padding-bottom:12px;">
         <div class="detail-section-title">
           <div>
-            <h3>Credits</h3>
-            <p>Credit to <a href="https://twitter.com/Code_Parth" target="_blank" rel="noreferrer" style="color:var(--s-color-brand-500);text-decoration:underline;">@Code_Parth</a> for the original concept and implementation.</p>
+            <h3>Design & Engineering</h3>
+            <p>Engineered as a native SarahUI progressive enhancement with spring physics and zero global pointer lock.</p>
           </div>
         </div>
       </section>

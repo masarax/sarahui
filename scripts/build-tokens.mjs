@@ -19,11 +19,11 @@ for(const theme of ['light','dark']) {
 }
 css+='@media (prefers-reduced-motion: reduce) { :root { --s-duration-fast: 0ms; --s-duration-normal: 0ms; --s-duration-slow: 0ms; } }\n';
 for(const t of spec.textStyles)css+='.s-type-'+t.name.toLowerCase().replaceAll('/','-')+' { font-family:var(--s-font-'+t.family+'),sans-serif; font-size:var(--s-font-size-'+t.size+'); line-height:var(--s-line-height-'+t.lineHeight+'); font-weight:'+t.weight+'; letter-spacing:'+t.tracking+'px; }\n';
-const resolved={name:spec.name,version:spec.version,light:resolveTheme(spec,'light'),dark:resolveTheme(spec,'dark'),count:countTokens(spec)};
+const resolved={name:spec.name,version:spec.version,light:resolveTheme(spec,'light'),dark:resolveTheme(spec,'dark'),count:countTokens(spec),componentTokens:spec.componentTokens};
 for(const [name,content] of Object.entries({
   'packages/ui/src/tokens.css':css,
   'tokens/generated/sarah.css':css,
   'tokens/generated/sarah.resolved.json':JSON.stringify(resolved,null,2)+'\n',
-  'tokens/generated/sarah.tokens.ts':'// Generated. Edit tokens/sarah.tokens.json instead.\nexport const sarahTokens = '+JSON.stringify(resolved,null,2)+' as const;\nexport type SarahColorToken = keyof typeof sarahTokens.light;\n'
+  'tokens/generated/sarah.tokens.ts':'// Generated. Edit tokens/sarah.tokens.json instead.\nexport const sarahTokens = '+JSON.stringify(resolved,null,2)+' as const;\nexport type SarahColorToken = keyof typeof sarahTokens.light;\nexport type SarahComponentToken = keyof typeof sarahTokens.componentTokens;\n'
 }))fs.writeFileSync(new URL(name,root),content);
 console.log('sarahUI: generated '+countTokens(spec)+' token entries, 2 themes, 15 type styles.');

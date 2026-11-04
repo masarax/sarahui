@@ -1,0 +1,9 @@
+export interface AuroraTextProps {
+  children?: any;
+  class?: string;
+  className?: string;
+  attrs?: Record<string, any>;
+  [key: string]: any;
+}
+
+export declare function AuroraText(props?: AuroraTextProps): any;

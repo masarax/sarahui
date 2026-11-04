@@ -7,3 +7,6 @@ __pycache__/
 *.b64
 .env*
 !.env.example
+
+# Agent transient state
+.agents/teamwork/

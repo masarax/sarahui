@@ -160,3 +160,4 @@ export interface SarahEvents {
   'sarah:menuaction': { value: string };
   'sarah:command': { href: string; label: string };
 }
+export type { SarahColorToken, SarahComponentToken } from "./theme-tokens.js";

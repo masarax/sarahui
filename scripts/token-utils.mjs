@@ -16,7 +16,7 @@ export function validateTokens(s) {
     if(typeof t.value==='number'&&(!Number.isFinite(t.value)||t.value<0))throw new Error('Invalid number: '+key);
     if(typeof t.value==='string'&&/[;{}<>]/.test(t.value))throw new Error('Unsafe token value: '+key);
   }
-  for(const ref of Object.values(s.componentTokens))if(!Object.hasOwn(base,ref))throw new Error('Unresolved component alias: '+ref);
+  for(const ref of Object.values(s.componentTokens))if(!Object.hasOwn(base,ref)&&!Object.hasOwn(s.colors.light,ref))throw new Error('Unresolved component alias: '+ref);
   return true;
 }
 export function contrast(a,b) {

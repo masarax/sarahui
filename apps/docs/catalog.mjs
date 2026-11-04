@@ -41,7 +41,7 @@ export const demos={
 
   Pagination:()=>html`<div class="s-stack">${U.Pagination({pages:5,current:2,label:'Component pagination demo'})}<p data-page-feedback class="s-small s-muted" aria-live="polite">Page 2 of 5</p></div>`,
 
-  NavItem:()=>html`<nav aria-label="Example navigation" class="demo-nav">${U.NavItem({active:true})}${U.NavItem({label:'Foundations',href:'#foundations',icon:'palette'})}${U.NavItem({label:'Components',href:'#components',icon:'layers',badge:'32'})}</nav>`,
+  NavItem:()=>html`<nav aria-label="Example navigation" class="demo-nav">${U.NavItem({active:true})}${U.NavItem({label:'Foundations',href:'#foundations',icon:'palette'})}${U.NavItem({label:'Components',href:'#components',icon:'layers',badge:'120'})}</nav>`,
 
   DataTable:id=>U.DataTable({id,caption:'Example projects',columns:[{key:'name',label:'Project',sortable:true},{key:'status',label:'Status'},{key:'progress',label:'Progress (%)',sortable:true}],rows:[{name:'Studio website',status:Badge({label:'In review',tone:'warning'}),progress:92},{name:'Brand refresh',status:Badge({label:'Active'}),progress:72},{name:'Mobile experience',status:Badge({label:'Planning',tone:'info'}),progress:48}],selectable:true}),
 
@@ -520,7 +520,7 @@ export const demos={
       <path class="s-beam-path-bg" data-bg-for="${id}-p-zapier" />
       <path class="s-beam-path-bg" data-bg-for="${id}-p-messenger" />
 
-      <!-- Animated Beam Flow Paths (Exact Magic UI animated-beam-demo parity) -->
+      <!-- Animated Beam Flow Paths (Native SarahUI specification) -->
       <path class="s-beam-path" id="${id}-p-drive" data-from="#${id}-drive" data-to="#${id}-openai" data-curvature="-75" data-end-y-offset="-10" stroke="url(#${id}-grad-drive)" />
       <path class="s-beam-path" id="${id}-p-notion" data-from="#${id}-notion" data-to="#${id}-openai" stroke="url(#${id}-grad-notion)" />
       <path class="s-beam-path" id="${id}-p-whatsapp" data-from="#${id}-whatsapp" data-to="#${id}-openai" data-curvature="75" data-end-y-offset="10" stroke="url(#${id}-grad-whatsapp)" />
@@ -798,9 +798,9 @@ export const demos={
 
   GlareHover:()=>html`
     <div style="display:flex;align-items:center;justify-content:center;padding:40px 16px;min-height:360px;">
-      <div style="width:100%;max-width:340px;">
-        ${U.GlareHover({children:html`
-          <div style="padding:24px;border-radius:16px;border:1px solid var(--s-border-default);background:var(--s-bg-surface);box-shadow:0 4px 16px rgba(0,0,0,0.06);text-align:left;">
+      <div style="width:340px;max-width:100%;">
+        ${U.GlareHover({className:'rounded-xl w-full',duration:600,children:html`
+          <div style="width:100%;box-sizing:border-box;padding:24px;border-radius:16px;border:1px solid var(--s-border-default);background:var(--s-bg-surface);box-shadow:0 4px 16px rgba(0,0,0,0.06);text-align:left;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
               <h3 style="font-size:18px;font-weight:700;margin:0;">Pro</h3>
               ${Badge({label:'Popular',tone:'brand'})}
@@ -816,7 +816,7 @@ export const demos={
               <div style="display:flex;align-items:center;gap:8px;">${Icon({name:'check',size:15})} <span>Advanced analytics</span></div>
               <div style="display:flex;align-items:center;gap:8px;color:var(--s-text-muted);"><span style="width:15px;text-align:center;">•</span> <span>SSO (coming soon)</span></div>
             </div>
-            <button type="button" class="demo-login-btn-primary-full">Get started</button>
+            ${Button({label:'Get started',variant:'primary',className:'s-button--full',attrs:{style:'width:100%;'}})}
           </div>
         `})}
       </div>
@@ -851,7 +851,7 @@ export const demos={
 
   VideoText:()=>html`
     <div style="display:flex;justify-content:center;align-items:center;padding:48px 16px;min-height:300px;background:var(--s-bg-surface);border-radius:12px;border:1px solid var(--s-border-default);">
-      ${U.VideoText({src:'https://cdn.magicui.design/ocean-small.webm',text:'OCEAN',fontSize:20})}
+      ${U.VideoText({src:'assets/ocean.webm',text:'OCEAN',fontSize:20})}
     </div>
   `,
 
@@ -1062,7 +1062,7 @@ export const config = {
 };
 
 export const componentVariants = {
-  // 1. Marquee - Parity with Magic UI (Vertical, 3D)
+  // 1. Marquee - Native SarahUI specification (Vertical, 3D)
   Marquee: [
     {
       title: 'Vertical',
@@ -1236,7 +1236,7 @@ export function Marquee3D() {
     }
   ],
 
-    // 2. Terminal - Parity with Magic UI (Custom Delays & Multi-Command)
+    // 2. Terminal - Native SarahUI specification (Custom Delays & Multi-Command)
   Terminal: [
     {
       title: 'Custom Delays',
@@ -1312,7 +1312,7 @@ export function TerminalMultiCommand() {
     }
   ],
 
-  // 3. HeroVideoDialog - Parity with Magic UI (Top-in-bottom-out, From Bottom)
+  // 3. HeroVideoDialog - Native SarahUI specification (Top-in-bottom-out, From Bottom)
   HeroVideoDialog: [
     {
       title: 'Top-in-bottom-out',
@@ -1348,7 +1348,7 @@ export function HeroVideoDialogFromBottom() {
     }
   ],
 
-  // 4. BentoGrid - Parity with Magic UI (Vertical, Three Columns)
+  // 4. BentoGrid - Native SarahUI specification (Vertical, Three Columns)
   BentoGrid: [
     {
       title: 'Vertical',
@@ -1644,7 +1644,7 @@ export function AnimatedListTeamFeed() {
     }
   ],
 
-// 6. Dock - Parity with Magic UI (Custom Direction, Custom Magnification)
+// 6. Dock - Native SarahUI specification (Custom Direction, Custom Magnification)
   Dock: [
     {
       title: 'Direction',
@@ -1804,7 +1804,7 @@ export function GlobeCompact() {
     }
   ],
 
-  // 8. TweetCard - Parity with Magic UI (Image Carousel, Meta URL Preview)
+  // 8. TweetCard - Native SarahUI specification (Image Carousel, Meta URL Preview)
   TweetCard: [
     {
       title: 'Image Carousel',
@@ -2049,7 +2049,7 @@ export function IconCloudImagesDemo() {
     }
   ],
 
-// 12. Lens - Parity with Magic UI
+// 12. Lens - Native SarahUI specification
   Lens: [
     {
       title: 'Default',
@@ -2414,7 +2414,7 @@ export function ProgressiveBlurHero() {
     }
   ],
 
-// 16. DottedMap - Parity with Magic UI (Interactive Pulse Markers & Flight Routes)
+// 16. DottedMap - Native SarahUI specification (Interactive Pulse Markers & Flight Routes)
 DottedMap: [
     {
       title: 'Global Presence & Routes',
@@ -2517,7 +2517,7 @@ export function DottedMapMatrix() {
     }
   ],
 
-// 17. AnimatedBeam - Parity with Magic UI (Bi-Directional, Multiple Inputs, Multiple Outputs)
+// 17. AnimatedBeam - Native SarahUI specification (Bi-Directional, Multiple Inputs, Multiple Outputs)
 AnimatedBeam: [
     {
       title: 'Uni-Directional',
@@ -2862,7 +2862,7 @@ export function AnimatedBeamMultipleOutputsDemo() {
     }
   ],
 
-// 18. BorderBeam - Parity with Magic UI (2 Border Beams, Reverse, Spring Animation)
+// 18. BorderBeam - Native SarahUI specification (2 Border Beams, Reverse, Spring Animation)
   BorderBeam: [
     {
       title: '2 Border Beams',
@@ -3070,7 +3070,7 @@ export function BorderBeamButton() {
     }
   ],
 
-  // 19. ShineBorder - Parity with Magic UI (Monotone)
+  // 19. ShineBorder - Native SarahUI specification (Monotone)
   ShineBorder: [
     {
       title: 'Custom Colors',
@@ -3102,7 +3102,7 @@ export function ShineBorderMonotone() {
     }
   ],
 
-  // 20. MagicCard - Parity with Magic UI (Orb)
+  // 20. MagicCard - Native SarahUI specification (Orb)
   MagicCard: [
     {
       title: 'Orb',
@@ -3222,36 +3222,78 @@ export function MagicCardOrbDemo() {
   // 21. GlareHover
   GlareHover: [
     {
-      title: 'Holographic',
-      description: 'Dynamic specular glare sheen passing across surface responding to pointer movement.',
-      preview: () => demos.GlareHover(),
-      code: `import { GlareHover } from "@/components/sarahui/glare-hover";
+      title: 'CTA',
+      description: 'Call-to-action card with a specular glare sheen.',
+      preview: () => html`
+        <div style="display:flex;justify-content:center;align-items:center;padding:32px 16px;width:100%;">
+          <div style="width:100%;max-width:480px;">
+            ${U.GlareHover({className:'rounded-2xl w-full',duration:700,children:html`
+              <div style="padding:32px 24px;border-radius:16px;border:1px solid var(--s-border-default);background:var(--s-bg-surface);box-shadow:0 4px 16px rgba(0,0,0,0.06);text-align:center;">
+                <p class="s-small s-muted" style="letter-spacing:0.08em;text-transform:uppercase;margin:0 0 8px;font-weight:600;">14-day free trial · No card required</p>
+                <h3 style="font-size:22px;font-weight:700;margin:0 0 8px;color:var(--s-text-primary);">Ready to get started?</h3>
+                <p class="s-small s-muted" style="margin:0 auto 20px;max-width:340px;">Join 4,000+ teams already using our platform to ship faster.</p>
+                <div style="display:flex;justify-content:center;gap:10px;">
+                  ${Button({label:'Start free trial',variant:'primary'})}
+                  ${Button({label:'View demo',variant:'outline'})}
+                </div>
+              </div>
+            `})}
+          </div>
+        </div>
+      `,
+      code: `import { Button } from "@/components/sarahui/button";
+import { GlareHover } from "@/components/sarahui/glare-hover";
 
-export function GlareHoverDemo() {
+export default function Cta() {
   return (
-    <GlareHover>
-      <div>Interactive Glare Surface</div>
+    <GlareHover className="rounded-xl w-full" duration={700}>
+      <div className="p-8 text-center border rounded-xl bg-surface">
+        <p className="text-muted text-xs uppercase font-semibold">14-day free trial · No card required</p>
+        <h3 className="text-2xl font-bold mt-2">Ready to get started?</h3>
+        <p className="text-muted text-sm mt-2">Join 4,000+ teams already using our platform to ship faster.</p>
+        <div className="flex justify-center gap-2 mt-4">
+          <Button variant="primary">Start free trial</Button>
+          <Button variant="outline">View demo</Button>
+        </div>
+      </div>
     </GlareHover>
   );
 }`
     },
     {
-      title: 'Call to Action',
-      description: 'Specular call-to-action button highlighting with interactive sheen.',
+      title: 'Alerts',
+      description: 'Status alerts with responsive specular glare tints matching notification severity.',
       preview: () => html`
-        <div class="demo-wrap">
-          <button class="s-button s-button--primary" style="position:relative;overflow:hidden;">
-            <span>Get Started with Glare</span>
-          </button>
+        <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:500px;margin:0 auto;padding:24px 0;">
+          ${U.GlareHover({className:'rounded-lg w-full',duration:550,opacity:0.25,children:html`
+            ${U.Alert({title:'Action required',description:'Your plan expires in 3 days. Renew to keep access.',tone:'info'})}
+          `})}
+          ${U.GlareHover({className:'rounded-lg w-full',color:'#ff6070',opacity:0.25,duration:550,children:html`
+            ${U.Alert({title:'Payment declined',description:'Check your card details and try again.',tone:'danger'})}
+          `})}
+          ${U.GlareHover({className:'rounded-lg w-full',color:'#60ff70',opacity:0.25,duration:550,children:html`
+            ${U.Alert({title:'Subscription confirmed',description:'You have full Pro access until April 5, 2027.',tone:'success'})}
+          `})}
         </div>
       `,
-      code: `import { GlareHover } from "@/components/sarahui/glare-hover";
+      code: `import { Alert } from "@/components/sarahui/alert";
+import { GlareHover } from "@/components/sarahui/glare-hover";
 
-export function GlareHoverCTA() {
+export default function Alerts() {
   return (
-    <GlareHover className="rounded-lg">
-      <button className="btn-primary">Get Started</button>
-    </GlareHover>
+    <div className="flex flex-col gap-3">
+      <GlareHover className="w-full rounded-lg" duration={550} opacity={0.25}>
+        <Alert title="Action required" description="Your plan expires in 3 days. Renew to keep access." tone="info" />
+      </GlareHover>
+
+      <GlareHover className="w-full rounded-lg" color="#ff6070" opacity={0.25} duration={550}>
+        <Alert title="Payment declined" description="Check your card details and try again." tone="danger" />
+      </GlareHover>
+
+      <GlareHover className="w-full rounded-lg" color="#60ff70" opacity={0.25} duration={550}>
+        <Alert title="Subscription confirmed" description="You have full Pro access until April 5, 2027." tone="success" />
+      </GlareHover>
+    </div>
   );
 }`
     }
@@ -3281,7 +3323,7 @@ export function MeteorsSubtle() {
     }
   ],
 
-  // 23. Confetti - Parity with Magic UI (Fireworks, Side Cannons)
+  // 23. Confetti - Native SarahUI specification (Fireworks, Side Cannons)
   Confetti: [
     {
       title: 'Fireworks',
@@ -3339,7 +3381,7 @@ export function ParticlesAccent() {
     }
   ],
 
-  // 25. AnimatedThemeToggler - Parity with Magic UI (Square, Diamond)
+  // 25. AnimatedThemeToggler - Native SarahUI specification (Square, Diamond)
 AnimatedThemeToggler: [
     {
       title: 'Square',
@@ -3403,7 +3445,7 @@ export function BlurFadeHero() {
     }
   ],
 
-  // 27. TextAnimate - Parity with Magic UI (Blur In by Text, Slide Up by Word)
+  // 27. TextAnimate - Native SarahUI specification (Blur In by Text, Slide Up by Word)
 TextAnimate: [
     {
       title: 'Blur In by Text',
@@ -3435,7 +3477,7 @@ export function TextAnimateSlideUp() {
     }
   ],
 
-// 28. TypingAnimation - Parity with Magic UI (Multiple Words with Loop, Custom Speed)
+// 28. TypingAnimation - Native SarahUI specification (Multiple Words with Loop, Custom Speed)
   TypingAnimation: [
     {
       title: 'Multiple Words with Loop',
@@ -3655,7 +3697,7 @@ export function AnimatedShinyTextMilestone() {
     }
   ],
 
-// 34. AnimatedGradientText - Parity with Magic UI (Custom Speed)
+// 34. AnimatedGradientText - Native SarahUI specification (Custom Speed)
 AnimatedGradientText: [
     {
       title: 'Color Shift',
@@ -3727,7 +3769,7 @@ export function TextRevealHero() {
     }
   ],
 
-// 36. DiaTextReveal - Parity with Magic UI (Custom gradient)
+// 36. DiaTextReveal - Native SarahUI specification (Custom gradient)
 DiaTextReveal: [
     {
       title: 'Repeat Animation',
@@ -3791,7 +3833,7 @@ export function HyperTextSystem() {
     }
   ],
 
-// 38. WordRotate - Parity with Magic UI (Snappy Cycling)
+// 38. WordRotate - Native SarahUI specification (Snappy Cycling)
   WordRotate: [
     {
       title: 'Fast Rotation',
@@ -3908,7 +3950,7 @@ export function MorphingTextFast() {
     }
   ],
 
-  // 42. SpinningText - Parity with Magic UI (Reverse)
+  // 42. SpinningText - Native SarahUI specification (Reverse)
 SpinningText: [
     {
       title: 'Reverse Direction',
@@ -3972,7 +4014,7 @@ export function HighlighterUnderline() {
     }
   ],
 
-// 44. Text3DFlip - Parity with Magic UI (Stagger from center)
+// 44. Text3DFlip - Native SarahUI specification (Stagger from center)
 Text3DFlip: [
     {
       title: 'Stagger from Center',
@@ -4004,7 +4046,7 @@ export function Text3DFlipCenter() {
     }
   ],
 
-// 45. Safari - Parity with Magic UI (With Image, With Video, Simple Mode)
+// 45. Safari - Native SarahUI specification (With Image, With Video, Simple Mode)
 Safari: [
     {
       title: 'With Image',
@@ -4050,7 +4092,7 @@ export function SafariSimple() {
     }
   ],
 
-// 46. Iphone - Parity with Magic UI (With Image, With Video)
+// 46. Iphone - Native SarahUI specification (With Image, With Video)
 Iphone: [
     {
       title: 'With Image',
@@ -4082,7 +4124,7 @@ export function IphoneVideo() {
     }
   ],
 
-// 47. Android - Parity with Magic UI (With Image, With Video)
+// 47. Android - Native SarahUI specification (With Image, With Video)
 Android: [
     {
       title: 'With Image',
@@ -4114,7 +4156,7 @@ export function AndroidVideo() {
     }
   ],
 
-// 48. RainbowButton - Parity with Magic UI (Outline Variant)
+// 48. RainbowButton - Native SarahUI specification (Outline Variant)
   RainbowButton: [
     {
       title: 'Outline Variant',
@@ -4206,7 +4248,7 @@ export function RippleButtonOutline() {
     }
   ],
 
-// 51. FlickeringGrid - Parity with Magic UI (Rounded)
+// 51. FlickeringGrid - Native SarahUI specification (Rounded)
 FlickeringGrid: [
     {
       title: 'Dense Grid',
@@ -4332,7 +4374,7 @@ export function RippleCompact() {
     }
   ],
 
-  // 55. DotPattern - Parity with Magic UI (Linear Gradient, With Glow Effect)
+  // 55. DotPattern - Native SarahUI specification (Linear Gradient, With Glow Effect)
   DotPattern: [
     {
       title: 'Linear Gradient',
@@ -4368,7 +4410,7 @@ export function DotPatternGlow() {
     }
   ],
 
-  // 56. GridPattern - Parity with Magic UI (Linear Gradient, Dashed Stroke)
+  // 56. GridPattern - Native SarahUI specification (Linear Gradient, Dashed Stroke)
   GridPattern: [
     {
       title: 'Linear Gradient',
@@ -4404,7 +4446,7 @@ export function GridPatternDashed() {
     }
   ],
 
-  // 57. HexagonPattern - Parity with Magic UI (Linear Gradient, Dashed Stroke)
+  // 57. HexagonPattern - Native SarahUI specification (Linear Gradient, Dashed Stroke)
   HexagonPattern: [
     {
       title: 'Linear Gradient',
@@ -4435,7 +4477,7 @@ export function HexagonPatternDashed() {
     }
   ],
 
-  // 58. StripedPattern - Parity with Magic UI (Striped Pattern with a dashed stroke, Striped Pattern To Right)
+  // 58. StripedPattern - Native SarahUI specification (Striped Pattern with a dashed stroke, Striped Pattern To Right)
   StripedPattern: [
     {
       title: 'Dashed Stroke',
@@ -4468,7 +4510,7 @@ export function StripedPatternHorizontal() {
     }
   ],
 
-  // 59. InteractiveGridPattern - Parity with Magic UI (Colorful)
+  // 59. InteractiveGridPattern - Native SarahUI specification (Colorful)
 InteractiveGridPattern: [
     {
       title: 'Colorful',
@@ -4540,7 +4582,7 @@ export function LightRaysAmbient() {
     }
   ],
 
-// 61. NoiseTexture - Parity with Magic UI (Newsletter digest, Button)
+// 61. NoiseTexture - Native SarahUI specification (Newsletter digest, Button)
   NoiseTexture: [
     {
       title: 'Newsletter Digest',
@@ -4580,7 +4622,7 @@ export function NoiseTextureButton() {
     }
   ],
 
-  // 62. Floating3DParticles - Parity with Magic UI (Plain Background)
+  // 62. Floating3DParticles - Native SarahUI specification (Plain Background)
 Floating3DParticles: [
     {
       title: 'Plain Background',
@@ -4920,7 +4962,7 @@ export function KineticTextFast() {
     }
   ],
 
-// 70. CoolMode - Parity with Magic UI (Custom Particle)
+// 70. CoolMode - Native SarahUI specification (Custom Particle)
 CoolMode: [
     {
       title: 'Custom Particle',
@@ -4984,7 +5026,7 @@ export function PixelImageFine() {
     }
   ],
 
-  // 72. PulsatingButton - Parity with Magic UI (Ripple Variant)
+  // 72. PulsatingButton - Native SarahUI specification (Ripple Variant)
 PulsatingButton: [
     {
       title: 'Ripple Glow',
@@ -5132,7 +5174,7 @@ export function AnimatedCircularProgressBarTarget() {
     }
   ],
 
-// 76. Backlight - Parity with Magic UI (Image, SVG)
+// 76. Backlight - Native SarahUI specification (Image, SVG)
   Backlight: [
     {
       title: 'Image Backdrop',
@@ -5887,7 +5929,7 @@ Collapsible: [
       description: 'Collapsible container with smooth expand and collapse transition and rotating chevron.',
       preview: () => html`
         <div class="s-stack">
-          ${U.Collapsible({title:'What is SarahUI?',content:'SarahUI is a modern, zero-dependency design system combining the best of MagicUI and Shadcn.',open:true})}
+          ${U.Collapsible({title:'What is SarahUI?',content:'SarahUI is a modern, zero-dependency design system with 319 design tokens, 120 modular components, and native Tailwind CSS integration.',open:true})}
         </div>
       `,
       code: `import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/sarahui/collapsible";
@@ -6841,7 +6883,7 @@ export function HoverCardUser() {
             content: html`
               <div style="padding:4px;max-width:260px;">
                 <strong style="font-size:13px;display:block;margin-bottom:4px;">masarax/sarahui</strong>
-                <p class="s-small s-muted" style="margin:0 0 8px;">120 components, 277 design tokens, 0 runtime dependencies.</p>
+                <p class="s-small s-muted" style="margin:0 0 8px;">120 components, 319 design tokens, 0 runtime dependencies.</p>
                 <span class="s-small" style="color:var(--s-brand-indigo);">★ 4.9k stars on GitHub</span>
               </div>
             `

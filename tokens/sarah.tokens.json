@@ -701,8 +701,640 @@
     "dialog/padding": "spacing/32",
     "badge/radius": "radius/full",
     "focus/width": "border-width/focus",
-    "focus/offset": "spacing/4"
+    "focus/offset": "spacing/4",
+    "marquee/duration": "duration/slow",
+    "marquee/gap": "spacing/16",
+    "terminal/radius": "radius/xl",
+    "terminal/padding": "spacing/16",
+    "terminal/bg": "bg/surface",
+    "terminal/border": "border/default",
+    "hero-video/radius": "radius/xl",
+    "hero-video/halo-size": "size/control/lg",
+    "bento/radius": "radius/xl",
+    "bento/gap": "spacing/16",
+    "bento/padding": "spacing/24",
+    "animated-list/radius": "radius/lg",
+    "animated-list/gap": "spacing/12",
+    "dock/radius": "radius/full",
+    "dock/size": "size/control/md",
+    "dock/gap": "spacing/8",
+    "dock/padding": "spacing/12",
+    "globe/radius": "radius/full",
+    "tweet-card/radius": "radius/xl",
+    "tweet-card/padding": "spacing/16",
+    "orbit/icon-size": "size/icon/lg",
+    "orbit/path-border": "border-width/default",
+    "avatar-circles/size": "size/avatar/md",
+    "avatar-circles/overlap": "spacing/8",
+    "icon-cloud/size": "size/content/max",
+    "lens/radius": "radius/full",
+    "lens/loupe-border": "border-width/focus",
+    "pointer/badge-radius": "radius/md",
+    "smooth-cursor/size": "size/icon/lg",
+    "progressive-blur/height": "spacing/48",
+    "dotted-map/dot-size": "size/icon/sm",
+    "animated-beam/stroke-width": "border-width/focus",
+    "animated-beam/color-from": "brand/indigo",
+    "animated-beam/color-to": "brand/violet",
+    "border-beam/width": "border-width/default",
+    "border-beam/color-from": "brand/indigo",
+    "border-beam/color-to": "brand/violet",
+    "shine-border/width": "border-width/default",
+    "shine-border/radius": "radius/xl",
+    "magic-card/radius": "radius/xl",
+    "magic-card/gradient-size": "size/content/max",
+    "glare-hover/radius": "radius/xl"
   },
+  "spectrumComponentTaxonomy": [
+    {
+      "token": "marquee/duration",
+      "name": {
+        "component": "marquee",
+        "structure": "track",
+        "property": "duration",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "duration/slow",
+      "cssVariable": "--s-marquee-duration"
+    },
+    {
+      "token": "marquee/gap",
+      "name": {
+        "component": "marquee",
+        "structure": "track",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/16",
+      "cssVariable": "--s-marquee-gap"
+    },
+    {
+      "token": "terminal/radius",
+      "name": {
+        "component": "terminal",
+        "structure": "frame",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-terminal-radius"
+    },
+    {
+      "token": "terminal/padding",
+      "name": {
+        "component": "terminal",
+        "structure": "body",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/16",
+      "cssVariable": "--s-terminal-padding"
+    },
+    {
+      "token": "terminal/bg",
+      "name": {
+        "component": "terminal",
+        "structure": "surface",
+        "property": "background-color",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "bg/surface",
+      "cssVariable": "--s-terminal-bg"
+    },
+    {
+      "token": "terminal/border",
+      "name": {
+        "component": "terminal",
+        "structure": "frame",
+        "property": "border-color",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "border/default",
+      "cssVariable": "--s-terminal-border"
+    },
+    {
+      "token": "hero-video/radius",
+      "name": {
+        "component": "hero-video",
+        "structure": "modal",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-hero-video-radius"
+    },
+    {
+      "token": "hero-video/halo-size",
+      "name": {
+        "component": "hero-video",
+        "structure": "halo",
+        "property": "size",
+        "intent": "primary",
+        "state": "hover",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/control/lg",
+      "cssVariable": "--s-hero-video-halo-size"
+    },
+    {
+      "token": "bento/radius",
+      "name": {
+        "component": "bento",
+        "structure": "card",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-bento-radius"
+    },
+    {
+      "token": "bento/gap",
+      "name": {
+        "component": "bento",
+        "structure": "grid",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/16",
+      "cssVariable": "--s-bento-gap"
+    },
+    {
+      "token": "bento/padding",
+      "name": {
+        "component": "bento",
+        "structure": "card",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/24",
+      "cssVariable": "--s-bento-padding"
+    },
+    {
+      "token": "animated-list/radius",
+      "name": {
+        "component": "animated-list",
+        "structure": "item",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/lg",
+      "cssVariable": "--s-animated-list-radius"
+    },
+    {
+      "token": "animated-list/gap",
+      "name": {
+        "component": "animated-list",
+        "structure": "feed",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/12",
+      "cssVariable": "--s-animated-list-gap"
+    },
+    {
+      "token": "dock/radius",
+      "name": {
+        "component": "dock",
+        "structure": "toolbar",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/full",
+      "cssVariable": "--s-dock-radius"
+    },
+    {
+      "token": "dock/size",
+      "name": {
+        "component": "dock",
+        "structure": "icon-button",
+        "property": "size",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/control/md",
+      "cssVariable": "--s-dock-size"
+    },
+    {
+      "token": "dock/gap",
+      "name": {
+        "component": "dock",
+        "structure": "toolbar",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/8",
+      "cssVariable": "--s-dock-gap"
+    },
+    {
+      "token": "dock/padding",
+      "name": {
+        "component": "dock",
+        "structure": "toolbar",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/12",
+      "cssVariable": "--s-dock-padding"
+    },
+    {
+      "token": "globe/radius",
+      "name": {
+        "component": "globe",
+        "structure": "container",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/full",
+      "cssVariable": "--s-globe-radius"
+    },
+    {
+      "token": "tweet-card/radius",
+      "name": {
+        "component": "tweet-card",
+        "structure": "surface",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-tweet-card-radius"
+    },
+    {
+      "token": "tweet-card/padding",
+      "name": {
+        "component": "tweet-card",
+        "structure": "surface",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/16",
+      "cssVariable": "--s-tweet-card-padding"
+    },
+    {
+      "token": "orbit/icon-size",
+      "name": {
+        "component": "orbit",
+        "structure": "satellite",
+        "property": "size",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/icon/lg",
+      "cssVariable": "--s-orbit-icon-size"
+    },
+    {
+      "token": "orbit/path-border",
+      "name": {
+        "component": "orbit",
+        "structure": "track",
+        "property": "border-width",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "border-width/default",
+      "cssVariable": "--s-orbit-path-border"
+    },
+    {
+      "token": "avatar-circles/size",
+      "name": {
+        "component": "avatar-circles",
+        "structure": "avatar",
+        "property": "size",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/avatar/md",
+      "cssVariable": "--s-avatar-circles-size"
+    },
+    {
+      "token": "avatar-circles/overlap",
+      "name": {
+        "component": "avatar-circles",
+        "structure": "stack",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/8",
+      "cssVariable": "--s-avatar-circles-overlap"
+    },
+    {
+      "token": "icon-cloud/size",
+      "name": {
+        "component": "icon-cloud",
+        "structure": "sphere",
+        "property": "size",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/content/max",
+      "cssVariable": "--s-icon-cloud-size"
+    },
+    {
+      "token": "lens/radius",
+      "name": {
+        "component": "lens",
+        "structure": "loupe",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/full",
+      "cssVariable": "--s-lens-radius"
+    },
+    {
+      "token": "lens/loupe-border",
+      "name": {
+        "component": "lens",
+        "structure": "loupe",
+        "property": "border-width",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "border-width/focus",
+      "cssVariable": "--s-lens-loupe-border"
+    },
+    {
+      "token": "pointer/badge-radius",
+      "name": {
+        "component": "pointer",
+        "structure": "badge",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/md",
+      "cssVariable": "--s-pointer-badge-radius"
+    },
+    {
+      "token": "smooth-cursor/size",
+      "name": {
+        "component": "smooth-cursor",
+        "structure": "dot",
+        "property": "size",
+        "intent": "primary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/icon/lg",
+      "cssVariable": "--s-smooth-cursor-size"
+    },
+    {
+      "token": "progressive-blur/height",
+      "name": {
+        "component": "progressive-blur",
+        "structure": "mask",
+        "property": "spacing",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "spacing/48",
+      "cssVariable": "--s-progressive-blur-height"
+    },
+    {
+      "token": "dotted-map/dot-size",
+      "name": {
+        "component": "dotted-map",
+        "structure": "marker",
+        "property": "size",
+        "intent": "primary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/icon/sm",
+      "cssVariable": "--s-dotted-map-dot-size"
+    },
+    {
+      "token": "animated-beam/stroke-width",
+      "name": {
+        "component": "animated-beam",
+        "structure": "track",
+        "property": "border-width",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "border-width/focus",
+      "cssVariable": "--s-animated-beam-stroke-width"
+    },
+    {
+      "token": "animated-beam/color-from",
+      "name": {
+        "component": "animated-beam",
+        "structure": "beam",
+        "property": "background-color",
+        "intent": "primary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "brand/indigo",
+      "cssVariable": "--s-animated-beam-color-from"
+    },
+    {
+      "token": "animated-beam/color-to",
+      "name": {
+        "component": "animated-beam",
+        "structure": "beam",
+        "property": "background-color",
+        "intent": "secondary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "brand/violet",
+      "cssVariable": "--s-animated-beam-color-to"
+    },
+    {
+      "token": "border-beam/width",
+      "name": {
+        "component": "border-beam",
+        "structure": "glow",
+        "property": "border-width",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "border-width/default",
+      "cssVariable": "--s-border-beam-width"
+    },
+    {
+      "token": "border-beam/color-from",
+      "name": {
+        "component": "border-beam",
+        "structure": "glow",
+        "property": "background-color",
+        "intent": "primary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "brand/indigo",
+      "cssVariable": "--s-border-beam-color-from"
+    },
+    {
+      "token": "border-beam/color-to",
+      "name": {
+        "component": "border-beam",
+        "structure": "glow",
+        "property": "background-color",
+        "intent": "secondary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "brand/violet",
+      "cssVariable": "--s-border-beam-color-to"
+    },
+    {
+      "token": "shine-border/width",
+      "name": {
+        "component": "shine-border",
+        "structure": "laser",
+        "property": "border-width",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "border-width/default",
+      "cssVariable": "--s-shine-border-width"
+    },
+    {
+      "token": "shine-border/radius",
+      "name": {
+        "component": "shine-border",
+        "structure": "laser",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-shine-border-radius"
+    },
+    {
+      "token": "magic-card/radius",
+      "name": {
+        "component": "magic-card",
+        "structure": "surface",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-magic-card-radius"
+    },
+    {
+      "token": "magic-card/gradient-size",
+      "name": {
+        "component": "magic-card",
+        "structure": "spotlight",
+        "property": "size",
+        "intent": "primary",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "size/content/max",
+      "cssVariable": "--s-magic-card-gradient-size"
+    },
+    {
+      "token": "glare-hover/radius",
+      "name": {
+        "component": "glare-hover",
+        "structure": "sheen",
+        "property": "border-radius",
+        "intent": "neutral",
+        "state": "idle",
+        "colorScheme": "any",
+        "scale": "desktop"
+      },
+      "alias": "radius/xl",
+      "cssVariable": "--s-glare-hover-radius"
+    }
+  ],
   "components": [
     "Icon",
     "Button",

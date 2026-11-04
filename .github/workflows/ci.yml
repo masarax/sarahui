@@ -52,7 +52,7 @@ jobs:
           if-no-files-found: error
   publish:
     needs: verify
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: false # Safeguard: never publish to npm website
     permissions:
       contents: read
       id-token: write

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {validateTokens,resolveTheme,countTokens,contrast} from '../scripts/token-utils.mjs';
 const s=JSON.parse(fs.readFileSync(new URL('../tokens/sarah.tokens.json',import.meta.url),'utf8'));
-test('Complete foundation resolves without duplicate or dangling aliases',()=>{assert.equal(validateTokens(s),true);assert.equal(countTokens(s),277);assert.equal(s.textStyles.length,15);});
+test('Complete foundation resolves without duplicate or dangling aliases',()=>{assert.equal(validateTokens(s),true);assert.equal(countTokens(s),319);assert.equal(s.textStyles.length,15);});
 test('Invalid aliases fail before output generation',()=>{const bad=structuredClone(s);bad.colors.light['text/primary']='missing/color';assert.throws(()=>validateTokens(bad),/alias/);});
 test('Unsafe token values are rejected',()=>{const bad=structuredClone(s);bad.typography['font/body'].value='Inter; color:red';assert.throws(()=>validateTokens(bad),/Unsafe/);});
 for(const theme of ['light','dark']) {

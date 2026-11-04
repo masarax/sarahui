@@ -197,7 +197,7 @@ export const componentUsages = {
   },
   "Confetti": {
     "import": "import { Confetti } from 'sarahui';",
-    "usage": "import { useRef } from \"react\"\n\nimport { Confetti, type ConfettiRef } from \"@/components/ui/confetti\"\n\nexport function ConfettiDemo() {\n  const confettiRef = useRef<ConfettiRef>(null)\n\n  return (\n    <div>\n      <Confetti ref={confettiRef} manualstart />\n      <button onClick={() => confettiRef.current?.fire()}>\n        Trigger Confetti\n      </button>\n    </div>\n  )\n}"
+    "usage": "import { useRef } from \"react\"\nimport { Confetti } from 'sarahui'\n\nexport function ConfettiDemo() {\n  const confettiRef = useRef(null)\n\n  return (\n    <div>\n      <Confetti ref={confettiRef} manualstart />\n      <button onClick={() => confettiRef.current?.fire()}>\n        Trigger Confetti\n      </button>\n    </div>\n  )\n}"
   },
   "MagicCard": {
     "import": "import { MagicCard } from 'sarahui';",
@@ -229,7 +229,7 @@ export const componentUsages = {
   },
   "AvatarCircles": {
     "import": "import { AvatarCircles } from 'sarahui';",
-    "usage": "<AvatarCircles\n  numPeople={99}\n  avatarUrls={[\n    {\n      imageUrl: \"https://avatars.githubusercontent.com/u/16860528\",\n      profileUrl: \"https://github.com/dillionverma\",\n    },\n  ]}\n/>"
+    "usage": "<AvatarCircles\n  numPeople={99}\n  avatarUrls={[\n    {\n      imageUrl: \"https://avatars.githubusercontent.com/u/16860528\",\n      profileUrl: \"https://github.com/sarahui\",\n    },\n  ]}\n/>"
   },
   "AnimatedBeam": {
     "import": "import { AnimatedBeam } from 'sarahui';",
@@ -237,7 +237,7 @@ export const componentUsages = {
   },
   "Terminal": {
     "import": "import { Terminal } from 'sarahui';",
-    "usage": "<Terminal>\n  <TypingAnimation>pnpm dlx shadcn@latest init</TypingAnimation>\n  <AnimatedSpan>✔ Preflight checks.</AnimatedSpan>\n  <AnimatedSpan>✔ Validating Tailwind CSS.</AnimatedSpan>\n  <TypingAnimation>Success! Project initialization completed.</TypingAnimation>\n</Terminal>"
+    "usage": "<Terminal>\n  <TypingAnimation>npx sarahui init</TypingAnimation>\n  <AnimatedSpan>✔ Preflight checks.</AnimatedSpan>\n  <AnimatedSpan>✔ Validating Tailwind CSS.</AnimatedSpan>\n  <TypingAnimation>Success! Project initialization completed.</TypingAnimation>\n</Terminal>"
   },
   "OrbitingCircles": {
     "import": "import { OrbitingCircles } from 'sarahui';",
@@ -265,7 +265,7 @@ export const componentUsages = {
   },
   "TextReveal": {
     "import": "import { TextReveal } from 'sarahui';",
-    "usage": "<TextReveal>Magic UI will change the way you design.</TextReveal>"
+    "usage": "<TextReveal>SarahUI will change the way you design.</TextReveal>"
   },
   "GridPattern": {
     "import": "import { GridPattern } from 'sarahui';",
@@ -317,7 +317,7 @@ export const componentUsages = {
   },
   "LineShadowText": {
     "import": "import { LineShadowText } from 'sarahui';",
-    "usage": "<LineShadowText>Magic UI</LineShadowText>"
+    "usage": "<LineShadowText>SarahUI</LineShadowText>"
   },
   "AuroraText": {
     "import": "import { AuroraText } from 'sarahui';",
@@ -349,7 +349,7 @@ export const componentUsages = {
   },
   "Safari": {
     "import": "import { Safari } from 'sarahui';",
-    "usage": "<Safari url=\"https://magicui.design\" />"
+    "usage": "<Safari url=\"https://sarahui.dev\" />"
   },
   "GlareHover": {
     "import": "import { GlareHover } from 'sarahui';",
@@ -381,7 +381,7 @@ export const componentUsages = {
   },
   "DiaTextReveal": {
     "import": "import { DiaTextReveal } from 'sarahui';",
-    "usage": "<DiaTextReveal text=\"Magic UI\" />"
+    "usage": "<DiaTextReveal text=\"SarahUI\" />"
   },
   "SpinningText": {
     "import": "import { SpinningText } from 'sarahui';",
@@ -397,11 +397,11 @@ export const componentUsages = {
   },
   "VideoText": {
     "import": "import { VideoText } from 'sarahui';",
-    "usage": "<div className=\"relative h-[500px] w-full overflow-hidden\">\n  <VideoText src=\"https://cdn.magicui.design/ocean-small.webm\">OCEAN</VideoText>\n</div>"
+    "usage": "<div className=\"relative h-[500px] w-full overflow-hidden\">\n  <VideoText src=\"assets/ocean.webm\">OCEAN</VideoText>\n</div>"
   },
   "Highlighter": {
     "import": "import { Highlighter } from 'sarahui';",
-    "usage": "<p>\n  The{\" \"}\n  <Highlighter action=\"underline\" color=\"#FF9800\">\n    Magic UI Highlighter\n  </Highlighter>{\" \"}\n  makes important{\" \"}\n  <Highlighter action=\"highlight\" color=\"#87CEFA\">\n    text stand out\n  </Highlighter>{\" \"}\n  effortlessly.\n</p>"
+    "usage": "<p>\n  The{\" \"}\n  <Highlighter action=\"underline\" color=\"#FF9800\">\n    SarahUI Highlighter\n  </Highlighter>{\" \"}\n  makes important{\" \"}\n  <Highlighter action=\"highlight\" color=\"#87CEFA\">\n    text stand out\n  </Highlighter>{\" \"}\n  effortlessly.\n</p>"
   },
   "ScrollBasedVelocity": {
     "import": "import { ScrollBasedVelocity } from 'sarahui';",
@@ -425,7 +425,7 @@ export const componentUsages = {
   },
   "FileTree": {
     "import": "import { FileTree } from 'sarahui';",
-    "usage": "const elements: TreeViewElement[] = [\n  {\n    id: \"src\",\n    type: \"folder\",\n    name: \"src\",\n    children: [\n      { id: \"components\", type: \"folder\", name: \"components\" },\n      { id: \"app\", type: \"folder\", name: \"app\" },\n      { id: \"page\", name: \"page.tsx\" },\n      { id: \"layout\", name: \"layout.tsx\" },\n    ],\n  },\n]\n\n<Tree elements={elements} />"
+    "usage": "const elements: TreeViewElement[] = [\n  {\n    id: \"src\",\n    type: \"folder\",\n    name: \"src\",\n    children: [\n      { id: \"components\", type: \"folder\", name: \"components\" },\n      { id: \"app\", type: \"folder\", name: \"app\" },\n      { id: \"page\", name: \"page.tsx\" },\n      { id: \"layout\", name: \"layout.tsx\" },\n    ],\n  },\n]\n\n<FileTree tree={elements} />"
   },
   "HeroVideoDialog": {
     "import": "import { HeroVideoDialog } from 'sarahui';",
@@ -461,7 +461,7 @@ export const componentUsages = {
   },
   "TweetCard": {
     "import": "import { TweetCard } from 'sarahui';",
-    "usage": "\"use client\"\n\nimport { ClientTweetCard } from \"@/components/ui/client-tweet-card\"\n\nexport default function App() {\n  return <ClientTweetCard id=\"1441032681968212480\" />\n}"
+    "usage": "\"use client\"\n\nimport { TweetCard } from 'sarahui'\n\nexport default function App() {\n  return <TweetCard id=\"1441032681968212480\" />\n}"
   },
   "AnimatedCircularProgressBar": {
     "import": "import { AnimatedCircularProgressBar } from 'sarahui';",

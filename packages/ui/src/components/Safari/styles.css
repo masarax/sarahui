@@ -1,0 +1,4 @@
+/* Scoped styles for Safari */
+.s-safari {
+  box-sizing: border-box;
+}

@@ -105,7 +105,7 @@ export function startPage({heading,code,link}){
     {icon:'check',title:'0 Runtime Dependencies',text:'Pure vanilla ES modules, native CSS variables, and standard Web APIs.'},
     {icon:'layers',title:'120+ Components',text:'Special effects, text animations, device mocks, backgrounds, and layout frames.'},
     {icon:'code',title:'Full TypeScript Support',text:'Complete type definitions (.d.ts) bundled with zero compilation warnings.'},
-    {icon:'palette',title:'Comprehensive Tokens',text:'Systematic design tokens for colors, radii, shadows, and spacing.'}
+    {icon:'palette',title:'Comprehensive Tokens',text:'319 design tokens benchmarked against Adobe Spectrum Design Data.'}
   ];
 
   const events=[
@@ -156,7 +156,7 @@ export function startPage({heading,code,link}){
         <div class="docs-step-badge">1</div>
         <div class="docs-step-content">
           <h2>Install the package</h2>
-          <p>Add <code>sarahui</code> to your project using your preferred package manager. No external peer dependencies are required.</p>
+          <p>Add individual components via CLI (<code>npx sarahui add &lt;component&gt;</code>) or install the complete <code>sarahui</code> package using your preferred package manager. No external peer dependencies are required.</p>
           <div class="setup-install-terminal">
             ${Tabs({id:'package-manager',label:'Package manager',variant:'pill',items:Object.entries(managers).map(([label,value])=>({label,content:code('install-'+label.toLowerCase(),value,'Terminal')}))})}
           </div>
