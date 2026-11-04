@@ -33,10 +33,10 @@ jobs:
       - name: Check whether FTP is configured
         id: config
         env:
-          CPANEL_FTP_HOST: ${{ secrets.CPANEL_FTP_HOST }}
-          CPANEL_FTP_USERNAME: ${{ secrets.CPANEL_FTP_USERNAME }}
-          CPANEL_FTP_PASSWORD: ${{ secrets.CPANEL_FTP_PASSWORD }}
-          CPANEL_FTP_PATH: ${{ secrets.CPANEL_FTP_PATH }}
+          CPANEL_FTP_HOST: \${{ secrets.CPANEL_FTP_HOST }}
+          CPANEL_FTP_USERNAME: \${{ secrets.CPANEL_FTP_USERNAME }}
+          CPANEL_FTP_PASSWORD: \${{ secrets.CPANEL_FTP_PASSWORD }}
+          CPANEL_FTP_PATH: \${{ secrets.CPANEL_FTP_PATH }}
         run: |
           python3 - <<'PY'
           import os
@@ -46,7 +46,7 @@ jobs:
               output.write('ready=' + ('false' if missing else 'true') + '\\n')
           if missing:
               with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-                  summary.write('## cPanel deployment skipped\\n\\nAdd the following repository secrets, then run this workflow on main:\\n\\n' + '\\n'.join('- `' + name + '`' for name in missing) + '\\n\\nSee the repository deployment settings for the FTP path and protocol.\\n')
+                  summary.write('## cPanel deployment skipped\\n\\nAdd the following repository secrets, then run this workflow on main:\\n\\n' + '\\n'.join('- \`' + name + '\`' for name in missing) + '\\n\\nSee the repository deployment settings for the FTP path and protocol.\\n')
           PY
 
       - uses: actions/checkout@v4
@@ -65,10 +65,10 @@ jobs:
         if: steps.config.outputs.ready == 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: ${{ secrets.CPANEL_FTP_HOST }}
-          username: ${{ secrets.CPANEL_FTP_USERNAME }}
-          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-          protocol: ${{ vars.CPANEL_FTP_PROTOCOL || 'ftps' }}
-          port: ${{ vars.CPANEL_FTP_PORT || '21' }}
-          server-dir: ${{ secrets.CPANEL_FTP_PATH }}
+          server: \${{ secrets.CPANEL_FTP_HOST }}
+          username: \${{ secrets.CPANEL_FTP_USERNAME }}
+          password: \${{ secrets.CPANEL_FTP_PASSWORD }}
+          protocol: \${{ vars.CPANEL_FTP_PROTOCOL || 'ftps' }}
+          port: \${{ vars.CPANEL_FTP_PORT || '21' }}
+          server-dir: \${{ secrets.CPANEL_FTP_PATH }}
           local-dir: ./dist/
