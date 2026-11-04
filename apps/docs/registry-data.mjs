@@ -4,7 +4,9 @@
  * Zero external filesystem dependencies on read_ui/magicui.
  */
 
-const specialSlugs = {
+// Null-prototype lookup table: keys such as "__proto__", "constructor" or
+// "toString" can never resolve to inherited Object.prototype members.
+const specialSlugs = Object.freeze(Object.assign(Object.create(null), {
   BentoGrid: 'bento-grid',
   Highlighter: 'highlighter',
   Iphone: 'iphone',
@@ -12,19 +14,23 @@ const specialSlugs = {
   AnimatedThemeToggler: 'animated-theme-toggler',
   Floating3DParticles: 'floating-3d-particles',
   Text3DFlip: 'text-3d-flip'
-};
+}));
 
 export function toKebab(str) {
-  if (typeof str === 'string' && Object.hasOwn(specialSlugs, str)) {
+  if (typeof str !== 'string') return '';
+  if (Object.hasOwn(specialSlugs, str)) {
     return specialSlugs[str];
   }
-  return typeof str === 'string'
-    ? str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-    : '';
+  // Split acronym runs first ("HTMLElement" -> "HTML-Element"), then
+  // lower/digit-to-upper boundaries ("BentoGrid" -> "Bento-Grid").
+  return str
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .toLowerCase();
 }
 
 export function sanitizeTsx(rawCode) {
-  if (!rawCode) return rawCode;
+  if (typeof rawCode !== 'string' || !rawCode) return rawCode;
 
   let code = rawCode;
 
@@ -5400,21 +5406,33 @@ export const registry = {
         "title": "AnimatedSubscribeButton Props",
         "rows": [
           {
-            "prop": "className",
+            "prop": "initialText",
             "type": "string",
-            "defaultVal": "''",
-            "description": "Optional CSS class for styling overrides"
+            "defaultVal": "'Subscribe'",
+            "description": "Label shown before the user subscribes"
           },
           {
-            "prop": "children",
-            "type": "ReactNode",
-            "defaultVal": "-",
-            "description": "Children elements or content"
+            "prop": "subscribedText",
+            "type": "string",
+            "defaultVal": "'Subscribed'",
+            "description": "Label shown after the subscribed state is reached"
+          },
+          {
+            "prop": "isSubscribed",
+            "type": "boolean",
+            "defaultVal": "false",
+            "description": "Initial pressed/subscribed state (reflected via aria-pressed)"
+          },
+          {
+            "prop": "attrs",
+            "type": "Record<string, any>",
+            "defaultVal": "{}",
+            "description": "Extra HTML attributes forwarded to the button"
           }
         ]
       }
     ],
-    "demoTsx": "import { AnimatedSubscribeButton } from \"@/components/sarahui/animated-subscribe-button\";\nimport { CheckIcon, ChevronRightIcon } from \"sarahui/icons\";\n\nexport default function AnimatedSubscribeButtonDemo() {\n  return (\n    <div className=\"flex items-center justify-center p-6\">\n      <AnimatedSubscribeButton className=\"w-36\">\n        <span className=\"group inline-flex items-center\">\n          Subscribe{\" \"}\n          <ChevronRightIcon className=\"ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1\" />\n        </span>\n        <span className=\"group inline-flex items-center\">\n          <CheckIcon className=\"mr-2 size-4\" />\n          Subscribed\n        </span>\n      </AnimatedSubscribeButton>\n    </div>\n  );\n}",
+    "demoTsx": "import { AnimatedSubscribeButton } from \"@/components/sarahui/animated-subscribe-button\";\n\nexport default function AnimatedSubscribeButtonDemo() {\n  return (\n    <div className=\"flex flex-wrap items-center justify-center gap-4 p-6\">\n      <AnimatedSubscribeButton initialText=\"Subscribe\" subscribedText=\"Subscribed\" />\n      <AnimatedSubscribeButton\n        initialText=\"Follow updates\"\n        subscribedText=\"Following\"\n        isSubscribed={true}\n        attrs={{ \"aria-describedby\": \"subscribe-hint\" }}\n      />\n      <span id=\"subscribe-hint\" className=\"text-xs text-muted-foreground\">Toggle to receive release notes.</span>\n    </div>\n  );\n}",
     "accessibility": {
       "role": "generic",
       "reducedMotion": "0ms transition or static projection"
@@ -7012,16 +7030,28 @@ export const registry = {
         "title": "Collapsible Props",
         "rows": [
           {
-            "prop": "className",
+            "prop": "title",
             "type": "string",
-            "defaultVal": "''",
-            "description": "Optional CSS class for styling overrides"
+            "defaultVal": "'Can I use this with any framework?'",
+            "description": "Summary label rendered in the disclosure trigger"
           },
           {
-            "prop": "children",
-            "type": "ReactNode",
-            "defaultVal": "-",
-            "description": "Children elements or content"
+            "prop": "content",
+            "type": "string",
+            "defaultVal": "''",
+            "description": "Body text revealed when the disclosure is open"
+          },
+          {
+            "prop": "open",
+            "type": "boolean",
+            "defaultVal": "false",
+            "description": "Renders the disclosure expanded by default"
+          },
+          {
+            "prop": "attrs",
+            "type": "Record<string, any>",
+            "defaultVal": "{}",
+            "description": "Extra HTML attributes forwarded to the root element"
           }
         ]
       }
@@ -7034,8 +7064,12 @@ export const registry = {
   }
 };
 
+function ownEntry(name) {
+  return typeof name === 'string' && Object.hasOwn(registry, name) ? registry[name] : null;
+}
+
 export function getRegistryItem(name) {
-  return registry[name] || null;
+  return ownEntry(name);
 }
 
 export function getAllRegistryItems() {
@@ -7043,7 +7077,7 @@ export function getAllRegistryItems() {
 }
 
 export function getComponentProps(name) {
-  const item = registry[name];
+  const item = ownEntry(name);
   if (item && item.props && item.props.length > 0) {
     return item.props;
   }
@@ -7057,7 +7091,7 @@ export function getComponentProps(name) {
 }
 
 export function getComponentTsx(name) {
-  const item = registry[name];
+  const item = ownEntry(name);
   if (item && item.demoTsx) {
     return item.demoTsx;
   }
