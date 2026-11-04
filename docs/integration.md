@@ -69,4 +69,4 @@ Every View code panel supplies a complete npm recipe, component properties, inte
 
 The example workspace uses local sample data. Creating projects, changing settings, sorting, filtering, and pagination do not contact a backend. Only the theme persists across reloads.
 
-The cPanel FTP workflow and required secrets are documented in [Deployment](deployment.md).
+Packaging and manual release steps are documented in [Releasing](deployment.md).

@@ -1235,6 +1235,7 @@ html:not([data-theme="dark"]):not(.dark) .s-animated-theme-toggler .s-theme-icon
 .s-hero-video-wrap{position:relative;width:100%;max-width:860px;margin:0 auto}
 .s-hero-video-thumbnail{position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--s-radius-xl,16px);overflow:hidden;background:var(--s-bg-surface);border:1px solid var(--s-border-default);cursor:pointer;padding:0;display:block;box-shadow:none!important}
 .s-hero-video-img{width:100%;height:100%;object-fit:cover;transition:transform 0.25s ease-out,filter 0.25s ease-out}
+.s-hero-video-placeholder{display:block;background:linear-gradient(135deg,#5B3DF5,#178BFF)}
 .s-hero-video-thumbnail:hover .s-hero-video-img{transform:scale(1.02);filter:brightness(0.82)}
 .s-hero-video-play-backdrop{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .s-hero-video-play-halo{width:112px;height:112px;border-radius:50%;background:color-mix(in srgb,var(--s-action-primary,#5B3DF5) 15%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;transform:scale(0.9);transition:transform 0.2s ease-out}
@@ -1401,6 +1402,7 @@ dialog.s-video-modal .s-video-modal-close:hover{transform:scale(1.1)}
 .s-pixel-piece { position: absolute; inset: 0; animation: s-pixel-reveal 0.8s cubic-bezier(0.16,1,0.3,1) both; }
 @keyframes s-pixel-reveal { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 .s-pixel-img { width: 100%; height: 100%; object-fit: cover; }
+.s-pixel-fallback { display: block; width: 100%; height: 100%; background: linear-gradient(135deg, #5B3DF5, #178BFF); }
 .s-pixel-gray { filter: grayscale(100%); transition: filter 0.6s cubic-bezier(0.16,1,0.3,1); }
 .s-pixel-image-wrap:hover .s-pixel-gray { filter: grayscale(0%); }
 

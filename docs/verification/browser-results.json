@@ -1,5 +1,5 @@
 {
-  "passed": 18,
+  "passed": 19,
   "failed": 0,
   "results": [
     {
@@ -40,6 +40,10 @@
     },
     {
       "name": "Code samples include npm usage, properties and rendered HTML",
+      "passed": true
+    },
+    {
+      "name": "Component detail view displays preview/code tabs, syntax highlighting, and 3-column TOC",
       "passed": true
     },
     {

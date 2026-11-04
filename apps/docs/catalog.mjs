@@ -224,12 +224,12 @@ export const demos={
 
   Marquee:()=>{
     const reviews = [
-      {name:'Jack',username:'@jack',body:"I've never seen anything like this before. It's amazing. I love it.",avatar:'https://avatar.vercel.sh/jack'},
-      {name:'Jill',username:'@jill',body:"I don't know what to say. I'm speechless. This is amazing.",avatar:'https://avatar.vercel.sh/jill'},
-      {name:'John',username:'@john',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/john'},
-      {name:'Jane',username:'@jane',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/jane'},
-      {name:'Jenny',username:'@jenny',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/jenny'},
-      {name:'James',username:'@james',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/james'}
+      {name:'Jack',username:'@jack',body:"I've never seen anything like this before. It's amazing. I love it.",avatar:'assets/avatar-jack.svg'},
+      {name:'Jill',username:'@jill',body:"I don't know what to say. I'm speechless. This is amazing.",avatar:'assets/avatar-jill.svg'},
+      {name:'John',username:'@john',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-john.svg'},
+      {name:'Jane',username:'@jane',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-jane.svg'},
+      {name:'Jenny',username:'@jenny',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-jenny.svg'},
+      {name:'James',username:'@james',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-james.svg'}
     ];
     const firstRow = reviews.slice(0, 3);
     const secondRow = reviews.slice(3);
@@ -404,12 +404,12 @@ export const demos={
     <div style="width:100%;max-width:560px;margin:0 auto;padding:16px 0;">
       <div style="columns:3;column-gap:12px;">
         ${[
-          'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&h=220&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&h=360&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&h=380&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300&h=240&auto=format&fit=crop&q=80',
-          'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=300&h=300&auto=format&fit=crop&q=80'
+          'assets/photo-1.svg',
+          'assets/photo-2.svg',
+          'assets/photo-3.svg',
+          'assets/photo-4.svg',
+          'assets/photo-5.svg',
+          'assets/photo-6.svg'
         ].map((img,i)=>html`
           <div style="margin-bottom:12px;break-inside:avoid;">
             ${U.BlurFade({delay:0.12*i,children:html`<img src="${img}" alt="Stock photo ${i+1}" style="width:100%;display:block;border-radius:10px;object-fit:cover;box-shadow:0 1px 3px rgba(0,0,0,0.06);">`})}
@@ -444,10 +444,10 @@ export const demos={
       ${U.AvatarCircles({
         numPeople: 99,
         avatarUrls: [
-          'https://avatars.githubusercontent.com/u/55315718',
-          'https://avatars.githubusercontent.com/u/20110627',
-          'https://avatars.githubusercontent.com/u/106103625',
-          'https://avatars.githubusercontent.com/u/59228569'
+          'assets/avatar-1.svg',
+          'assets/avatar-2.svg',
+          'assets/avatar-3.svg',
+          'assets/avatar-4.svg'
         ]
       })}
     </div>
@@ -972,7 +972,7 @@ export const config = {
     </div>
   `,
 
-  HeroVideoDialog:()=>html`<div style="width:100%;max-width:480px;margin:0 auto;">${U.HeroVideoDialog({videoSrc:'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',thumbnailAlt:'sarahUI Showcase Walkthrough'})}</div>`,
+  HeroVideoDialog:()=>html`<div style="width:100%;max-width:480px;margin:0 auto;">${U.HeroVideoDialog({videoSrc:'assets/video.html',thumbnailSrc:'assets/photo-8.svg',thumbnailAlt:'sarahUI Showcase Walkthrough'})}</div>`,
 
   IconCloud:()=>html`<div style="display:flex;justify-content:center;align-items:center;width:100%;">${U.IconCloud({
     iconSlugs: [
@@ -992,7 +992,7 @@ export const config = {
             zoomFactor:2,
             lensSize:150,
             ariaLabel:"Zoom Area",
-            children:html`<img src="https://images.unsplash.com/photo-1736606355698-5efdb410fe93?q=80&w=2071&auto=format&fit=crop" alt="Camp destination" style="width:100%;height:220px;object-fit:cover;display:block;border-radius:10px;">`
+            children:html`<img src="assets/photo-7.svg" alt="Camp destination" style="width:100%;height:220px;object-fit:cover;display:block;border-radius:10px;">`
           })}
         </div>
         <div style="padding:16px 20px 20px;">
@@ -1007,7 +1007,7 @@ export const config = {
     </div>
   `,
 
-  PixelImage:()=>html`<div style="display:flex;justify-content:center;width:100%;">${U.PixelImage({width:280,height:180,pixelSize:8})}</div>`,
+  PixelImage:()=>html`<div style="display:flex;justify-content:center;width:100%;">${U.PixelImage({src:'assets/sample-1.svg',width:280,height:180,pixelSize:8})}</div>`,
 
   GlyphMatrix:()=>html`<div style="position:relative;height:180px;width:100%;overflow:hidden;border-radius:12px;border:1px solid var(--s-border-default);background:var(--s-bg-surface);display:grid;place-items:center;">${U.GlyphMatrix()}<span style="position:relative;z-index:2;font-weight:700;font-size:14px;letter-spacing:2px;color:var(--s-text-primary);">SARAHUI CYPHER</span></div>`,
 
@@ -1078,12 +1078,12 @@ export const componentVariants = {
       description: 'Display an infinite vertical ticker with smooth continuous translation and edge fades.',
       preview: () => {
         const reviews = [
-          {name:'Jack',username:'@jack',body:"I've never seen anything like this before. It's amazing. I love it.",avatar:'https://avatar.vercel.sh/jack'},
-          {name:'Jill',username:'@jill',body:"I don't know what to say. I'm speechless. This is amazing.",avatar:'https://avatar.vercel.sh/jill'},
-          {name:'John',username:'@john',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/john'},
-          {name:'Jane',username:'@jane',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/jane'},
-          {name:'Jenny',username:'@jenny',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/jenny'},
-          {name:'James',username:'@james',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/james'}
+          {name:'Jack',username:'@jack',body:"I've never seen anything like this before. It's amazing. I love it.",avatar:'assets/avatar-jack.svg'},
+          {name:'Jill',username:'@jill',body:"I don't know what to say. I'm speechless. This is amazing.",avatar:'assets/avatar-jill.svg'},
+          {name:'John',username:'@john',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-john.svg'},
+          {name:'Jane',username:'@jane',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-jane.svg'},
+          {name:'Jenny',username:'@jenny',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-jenny.svg'},
+          {name:'James',username:'@james',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-james.svg'}
         ];
         const firstRow = reviews.slice(0, 3);
         const secondRow = reviews.slice(3);
@@ -1145,12 +1145,12 @@ export function MarqueeDemoVertical() {
       description: 'Rotate and pitch vertical tickers with 3D perspective depth transforms.',
       preview: () => {
         const reviews = [
-          {name:'Jack',username:'@jack',body:"I've never seen anything like this before. It's amazing. I love it.",avatar:'https://avatar.vercel.sh/jack'},
-          {name:'Jill',username:'@jill',body:"I don't know what to say. I'm speechless. This is amazing.",avatar:'https://avatar.vercel.sh/jill'},
-          {name:'John',username:'@john',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/john'},
-          {name:'Jane',username:'@jane',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/jane'},
-          {name:'Jenny',username:'@jenny',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/jenny'},
-          {name:'James',username:'@james',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'https://avatar.vercel.sh/james'}
+          {name:'Jack',username:'@jack',body:"I've never seen anything like this before. It's amazing. I love it.",avatar:'assets/avatar-jack.svg'},
+          {name:'Jill',username:'@jill',body:"I don't know what to say. I'm speechless. This is amazing.",avatar:'assets/avatar-jill.svg'},
+          {name:'John',username:'@john',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-john.svg'},
+          {name:'Jane',username:'@jane',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-jane.svg'},
+          {name:'Jenny',username:'@jenny',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-jenny.svg'},
+          {name:'James',username:'@james',body:"I'm at a loss for words. This is amazing. I love it.",avatar:'assets/avatar-james.svg'}
         ];
         const firstRow = reviews.slice(0, 3);
         const secondRow = reviews.slice(3);
@@ -1325,15 +1325,15 @@ export function TerminalMultiCommand() {
   HeroVideoDialog: [
     {
       title: 'Top-in-bottom-out',
-      preview: () => html`<div style="width:100%;max-width:680px;margin:0 auto;">${U.HeroVideoDialog({animationStyle:'top-in-bottom-out',videoSrc:'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',thumbnailAlt:'sarahUI Top In Lightbox'})}</div>`,
+      preview: () => html`<div style="width:100%;max-width:680px;margin:0 auto;">${U.HeroVideoDialog({animationStyle:'top-in-bottom-out',videoSrc:'assets/video.html',thumbnailSrc:'assets/photo-8.svg',thumbnailAlt:'sarahUI Top In Lightbox'})}</div>`,
       code: `import { HeroVideoDialog } from "@/components/sarahui/hero-video-dialog";
 
 export function HeroVideoDialogTopIn() {
   return (
     <HeroVideoDialog
       animationStyle="top-in-bottom-out"
-      videoSrc="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      thumbnailSrc="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80"
+      videoSrc="assets/video.html"
+      thumbnailSrc="assets/photo-8.svg"
       thumbnailAlt="Platform Overview"
     />
   );
@@ -1341,15 +1341,15 @@ export function HeroVideoDialogTopIn() {
     },
     {
       title: 'From Bottom',
-      preview: () => html`<div style="width:100%;max-width:680px;margin:0 auto;">${U.HeroVideoDialog({animationStyle:'from-bottom',videoSrc:'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',thumbnailAlt:'sarahUI From Bottom Lightbox'})}</div>`,
+      preview: () => html`<div style="width:100%;max-width:680px;margin:0 auto;">${U.HeroVideoDialog({animationStyle:'from-bottom',videoSrc:'assets/video.html',thumbnailSrc:'assets/photo-8.svg',thumbnailAlt:'sarahUI From Bottom Lightbox'})}</div>`,
       code: `import { HeroVideoDialog } from "@/components/sarahui/hero-video-dialog";
 
 export function HeroVideoDialogFromBottom() {
   return (
     <HeroVideoDialog
       animationStyle="from-bottom"
-      videoSrc="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      thumbnailSrc="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80"
+      videoSrc="assets/video.html"
+      thumbnailSrc="assets/photo-8.svg"
       thumbnailAlt="Platform Overview"
     />
   );
@@ -1959,10 +1959,10 @@ export function OrbitingCirclesSingle() {
       code: `import { AvatarCircles } from "@/components/sarahui/avatar-circles";
 
 const avatarUrls = [
-  "https://avatars.githubusercontent.com/u/55315718",
-  "https://avatars.githubusercontent.com/u/20110627",
-  "https://avatars.githubusercontent.com/u/106103625",
-  "https://avatars.githubusercontent.com/u/59228569",
+  "assets/avatar-1.svg",
+  "assets/avatar-2.svg",
+  "assets/avatar-3.svg",
+  "assets/avatar-4.svg",
 ];
 
 export function AvatarCirclesDemo() {
@@ -1977,9 +1977,9 @@ export function AvatarCirclesDemo() {
           ${U.AvatarCircles({
             numPeople: 42,
             avatarUrls: [
-              "https://avatars.githubusercontent.com/u/55315718",
-              "https://avatars.githubusercontent.com/u/20110627",
-              "https://avatars.githubusercontent.com/u/106103625"
+              "assets/avatar-1.svg",
+              "assets/avatar-2.svg",
+              "assets/avatar-3.svg"
             ]
           })}
         </div>
@@ -1987,9 +1987,9 @@ export function AvatarCirclesDemo() {
       code: `import { AvatarCircles } from "@/components/sarahui/avatar-circles";
 
 const avatarUrls = [
-  "https://avatars.githubusercontent.com/u/55315718",
-  "https://avatars.githubusercontent.com/u/20110627",
-  "https://avatars.githubusercontent.com/u/106103625",
+  "assets/avatar-1.svg",
+  "assets/avatar-2.svg",
+  "assets/avatar-3.svg",
 ];
 
 export function AvatarCirclesSmall() {
@@ -2054,16 +2054,16 @@ export function IconCloudDemo() {
         <div style="position:relative;display:flex;width:100%;align-items:center;justify-content:center;overflow:hidden;">
           ${U.IconCloud({
             images: [
-              "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?q=80&w=200&auto=format&fit=crop",
-              "https://plus.unsplash.com/premium_photo-1675553988173-a5249b5815fe?q=80&w=200&auto=format&fit=crop",
-              "https://plus.unsplash.com/premium_photo-1675297844586-534b030564e0?q=80&w=200&auto=format&fit=crop",
-              "https://plus.unsplash.com/premium_photo-1675555581018-7f1a352ff9a6?q=80&w=200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1719937050517-68d4e2a1702e?q=80&w=200&auto=format&fit=crop",
-              "https://avatars.githubusercontent.com/u/16860528",
-              "https://avatars.githubusercontent.com/u/20110627",
-              "https://avatars.githubusercontent.com/u/106103625",
-              "https://avatars.githubusercontent.com/u/59228569",
-              "https://avatars.githubusercontent.com/u/59442788"
+              "assets/photo-1.svg",
+              "assets/photo-2.svg",
+              "assets/photo-3.svg",
+              "assets/photo-4.svg",
+              "assets/photo-5.svg",
+              "assets/avatar-5.svg",
+              "assets/avatar-2.svg",
+              "assets/avatar-3.svg",
+              "assets/avatar-4.svg",
+              "assets/avatar-6.svg"
             ]
           })}
         </div>
@@ -2071,15 +2071,15 @@ export function IconCloudDemo() {
       code: `import { IconCloud } from "@/components/sarahui/icon-cloud";
 
 const images = [
-  "https://images.unsplash.com/photo-1720048171230-c60d162f93a0?q=80&w=200&auto=format&fit=crop",
-  "https://plus.unsplash.com/premium_photo-1675553988173-a5249b5815fe?q=80&w=200&auto=format&fit=crop",
-  "https://plus.unsplash.com/premium_photo-1675297844586-534b030564e0?q=80&w=200&auto=format&fit=crop",
-  "https://plus.unsplash.com/premium_photo-1675555581018-7f1a352ff9a6?q=80&w=200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1719937050517-68d4e2a1702e?q=80&w=200&auto=format&fit=crop",
-  "https://avatars.githubusercontent.com/u/16860528",
-  "https://avatars.githubusercontent.com/u/20110627",
-  "https://avatars.githubusercontent.com/u/106103625",
-  "https://avatars.githubusercontent.com/u/59228569"
+  "assets/photo-1.svg",
+  "assets/photo-2.svg",
+  "assets/photo-3.svg",
+  "assets/photo-4.svg",
+  "assets/photo-5.svg",
+  "assets/avatar-5.svg",
+  "assets/avatar-2.svg",
+  "assets/avatar-3.svg",
+  "assets/avatar-4.svg"
 ];
 
 export function IconCloudImagesDemo() {
@@ -2120,7 +2120,7 @@ export function LensDemo() {
           ariaLabel="Zoom Area"
         >
           <img
-            src="https://images.unsplash.com/photo-1736606355698-5efdb410fe93?q=80&w=2071&auto=format&fit=crop"
+            src="assets/photo-7.svg"
             alt="image placeholder"
             width={500}
             height={500}
@@ -2155,7 +2155,7 @@ export function LensDemo() {
                 zoomFactor: 2,
                 lensSize: 150,
                 ariaLabel: "Static Zoom Area",
-                children: html`<img src="https://images.unsplash.com/photo-1736606355698-5efdb410fe93?q=80&w=2071&auto=format&fit=crop" alt="Camp destination" style="width:100%;height:220px;object-fit:cover;display:block;border-radius:10px;">`
+                children: html`<img src="assets/photo-7.svg" alt="Camp destination" style="width:100%;height:220px;object-fit:cover;display:block;border-radius:10px;">`
               })}
             </div>
             <div style="padding:16px 20px 20px;">
@@ -2186,7 +2186,7 @@ export function LensStatic() {
       <CardHeader>
         <Lens isStatic position={{ x: 260, y: 150 }} zoomFactor={2} lensSize={150}>
           <img
-            src="https://images.unsplash.com/photo-1736606355698-5efdb410fe93?q=80&w=2071&auto=format&fit=crop"
+            src="assets/photo-7.svg"
             alt="image placeholder"
             width={500}
             height={500}
@@ -2220,7 +2220,7 @@ export function LensStatic() {
                 zoomFactor: 2,
                 lensSize: 150,
                 ariaLabel: "Resting Zoom Area",
-                children: html`<img src="https://images.unsplash.com/photo-1736606355698-5efdb410fe93?q=80&w=2071&auto=format&fit=crop" alt="Camp destination" style="width:100%;height:220px;object-fit:cover;display:block;border-radius:10px;">`
+                children: html`<img src="assets/photo-7.svg" alt="Camp destination" style="width:100%;height:220px;object-fit:cover;display:block;border-radius:10px;">`
               })}
             </div>
             <div style="padding:16px 20px 20px;">
@@ -2251,7 +2251,7 @@ export function LensDefaultPosition() {
       <CardHeader>
         <Lens defaultPosition={{ x: 260, y: 150 }} zoomFactor={2} lensSize={150}>
           <img
-            src="https://images.unsplash.com/photo-1736606355698-5efdb410fe93?q=80&w=2071&auto=format&fit=crop"
+            src="assets/photo-7.svg"
             alt="image placeholder"
             width={500}
             height={500}
@@ -3165,7 +3165,7 @@ export function ShineBorderMonotone() {
                 <div style="border-bottom:1px solid var(--s-border-default);padding:20px 24px;">
                   <div style="display:flex;align-items:center;gap:14px;">
                     <div style="width:46px;height:46px;border-radius:50%;overflow:hidden;border:1.5px solid var(--s-border-default);flex-shrink:0;">
-                      <img src="https://github.com/masarax.png" alt="MASARA X" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='https://avatars.githubusercontent.com/u/106103625';" />
+                      <img src="assets/avatar-3.svg" alt="MASARA X" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='assets/avatar-3.svg';" />
                     </div>
                     <div style="flex:1;min-width:0;">
                       <h3 style="font-size:17px;font-weight:700;color:var(--s-text-primary);margin:0 0 2px 0;letter-spacing:-0.01em;">MASARA X</h3>
@@ -3221,7 +3221,7 @@ export function MagicCardOrbDemo() {
             <AvatarCircles
               avatarUrls={[
                 {
-                  imageUrl: "https://github.com/masarax.png",
+                  imageUrl: "assets/avatar-3.svg",
                   profileUrl: "https://github.com/masarax",
                 },
               ]}
@@ -4096,7 +4096,7 @@ Safari: [
       description: 'Realistic Safari browser mockup framing an application screenshot.',
       preview: () => html`
         <div style="width:100%;max-width:540px;margin:0 auto;">
-          ${U.Safari({url:'sarahui.dev',imageSrc:'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80'})}
+          ${U.Safari({url:'sarahui.dev',imageSrc:'assets/photo-8.svg'})}
         </div>
       `,
       code: `import { Safari } from "@/components/sarahui/safari";
@@ -4106,11 +4106,11 @@ export function SafariDemoImage() {
 }`
     },
     {
-      title: 'With Video',
-      description: 'Safari browser window mockup framing an interactive looping video stream.',
+      title: 'Framed Preview',
+      description: 'Safari browser window mockup framing a local product preview image.',
       preview: () => html`
         <div style="width:100%;max-width:540px;margin:0 auto;">
-          ${U.Safari({url:'sarahui.dev',videoSrc:'https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4'})}
+          ${U.Safari({url:'sarahui.dev',imageSrc:'assets/photo-9.svg'})}
         </div>
       `,
       code: `import { Safari } from "@/components/sarahui/safari";
@@ -4142,7 +4142,7 @@ Iphone: [
       description: 'iPhone hardware mockup framing a mobile application design screenshot.',
       preview: () => html`
         <div style="display:flex;justify-content:center;width:100%;">
-          ${U.Iphone({src:'https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?auto=format&fit=crop&w=600&q=80'})}
+          ${U.Iphone({src:'assets/photo-9.svg'})}
         </div>
       `,
       code: `import { Iphone } from "@/components/sarahui/iphone";
@@ -4152,11 +4152,11 @@ export function IphoneImage() {
 }`
     },
     {
-      title: 'With Video',
-      description: 'iPhone hardware mockup rendering an interactive looping mobile video.',
+      title: 'Framed Preview',
+      description: 'iPhone hardware mockup framing a local mobile application preview.',
       preview: () => html`
         <div style="display:flex;justify-content:center;width:100%;">
-          ${U.Iphone({videoSrc:'https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4'})}
+          ${U.Iphone({src:'assets/photo-9.svg'})}
         </div>
       `,
       code: `import { Iphone } from "@/components/sarahui/iphone";
@@ -4174,7 +4174,7 @@ Android: [
       description: 'Android hardware mockup framing an Android app screenshot.',
       preview: () => html`
         <div style="display:flex;justify-content:center;width:100%;">
-          ${U.Android({src:'https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?auto=format&fit=crop&w=600&q=80'})}
+          ${U.Android({src:'assets/photo-9.svg'})}
         </div>
       `,
       code: `import { Android } from "@/components/sarahui/android";
@@ -4184,11 +4184,11 @@ export function AndroidImage() {
 }`
     },
     {
-      title: 'With Video',
-      description: 'Android hardware frame displaying a live mobile interaction video.',
+      title: 'Framed Preview',
+      description: 'Android hardware frame displaying a local mobile application preview.',
       preview: () => html`
         <div style="display:flex;justify-content:center;width:100%;">
-          ${U.Android({videoSrc:'https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4'})}
+          ${U.Android({src:'assets/photo-9.svg'})}
         </div>
       `,
       code: `import { Android } from "@/components/sarahui/android";

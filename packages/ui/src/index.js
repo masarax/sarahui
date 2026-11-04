@@ -829,6 +829,14 @@ export function initGlobe(canvas) {
   renderGlobe();
 }
 
+function iconBadge(slug) {
+  const label = String(slug).replace(/[^a-z0-9]/gi, '').slice(0, 2).toUpperCase() || 'UI';
+  let hash = 0;
+  for (const char of label) hash = (hash * 31 + char.charCodeAt(0)) % 360;
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="hsl(' + hash + ', 72%, 52%)"/><text x="32" y="34" fill="white" font-family="system-ui,sans-serif" font-size="21" font-weight="700" text-anchor="middle">' + label + '</text></svg>';
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
 export function initIconCloud(canvas) {
   if (!canvas) return;
   if (canvas.dataset.iconCloudInitialized === 'true') {
@@ -853,7 +861,7 @@ export function initIconCloud(canvas) {
     'sonarqube', 'figma'
   ];
 
-  const items = (images && images.length) ? images : defaultSlugs.map(s => `https://cdn.simpleicons.org/${s}/${s}`);
+  const items = (images && images.length) ? images : defaultSlugs.map(s => iconBadge(s));
   const numIcons = items.length || 20;
 
   // Create icon canvases once when icons/images change
@@ -870,7 +878,7 @@ export function initIconCloud(canvas) {
     if (offCtx) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      img.src = typeof item === 'string' ? item : `https://cdn.simpleicons.org/${item}/${item}`;
+      img.src = typeof item === 'string' ? item : iconBadge(item);
       img.onload = () => {
         offCtx.clearRect(0, 0, 40, 40);
 

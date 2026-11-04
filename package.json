@@ -17,7 +17,6 @@
     "test:package": "node scripts/check-package.mjs",
     "pack:ui": "npm run build && npm run test:package",
     "typecheck": "tsc --noEmit",
-    "test:deploy": "python3 -m unittest discover -s tests -p \"test_deploy.py\"",
     "publish:verified": "node scripts/publish-package.mjs"
   },
   "devDependencies": {

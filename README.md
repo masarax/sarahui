@@ -322,7 +322,6 @@ npm run check
 npm test                 # Unit, DOM, token, registry, and security tests
 npm run test:browser     # Playwright browser verification (requires a build)
 npm run test:package     # Pack the npm tarball and verify a clean install
-npm run test:deploy      # Validate the deployment bundle
 ```
 
 ---
@@ -352,7 +351,7 @@ sarahui/
 ├── tokens/
 │   ├── sarah.tokens.json       # Source of truth for all tokens
 │   └── generated/              # Compiled CSS, TypeScript, and JSON
-├── scripts/                    # Build, token, package, and deployment tooling
+├── scripts/                    # Build, token, and package tooling
 ├── tests/                      # Unit, DOM, browser, and adversarial suites
 └── docs/                       # Guides, previews, and accessibility notes
 ```

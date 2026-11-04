@@ -2,13 +2,12 @@
 
 sarahUI **0.1.0** was verified on **13 September 2026** at source commit [7e2bf41b](https://github.com/masarax/sarahui/commit/7e2bf41b9e99516ef4b76fa9d8e43e5a22ac1d4d).
 
-The [recorded GitHub Actions run](https://github.com/masarax/sarahui/actions/runs/34768734157) passed all quality and npm publication checks. The public package is available as [sarahui on npm](https://www.npmjs.com/package/sarahui/v/0.1.0), with GitHub Actions provenance.
+The [recorded GitHub Actions run](https://github.com/masarax/sarahui/actions/runs/34768734157) passed the quality checks. The public package is available as [sarahui on npm](https://www.npmjs.com/package/sarahui/v/0.1.0).
 
 | Check | Result |
 | --- | --- |
 | Tokens, contrast, templates, documentation recipes and registry regression tests | 71 passed |
-| Browser behavior, installation guide and responsive composition | 18 passed |
-| cPanel configuration and transfer safeguards | 5 passed |
+| Browser behavior, installation guide and responsive composition | 19 passed |
 | Fresh tarball installation, ESM, CSS, token exports and six bundled fonts | Passed |
 | Strict TypeScript consumer compilation | Passed |
 | Published tarball matches the verified SHA-512 integrity | Passed |
@@ -19,7 +18,7 @@ The [recorded GitHub Actions run](https://github.com/masarax/sarahui/actions/run
 
 The original publication succeeded in [run 34768393303](https://github.com/masarax/sarahui/actions/runs/34768393303), but its immediate install check encountered a temporary registry `404`. The recorded successful run above verified the same immutable tarball after adding bounded registry-propagation handling. A separate fresh project also passed the exact unversioned command `npm install sarahui`.
 
-cPanel deployment is configured and deliberately **skipped** because its FTP secrets have not been added. No live FTP transfer is claimed. Follow the [deployment guide](deployment.md) when the account is ready.
+Releases are published manually with `npm run publish:verified`. Follow the [release guide](deployment.md) when preparing a new version.
 
 ## Coverage
 
@@ -48,8 +47,8 @@ These are unedited screenshots from the recorded browser run. Desktop captures a
 ~~~sh
 npm ci --ignore-scripts
 npm run check
+npm run typecheck
 npm run test:package
-npm run test:deploy
 npx playwright install chromium
 npm run test:browser
 ~~~

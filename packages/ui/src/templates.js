@@ -472,10 +472,10 @@ export function AvatarCircles({
   attrs = {}
 } = {}) {
   const rawList = Array.isArray(avatarUrls) && avatarUrls.length ? avatarUrls : (Array.isArray(avatars) && avatars.length ? avatars : [
-    'https://avatars.githubusercontent.com/u/55315718',
-    'https://avatars.githubusercontent.com/u/20110627',
-    'https://avatars.githubusercontent.com/u/106103625',
-    'https://avatars.githubusercontent.com/u/59228569'
+    { initials: 'AK' },
+    { initials: 'MR' },
+    { initials: 'JS' },
+    { initials: 'LN' }
   ]);
 
   const list = rawList.map(item => {
@@ -1010,8 +1010,8 @@ export function FileTree({elements=[{id:'src',name:'src',type:'folder',children:
 }
 
 export function HeroVideoDialog({
-  videoSrc = 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-  thumbnailSrc = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80',
+  videoSrc = '',
+  thumbnailSrc = '',
   thumbnailAlt = 'Video thumbnail',
   animationStyle = 'from-center',
   className = '',
@@ -1032,7 +1032,9 @@ export function HeroVideoDialog({
 
   return raw('<div' + attributes({ class: 's-hero-video-wrap' + extraClass, ...attrs }) + '>' +
     '<button type="button" class="s-hero-video-thumbnail" data-s-video-open="' + id + '" aria-haspopup="dialog" aria-label="Play video">' +
-      '<img src="' + safeHref(thumbnailSrc) + '" alt="' + escapeText(thumbnailAlt) + '" class="s-hero-video-img">' +
+      (thumbnailSrc
+        ? '<img src="' + safeHref(thumbnailSrc) + '" alt="' + escapeText(thumbnailAlt) + '" class="s-hero-video-img">'
+        : '<span class="s-hero-video-img s-hero-video-placeholder" aria-hidden="true"></span>') +
       '<div class="s-hero-video-play-backdrop">' +
         '<div class="s-hero-video-play-halo">' +
           '<div class="s-hero-video-play-btn">' +
@@ -1053,6 +1055,14 @@ export function HeroVideoDialog({
       '</div>' +
     '</dialog>' +
   '</div>');
+}
+
+function iconBadge(slug) {
+  const label = String(slug).replace(/[^a-z0-9]/gi, '').slice(0, 2).toUpperCase() || 'UI';
+  let hash = 0;
+  for (const char of label) hash = (hash * 31 + char.charCodeAt(0)) % 360;
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="hsl(' + hash + ', 72%, 52%)"/><text x="32" y="34" fill="white" font-family="system-ui,sans-serif" font-size="21" font-weight="700" text-anchor="middle">' + label + '</text></svg>';
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
 export function IconCloud({
@@ -1078,7 +1088,7 @@ export function IconCloud({
     if (Array.isArray(sourceSlugs)) {
       resolvedImages = sourceSlugs.map(slug => {
         const s = String(slug).toLowerCase().trim();
-        return `https://cdn.simpleicons.org/${s}`;
+        return iconBadge(s);
       });
     }
   }
@@ -1167,15 +1177,19 @@ export function Lens({
   );
 }
 
-export function PixelImage({src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',grid='6x4',grayscaleAnimation=true,attrs={}}={}) {
+export function PixelImage({src='',grid='6x4',grayscaleAnimation=true,attrs={}}={}) {
   const [cols,rows]=grid==='8x8'?[8,8]:grid==='4x6'?[4,6]:grid==='8x3'?[8,3]:[6,4];
   const total=cols*rows;
+  const source=safeHref(src);
+  const media=source&&source!=='#'
+    ? `<img src="${source}" alt="" class="s-pixel-img${grayscaleAnimation?' s-pixel-gray':''}">`
+    : '<span class="s-pixel-fallback" aria-hidden="true"></span>';
   const pieces=Array.from({length:total},(_,i)=>{
     const r=Math.floor(i/cols);
     const c=i%cols;
     const clip=`polygon(${c*(100/cols)}% ${r*(100/rows)}%, ${(c+1)*(100/cols)}% ${r*(100/rows)}%, ${(c+1)*(100/cols)}% ${(r+1)*(100/rows)}%, ${c*(100/cols)}% ${(r+1)*(100/rows)}%)`;
     const delay=Math.random()*800;
-    return `<div class="s-pixel-piece" style="clip-path:${clip};animation-delay:${delay.toFixed(0)}ms;"><img src="${safeHref(src)}" alt="" class="s-pixel-img${grayscaleAnimation?' s-pixel-gray':''}"></div>`;
+    return `<div class="s-pixel-piece" style="clip-path:${clip};animation-delay:${delay.toFixed(0)}ms;">${media}</div>`;
   }).join('');
   return raw('<div'+attributes({class:'s-pixel-image-wrap',role:'img','aria-label':'Pixel image',...attrs})+'>'+pieces+'</div>');
 }

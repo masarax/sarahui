@@ -18,10 +18,12 @@ try {
   browser=await playwright.chromium.launch({headless:true,args:['--no-sandbox']});
   const context=await browser.newContext({viewport:{width:1440,height:1024},deviceScaleFactor:1,reducedMotion:'reduce',colorScheme:'light'});
   const page=await context.newPage();page.setDefaultTimeout(10000);
+  const base=process.env.BROWSER_URL||'http://127.0.0.1:4179';
+  const externalRequests=[];
   page.on('pageerror',error=>errors.push(error.message));
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
   page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+' '+response.url());});
-  const base=process.env.BROWSER_URL||'http://127.0.0.1:4179';
+  page.on('request',request=>{const url=request.url();if(/^https?:/i.test(url)&&!url.startsWith(base))externalRequests.push(url);});
   const goto=async hash=>{await page.goto(base+'/'+hash);await page.waitForSelector('html[data-ready=true]');await page.evaluate(()=>document.fonts.ready);};
   const check=async(name,fn)=>{try{await fn();results.push({name,passed:true});console.log('PASS '+name);}catch(error){results.push({name,passed:false,error:error.message});console.error('FAIL '+name+'\n'+error.stack);await page.screenshot({path:path.join(output,'failure-'+results.length+'.png'),fullPage:false}).catch(()=>{});await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));}};
   const route=async hash=>{await page.evaluate(h=>{location.hash=h;},hash);await page.waitForFunction(h=>document.documentElement.dataset.route===h,hash);};
@@ -195,7 +197,7 @@ try {
     await page.getByRole('button',{name:'Open navigation'}).click();assert.equal(await page.locator('#mobile-navigation').evaluate(d=>d.open),true);
     await page.locator('#mobile-navigation').getByRole('link',{name:/Components/}).click();await page.waitForFunction(()=>!document.getElementById('mobile-navigation').open);assert.equal(await page.locator('[data-view=components]').isVisible(),true);
   });
-  await check('No browser errors occurred',async()=>assert.deepEqual(errors,[]));
+  await check('No browser errors occurred',async()=>{assert.deepEqual(externalRequests,[]);assert.deepEqual(errors,[]);});
 } finally {
   fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify({passed:results.filter(r=>r.passed).length,failed:results.filter(r=>!r.passed).length,results,errors},null,2));
   await browser?.close();server?.kill();
