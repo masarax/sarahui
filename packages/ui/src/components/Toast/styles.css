@@ -1,4 +1,1 @@
-/* Scoped styles for Toast */
-.s-toast {
-  box-sizing: border-box;
-}
+/* Toast styles are defined in packages/ui/src/styles.css. */

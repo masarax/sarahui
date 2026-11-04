@@ -23,12 +23,6 @@ bun add sarahui
 
 The package is unscoped: its canonical name is **`sarahui`**.
 
-You can also use the SarahUI CLI to add components directly:
-```sh
-npx sarahui add marquee
-npx sarahui add terminal
-```
-
 ---
 
 ## Usage

@@ -51,8 +51,7 @@ export function sanitizeTsx(rawCode) {
   code = code.replace(/from\s+['"]@\/lib\/utils['"]/g, 'from "sarahui/utils"');
 
   // 4. Specific asset URLs, foreign handles & CLI (MUST execute before generic text/domain replacements)
-  code = code.replace(/https:\/\/cdn\.(?:magicui\.design|sarahui\.dev)\/ocean-small\.webm/g, 'assets/ocean.webm');
-  code = code.replace(/https:\/\/github\.com\/dillionverma/g, 'https://github.com/sarahui');
+    code = code.replace(/https:\/\/github\.com\/dillionverma/g, 'https://github.com/sarahui');
   code = code.replace(/pnpm dlx shadcn@latest init/g, 'npx sarahui init');
 
   // 5. Generic domain & branding text replacements
@@ -2834,7 +2833,7 @@ export const registry = {
         ]
       }
     ],
-    "demoTsx": "import { VideoText } from \"@/components/sarahui/video-text\"\n\nexport default function VideoTextDemo() {\n  return (\n    <div className=\"relative h-[200px] w-full overflow-hidden\">\n      <VideoText src=\"assets/ocean.webm\">\n        OCEAN\n      </VideoText>\n    </div>\n  )\n}\n",
+    "demoTsx": "import { VideoText } from \"@/components/sarahui/video-text\"\n\nexport default function VideoTextDemo() {\n  return (\n    <div className=\"relative h-[200px] w-full overflow-hidden\">\n      <VideoText>\n        OCEAN\n      </VideoText>\n    </div>\n  )\n}\n",
     "accessibility": {
       "role": "generic",
       "reducedMotion": "0ms transition or static projection"

@@ -1,4 +1,1 @@
-/* Scoped styles for RippleButton */
-.s-ripplebutton {
-  box-sizing: border-box;
-}
+/* RippleButton styles are defined in packages/ui/src/styles.css. */

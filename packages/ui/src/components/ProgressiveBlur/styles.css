@@ -1,4 +1,1 @@
-/* Scoped styles for ProgressiveBlur */
-.s-progressive-blur {
-  box-sizing: border-box;
-}
+/* ProgressiveBlur styles are defined in packages/ui/src/styles.css. */

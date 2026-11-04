@@ -1,4 +1,1 @@
-/* Scoped styles for FileTree */
-.s-filetree {
-  box-sizing: border-box;
-}
+/* FileTree styles are defined in packages/ui/src/styles.css. */

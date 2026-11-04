@@ -1,4 +1,1 @@
-/* Scoped styles for Sheet */
-.s-sheet {
-  box-sizing: border-box;
-}
+/* Sheet styles are defined in packages/ui/src/styles.css. */

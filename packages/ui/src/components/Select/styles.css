@@ -1,4 +1,1 @@
-/* Scoped styles for Select */
-.s-select {
-  box-sizing: border-box;
-}
+/* Select styles are defined in packages/ui/src/styles.css. */

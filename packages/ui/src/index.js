@@ -1515,7 +1515,9 @@ export function initParticles(canvas) {
   if (!ctx) return;
   const win = docOf(canvas).defaultView;
 
-  const count = Number(canvas.dataset.quantity) || 80;
+  const host = canvas.closest('[data-s-particles]');
+  const count = Number(canvas.dataset.quantity || host?.dataset.sParticles) || 80;
+  const reduceMotion = win.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
   const particles = [];
   let mouseX = -1000, mouseY = -1000;
 
@@ -1594,9 +1596,9 @@ export function initParticles(canvas) {
     }
 
     ctx.globalAlpha = 1;
-    win.requestAnimationFrame(render);
+    if (!reduceMotion) win.requestAnimationFrame(render);
   };
-  win.requestAnimationFrame(render);
+  render();
 }
 
 export function initFloating3DParticles(canvas) {
@@ -2186,7 +2188,7 @@ export function reinitComponent(root) {
   root.querySelectorAll('[data-s-smooth-cursor]').forEach(c => initSmoothCursor(c));
   root.querySelectorAll('[data-s-hyper-text]').forEach(h => initHyperText(h));
   root.querySelectorAll('[data-s-confetti]').forEach(c => initConfetti(c));
-  root.querySelectorAll('canvas[data-s-particles]').forEach(p => initParticles(p));
+  root.querySelectorAll('[data-s-particles] canvas').forEach(p => initParticles(p));
   root.querySelectorAll('canvas[data-s-floating-particles]').forEach(f => initFloating3DParticles(f));
   root.querySelectorAll('canvas[data-s-flickering], canvas[data-s-flickering-grid]').forEach(g => initFlickeringGrid(g));
   root.querySelectorAll('canvas[data-s-glyph-matrix]').forEach(m => initGlyphMatrix(m));
@@ -2646,12 +2648,6 @@ export function enhanceUI(root = globalThis.document) {
   };
 
   on(win, 'scroll', () => {
-    const sp = root.querySelector('[data-s-scroll-progress]');
-    if (sp) {
-      const total = doc.documentElement.scrollHeight - win.innerHeight;
-      const progress = total > 0 ? Math.min(1, Math.max(0, win.scrollY / total)) : 0;
-      sp.style.width = `${(progress * 100).toFixed(1)}%`;
-    }
     const vel = root.querySelectorAll('[data-s-scroll-velocity]');
     if (vel.length) {
       const delta = Math.abs(win.scrollY - lastScrollY);

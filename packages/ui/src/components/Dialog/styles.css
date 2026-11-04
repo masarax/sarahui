@@ -1,4 +1,1 @@
-/* Scoped styles for Dialog */
-.s-dialog {
-  box-sizing: border-box;
-}
+/* Dialog styles are defined in packages/ui/src/styles.css. */

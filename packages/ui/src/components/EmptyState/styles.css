@@ -1,4 +1,1 @@
-/* Scoped styles for EmptyState */
-.s-emptystate {
-  box-sizing: border-box;
-}
+/* EmptyState styles are defined in packages/ui/src/styles.css. */

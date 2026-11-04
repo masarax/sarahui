@@ -851,7 +851,7 @@ export const demos={
 
   VideoText:()=>html`
     <div style="display:flex;justify-content:center;align-items:center;padding:48px 16px;min-height:300px;background:var(--s-bg-surface);border-radius:12px;border:1px solid var(--s-border-default);">
-      ${U.VideoText({src:'assets/ocean.webm',text:'OCEAN',fontSize:20})}
+      ${U.VideoText({text:'OCEAN',fontSize:20})}
     </div>
   `,
 
@@ -1046,7 +1046,16 @@ export const config = {
 
   TweetCard:()=>html`
     <div style="max-width:480px;width:100%;margin:0 auto;">
-      ${U.TweetCard({ id: '2095541863956742174' })}
+      ${U.TweetCard({
+        name: 'Sarah Khan',
+        handle: 'sarahui',
+        avatar: 'assets/sarah-mark.svg',
+        verified: true,
+        text: 'Design systems should feel invisible: every state, color, and motion has one clear job.\n\nsarahUI ships 120 components and 319 tokens with zero runtime dependencies.',
+        timestamp: '9:41 AM · Nov 4, 2026',
+        likes: '2.4K',
+        retweets: '318'
+      })}
     </div>
   `,
 
@@ -1808,18 +1817,32 @@ export function GlobeCompact() {
   TweetCard: [
     {
       title: 'Image Carousel',
-      description: 'Tweet card showcasing embedded image and animated media attachments from official posts.',
+      description: 'Tweet card with a keyboard-accessible, self-hosted image carousel.',
       preview: () => html`
         <div style="max-width:480px;width:100%;margin:0 auto;">
-          ${U.TweetCard({ id: '2103111024257954291' })}
+          ${U.TweetCard({
+            name: 'Sarah Khan',
+            handle: 'sarahui',
+            avatar: 'assets/sarah-mark.svg',
+            verified: true,
+            text: 'Three frames from the new component library. Every slide is reachable by keyboard.',
+            images: ['assets/sample-1.svg', 'assets/sample-2.svg', 'assets/sample-3.svg']
+          })}
         </div>
       `,
-      code: `import { TweetCard } from "@/components/sarahui/tweet-card";
+      code: `import { TweetCard } from "sarahui";
 
 export function TweetCardImagesDemo() {
   return (
     <TweetCard
-      id="2103111024257954291"
+      name="Sarah Khan"
+      handle="sarahui"
+      avatar="/assets/sarah-mark.svg"
+      images={[
+        "/assets/sample-1.svg",
+        "/assets/sample-2.svg",
+        "/assets/sample-3.svg",
+      ]}
       className="shadow-2xl"
     />
   );
@@ -1827,18 +1850,38 @@ export function TweetCardImagesDemo() {
     },
     {
       title: 'Meta URL Preview',
-      description: 'Tweet card displaying an OpenGraph rich metadata card preview for external links.',
+      description: 'Tweet card displaying a rich link preview with domain, title, and description.',
       preview: () => html`
         <div style="max-width:480px;width:100%;margin:0 auto;">
-          ${U.TweetCard({ id: '2103155873623540169' })}
+          ${U.TweetCard({
+            name: 'Sarah Khan',
+            handle: 'sarahui',
+            avatar: 'assets/sarah-mark.svg',
+            verified: true,
+            text: 'The repository is public. Issues and pull requests are open.',
+            urlPreview: {
+              domain: 'github.com',
+              title: 'masarax/sarahui',
+              description: 'An original design system and component engineering library.',
+              url: 'https://github.com/masarax/sarahui'
+            }
+          })}
         </div>
       `,
-      code: `import { TweetCard } from "@/components/sarahui/tweet-card";
+      code: `import { TweetCard } from "sarahui";
 
 export function TweetCardMetaDemo() {
   return (
     <TweetCard
-      id="2103155873623540169"
+      name="Sarah Khan"
+      handle="sarahui"
+      avatar="/assets/sarah-mark.svg"
+      urlPreview={{
+        domain: "github.com",
+        title: "masarax/sarahui",
+        description: "An original design system and component engineering library.",
+        url: "https://github.com/masarax/sarahui",
+      }}
       className="shadow-2xl"
     />
   );
@@ -3582,28 +3625,28 @@ export function AuroraTextSunset() {
 // 31. VideoText
 VideoText: [
     {
-      title: 'Condensed Font',
-      description: 'Bold headline typography masked with an interactive ambient looping video stream.',
+      title: 'Gradient Fallback',
+      description: 'Headline typography that stays legible without a video source by using a token-driven gradient.',
       preview: () => html`
         <div style="display:flex;align-items:center;justify-content:center;height:260px;text-align:center;overflow:hidden;border-radius:12px;background:#000;border:1px solid var(--s-border-default);">
-          ${U.VideoText({text:'CREATIVE',videoSrc:'https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4'})}
+          ${U.VideoText({text:'CREATIVE'})}
         </div>
       `,
-      code: `import { VideoText } from "@/components/sarahui/video-text";
+      code: `import { VideoText } from "sarahui";
 
 export function VideoTextDemo() {
   return <VideoText text="CREATIVE" videoSrc="/ambient.mp4" />;
 }`
     },
     {
-      title: 'Condensed Font',
-      description: 'Ultra-bold condensed font masked over vibrant dynamic video motion.',
+      title: 'Display Scale',
+      description: 'Large display sizing for hero sections, with an optional video fill.',
       preview: () => html`
         <div style="display:flex;align-items:center;justify-content:center;height:260px;text-align:center;overflow:hidden;border-radius:12px;background:#000;border:1px solid var(--s-border-default);">
-          ${U.VideoText({text:'FUTURE',videoSrc:'https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4',fontSize:'4.5rem'})}
+          ${U.VideoText({text:'FUTURE',fontSize:'4.5rem'})}
         </div>
       `,
-      code: `import { VideoText } from "@/components/sarahui/video-text";
+      code: `import { VideoText } from "sarahui";
 
 export function VideoTextFuture() {
   return <VideoText text="FUTURE" videoSrc="/future.mp4" fontSize="4.5rem" />;

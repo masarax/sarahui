@@ -1,4 +1,1 @@
-/* Scoped styles for Kbd */
-.s-kbd {
-  box-sizing: border-box;
-}
+/* Kbd styles are defined in packages/ui/src/styles.css. */

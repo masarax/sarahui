@@ -13,16 +13,16 @@
   <a href="#accessibility"><img src="https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-emerald" alt="WCAG 2.1 AA"></a>
 </p>
 
-sarahUI is a foundation-first UI library and component system crafted with an original blue, indigo, and violet identity. Built with zero runtime dependencies, pure CSS custom properties, and progressive enhancement, sarahUI provides 120 production-grade components, 319 design tokens benchmarked against Adobe Spectrum Design Data, and seamless Tailwind CSS integration.
+sarahUI is a foundation-first UI library for the modern web. It ships 120 framework-neutral components, 319 design tokens, light and dark themes, self-hosted fonts, and optional Tailwind integration. Everything runs on plain HTML, CSS custom properties, and ES modules with zero runtime dependencies.
 
 ![sarahUI documentation in light mode](docs/previews/overview-light.png)
 
 <p align="center">
-  <a href="docs/previews/overview-dark.png">Dark theme</a> · 
-  <a href="docs/previews/overview-mobile.png">Mobile</a> · 
-  <a href="docs/previews/components-light.png">Components</a> · 
-  <a href="docs/previews/foundations-light.png">Foundations</a> · 
-  <a href="docs/previews/patterns-light.png">Workspace pattern</a> · 
+  <a href="docs/previews/overview-dark.png">Dark theme</a> |
+  <a href="docs/previews/overview-mobile.png">Mobile</a> |
+  <a href="docs/previews/components-light.png">Components</a> |
+  <a href="docs/previews/foundations-light.png">Foundations</a> |
+  <a href="docs/previews/patterns-light.png">Workspace pattern</a> |
   <a href="docs/previews/getting-started-light.png">Installation guide</a>
 </p>
 
@@ -30,39 +30,19 @@ sarahUI is a foundation-first UI library and component system crafted with an or
 
 ## Highlights
 
-- **120 modular components:** Every component lives in its own dedicated `packages/ui/src/components/<ComponentName>/` directory with a full 6-file suite: template function, TypeScript definitions (`.d.ts`), scoped stylesheet, unit tests, README, and export barrel.
-- **319 design tokens:** 85 primitive colors, 48 semantic roles per theme, layout, spacing, shape, motion, elevation, and 54 scoped component tokens adhering to Adobe Spectrum Design Data flat name object taxonomy.
-- **Modernized Tailwind preset:** Drop-in `@sarahui/tailwind-preset` (`sarahui/tailwind-preset`) mapping all tokens, border radii, shadows, animations, and keyframes directly into Tailwind CSS v3 and v4 without overriding dynamic utility classes.
-- **CLI component distribution:** Add components individually to your codebase using `npx sarahui add <component>` or install the complete package with `npm install sarahui`.
-- **Zero runtime dependencies:** Pure CSS custom properties, native browser Web APIs, Canvas 2D/WebGL math, and lightweight vanilla ES module progressive enhancement (`enhanceUI()`).
-- **WCAG 2.1 AA & reduced motion:** 4.5:1 text and 3:1 graphical contrast compliance verified by automated test suites; full `prefers-reduced-motion` bypass across all continuous animations.
-- **Self-hosted typography:** Inter Variable, Poppins, Roboto Mono, Noto Sans Bengali (বাংলা), and Noto Sans Arabic (العربية) bundled with zero external font requests.
+- **120 components:** every component has a dedicated entry point under `packages/ui/src/components/<ComponentName>/`, with typed props, an individual README, and unit coverage. The shared implementation lives in `packages/ui/src/templates.js`.
+- **319 design tokens:** 85 primitive colors, 48 semantic roles per theme, plus layout, spacing, shape, motion, elevation, and component tokens. The token model follows Adobe Spectrum Design Data naming conventions.
+- **Zero runtime dependencies:** only CSS custom properties, native browser APIs, and small progressive-enhancement modules. The package never downloads code at runtime.
+- **Tailwind preset included:** `sarahui/tailwind-preset` maps colors, radii, shadows, spacing, and animations into Tailwind CSS v3 and v4.
+- **Accessible by default:** WCAG 2.1 AA contrast targets, visible focus styles, WAI-ARIA patterns, keyboard navigation, and `prefers-reduced-motion` support.
+- **Self-hosted typography:** Inter, Poppins, Roboto Mono, Noto Sans Bengali, and Noto Sans Arabic are bundled. No external font requests.
+- **Open source:** MIT licensed, contribution-friendly, and free of vendor lock-in.
 
 ---
 
 ## Quick Start
 
-### Option A: Component CLI (Recommended)
-
-Add individual components directly into your application repository:
-
-```sh
-# Add an individual component
-npx sarahui add marquee
-
-# Or add multiple components
-npx sarahui add terminal bento-grid magic-card dock
-```
-
-Package managers:
-```sh
-pnpm dlx sarahui add marquee
-bunx --bun sarahui add marquee
-```
-
-### Option B: Full Package Install
-
-Install the complete unscoped library via npm:
+### Install
 
 ```sh
 npm install sarahui
@@ -72,14 +52,14 @@ pnpm add sarahui
 bun add sarahui
 ```
 
-Mount and enhance your first component in vanilla JavaScript:
+### Use a component
 
 ```js
 import 'sarahui/css';
 import { Button, Card, render, enhanceUI } from 'sarahui';
 
-// Target an element with class "s-ui"
 const root = document.querySelector('#app');
+
 root.innerHTML = render(
   Card({
     title: 'A place for your next idea',
@@ -88,21 +68,49 @@ root.innerHTML = render(
   })
 );
 
-// Attach progressive enhancement (returns cleanup function)
+// Attach interactive behavior. Returns a cleanup function.
 const cleanup = enhanceUI(root);
 ```
+
+Component functions return escaped markup. Compose them with the `html` tagged template and serialize with `render()`:
+
+```js
+import { html, render, Badge, Avatar } from 'sarahui';
+
+const markup = render(html`
+  <section class="s-ui">
+    ${Badge({ label: 'Ready', tone: 'success' })}
+    ${Avatar({ name: 'Sarah Khan', status: true })}
+  </section>
+`);
+```
+
+### Import styles selectively
+
+The `sarahui/css` entry point loads fonts, tokens, and component styles in the correct order. You can also import each layer separately:
+
+```js
+import 'sarahui/fonts.css';
+import 'sarahui/tokens.css';
+import 'sarahui/styles.css';
+```
+
+### Import a single component
+
+```js
+import { Marquee } from 'sarahui/components/Marquee';
+```
+
+Barrel imports from `sarahui` remain the simplest option. Modern bundlers tree-shake unused exports.
 
 ---
 
 ## Tailwind CSS Integration
 
-sarahUI includes a first-class Tailwind preset that automatically maps all tokens, border radii, shadows, spacing, and animations into your utility classes.
-
-### 1. Configure Preset
-
-In your `tailwind.config.js` or `tailwind.config.ts`:
+The preset maps sarahUI tokens into Tailwind utilities without replacing your existing scales.
 
 ```js
+// tailwind.config.js
 import sarahuiPreset from 'sarahui/tailwind-preset';
 
 export default {
@@ -110,37 +118,27 @@ export default {
   content: [
     './src/**/*.{html,js,ts,jsx,tsx}',
     './node_modules/sarahui/src/**/*.{js,css}'
-  ],
+  ]
 };
 ```
-
-CommonJS (`tailwind.config.cjs`):
-```js
-module.exports = {
-  presets: [require('sarahui/tailwind-preset')],
-  content: ['./src/**/*.{html,js,ts,jsx,tsx}'],
-};
-```
-
-### 2. Use Dynamic Token Utilities
-
-You can style elements using both standard Tailwind utilities and SarahUI token utilities:
 
 ```html
 <div class="bg-sarah-surface border border-sarah-border rounded-sarah-xl p-s-24 shadow-s-raised">
   <h2 class="text-sarah-primary text-xl font-semibold">Token-driven card</h2>
-  <p class="text-sarah-secondary mt-s-8">Seamlessly styled with dynamic Tailwind tokens.</p>
-  <button type="button" class="s-button s-button--primary s-button--md mt-s-16">
+  <p class="text-sarah-secondary mt-s-8">Styled with shared design tokens.</p>
+  <button type="button" class="s-button s-button--primary s-button--md">
     <span>Action</span>
   </button>
 </div>
 ```
 
+CommonJS consumers can use `require('sarahui/tailwind-preset')`.
+
 ---
 
 ## Framework Integration
 
-sarahUI exports native HTML template functions that return escaped markup. Use the CSS classes and components with any frontend framework.
+sarahUI is framework-neutral. Render the markup with any tool and call `enhanceUI()` after the markup is in the DOM.
 
 ### React / Next.js
 
@@ -164,7 +162,6 @@ export function Showcase() {
         <div className="s-marquee-track">
           <span className="px-4 text-sarah-primary">120 Components</span>
           <span className="px-4 text-sarah-brand">Zero Dependencies</span>
-          <span className="px-4 text-sarah-secondary">Adobe Spectrum Benchmarked</span>
         </div>
       </div>
     </main>
@@ -191,18 +188,15 @@ onBeforeUnmount(() => cleanup());
 
 <template>
   <main ref="root" class="s-ui">
-    <div class="s-bento-grid">
-      <!-- BentoGrid cells -->
-    </div>
+    <div class="s-bento-grid"><!-- BentoGrid cells --></div>
   </main>
 </template>
 ```
 
 ### Laravel with Vite
 
-Import `sarahui/css` and `enhanceUI` in your `resources/js/app.js`:
-
 ```js
+// resources/js/app.js
 import 'sarahui/css';
 import { enhanceUI } from 'sarahui';
 
@@ -211,21 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-In your Blade template:
-```html
-@vite(['resources/js/app.js'])
-<main class="s-ui">
-  <button type="button" class="s-button s-button--primary s-button--md">
-    <span>Deploy Application</span>
-  </button>
-</main>
-```
-
 ---
 
-## Component Inventory (120 Components)
-
-All 120 components are structured in `packages/ui/src/components/<ComponentName>/` with full 6-file suites and passing unit tests.
+## Component Inventory
 
 | Category | Count | Components |
 |---|---|---|
@@ -242,22 +224,23 @@ All 120 components are structured in `packages/ui/src/components/<ComponentName>
 | **Feedback & Overlays** | 9 | `Alert`, `Dialog`, `Tooltip`, `Toast`, `Drawer`, `Popover`, `Sheet`, `ContextMenu`, `HoverCard` |
 | **Layout & Display** | 20 | `Icon`, `Button`, `IconButton`, `ButtonGroup`, `Badge`, `Chip`, `Avatar`, `Card`, `DataTable`, `Accordion`, `Progress`, `Skeleton`, `EmptyState`, `Separator`, `Spinner`, `Toggle`, `ToggleGroup`, `Kbd`, `AspectRatio`, `Collapsible` |
 
+Full component reference: [`docs/components.md`](docs/components.md).
+
 ---
 
-## Design Token Architecture
+## Design Tokens
 
-sarahUI implements a formal 3-tier token architecture validated against the **Adobe Spectrum Design Data** benchmark:
+Tokens are defined once in `tokens/sarah.tokens.json` and compiled into CSS variables, TypeScript declarations, and JSON.
 
 ```
 tokens/sarah.tokens.json (319 tokens)
-├── 1. Primitives (85)          # Raw hex colors across 8 color scales (neutral, blue, indigo, violet, etc.)
-├── 2. Semantic Roles (48/mode) # Contextual roles (canvas, surface, action-primary, status-success, etc.)
-└── 3. Component Tokens (54)    # Flat name object taxonomy (marquee/duration, terminal/bg, bento/radius, etc.)
+├── 1. Primitives (85)          # Raw colors across 8 scales
+├── 2. Semantic Roles (48/mode) # canvas, surface, action-primary, status-success, ...
+└── 3. Component Tokens (54)    # marquee/duration, terminal/bg, bento/radius, ...
 ```
 
-### Spectrum Flat Name Object Taxonomy
+Each component token follows the Spectrum flat-name object format:
 
-Each component token adheres to Adobe Spectrum's canonical serialization:
 ```json
 {
   "property": "border-radius",
@@ -270,14 +253,14 @@ Each component token adheres to Adobe Spectrum's canonical serialization:
 }
 ```
 
-Generated variables are emitted into `packages/ui/src/tokens.css` and `tokens/generated/sarah.css`:
+Compiled output is written to `packages/ui/src/tokens.css` and `tokens/generated/`:
+
 ```css
 :root {
   --s-marquee-duration: var(--s-duration-slow);
   --s-marquee-gap: var(--s-spacing-16);
   --s-terminal-radius: var(--s-radius-xl);
   --s-terminal-bg: var(--s-bg-surface);
-  --s-terminal-border: var(--s-border-default);
   --s-bento-radius: var(--s-radius-xl);
   --s-dock-radius: var(--s-radius-full);
 }
@@ -288,85 +271,106 @@ Generated variables are emitted into `packages/ui/src/tokens.css` and `tokens/ge
 ```js
 import { setTheme } from 'sarahui';
 
-// Synchronize theme across document and dispatch CustomEvent 'sarah:themechange'
+// Sets data-theme and data-theme-preference, then emits 'sarah:themechange'.
 setTheme('dark'); // 'light' | 'dark' | 'system'
 ```
 
 ---
 
-## Accessibility & Standards Conformance
+## Accessibility
 
-sarahUI is engineered for strict accessibility conformance:
-- **WCAG 2.1 AA / 2.2**: Text contrast is verified at >= 4.5:1 across light and dark themes; UI boundaries and focus rings maintain >= 3:1 contrast against adjacent surfaces.
-- **WAI-ARIA APG**: Every component includes explicit WAI-ARIA roles (`role="region"`, `role="log"`, `role="toolbar"`, `role="dialog"`), accessible names, and live regions (`aria-live="polite"`).
-- **Reduced Motion Compliance**: Continuous animations (`Marquee`, `OrbitingCircles`, `AnimatedBeam`, `BorderBeam`, `ShineBorder`, `Terminal`) automatically collapse to 0ms durations or static balanced layouts when `prefers-reduced-motion: reduce` is active.
-- **Roving Tabindex & Keyboard Navigation**: Complex composite widgets (`Dock`, `Tabs`, `CommandPalette`) implement full arrow key navigation and focus trapping.
+- **WCAG 2.1 AA:** text contrast is tested at 4.5:1 or higher in both themes; UI boundaries and focus rings stay at 3:1 or higher.
+- **WAI-ARIA patterns:** components expose semantic roles, accessible names, and polite live regions where content changes.
+- **Keyboard support:** composite widgets such as `Dock`, `Tabs`, and `CommandPalette` implement roving `tabindex` and arrow-key navigation.
+- **Reduced motion:** continuous animations collapse to static layouts or zero-duration transitions when `prefers-reduced-motion: reduce` is active.
+
+See [`docs/accessibility.md`](docs/accessibility.md) for the full conformance notes.
 
 ---
 
-## Repository & Development
+## Development
 
-Requirements: **Node.js 22+**. Zero package dependencies required to build or serve the core documentation.
+Requirements: **Node.js 22+**.
 
 ```sh
-# Clone repository
+# Clone the repository
 git clone https://github.com/masarax/sarahui.git
 cd sarahui
 
-# Start documentation dev server (http://localhost:4173)
+# Install development tooling (Playwright and TypeScript)
+npm install
+
+# Rebuild tokens, package files, and the documentation site
+npm run build
+
+# Start the documentation server (prints the local address)
 npm run dev
 
 # Recompile design tokens from tokens/sarah.tokens.json
 npm run tokens
 
-# Execute unit, DOM, and token test suites
+# Run the unit, DOM, and security test suites
 npm test
 
-# Build static documentation and verify full distribution
+# Build and run every check
 npm run check
 ```
 
-### Automated Test Suites
+### Test suites
 
 ```sh
-npm test                 # Run all 161 test suites (components, tokens, presets, security)
-npm run test:browser     # Run Playwright browser verification
-npm run test:package     # Verify fresh npm tarball installation and typings
-npm run test:deploy      # Verify deployment bundle safeguards
+npm test                 # Unit, DOM, token, registry, and security tests
+npm run test:browser     # Playwright browser verification (requires a build)
+npm run test:package     # Pack the npm tarball and verify a clean install
+npm run test:deploy      # Validate the deployment bundle
 ```
 
 ---
 
-## Directory Structure
+## Project Structure
 
 ```
 sarahui/
 ├── packages/ui/
 │   ├── src/
-│   │   ├── components/         # 120 modular component directories (6-file suites)
-│   │   │   ├── Marquee/        # index.js, Marquee.js, Marquee.d.ts, styles.css, etc.
-│   │   │   ├── Terminal/
-│   │   │   └── index.js        # Aggregator re-exporting all 120 components
-│   │   ├── styles/             # Modular stylesheets (styles.css, tokens.css, fonts.css)
-│   │   ├── tokens/             # theme-tokens.js, theme-tokens.d.ts, tokens.css
-│   │   ├── utilities/          # html, raw, render, attributes, DOM enhancers
-│   │   ├── tailwind-preset.js  # Modernized Tailwind CSS preset
-│   │   ├── index.js            # Top-level backwards-compatible barrel export
-│   │   └── templates.js        # HTML template tagged functions barrel export
-│   └── package.json            # Unscoped 'sarahui' npm package configuration
-├── tokens/
-│   ├── sarah.tokens.json       # 319 design tokens & Adobe Spectrum metadata
-│   └── generated/              # Compiled CSS, TypeScript, and JSON token outputs
+│   │   ├── components/         # 120 per-component entry points
+│   │   │   ├── Marquee/        # index.js, Marquee.js, Marquee.d.ts, README.md
+│   │   │   └── index.js        # Barrel export for every component
+│   │   ├── styles/             # Mirror of the canonical stylesheets
+│   │   ├── tokens/             # Generated token modules
+│   │   ├── utilities/          # html, raw, render, attributes, enhancers
+│   │   ├── templates.js        # Shared component implementations
+│   │   ├── index.js            # Public API and enhanceUI()
+│   │   ├── styles.css          # Component styles
+│   │   ├── tokens.css          # Generated CSS variables
+│   │   ├── fonts.css           # Self-hosted font faces
+│   │   ├── sarahui.css         # Canonical style entry point
+│   │   └── tailwind-preset.js  # Tailwind CSS preset
+│   ├── assets/fonts/           # Bundled WOFF files and OFL notices
+│   └── package.json            # Unscoped "sarahui" npm package
 ├── apps/docs/                  # Interactive documentation application
-├── scripts/                    # Token compiler, build, server, and validation tooling
-├── tests/                      # Automated unit, DOM, and adversarial test suites
-└── docs/                       # Technical specs, audit benchmarks, and guides
+├── tokens/
+│   ├── sarah.tokens.json       # Source of truth for all tokens
+│   └── generated/              # Compiled CSS, TypeScript, and JSON
+├── scripts/                    # Build, token, package, and deployment tooling
+├── tests/                      # Unit, DOM, browser, and adversarial suites
+└── docs/                       # Guides, previews, and accessibility notes
 ```
+
+---
+
+## Contributing
+
+Contributions are welcome. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) for local setup, coding conventions, and the pull-request checklist.
+
+- Report bugs and request features through GitHub Issues.
+- Keep changes focused and include tests for behavior changes.
+- Run `npm run check` before opening a pull request.
 
 ---
 
 ## License & Credits
 
-- Library code is licensed under the [MIT License](LICENSE).
-- Brand identity, design language, and visual assets are copyright **MASARA X**.
-- Bundled self-hosted variable fonts retain their respective SIL Open Font Licenses (see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)).
+- Library code: [MIT License](LICENSE).
+- Fonts: Inter, Poppins, Roboto Mono, Noto Sans Bengali, and Noto Sans Arabic, each under the SIL Open Font License. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+- Design and engineering: MASARA X.

@@ -1,4 +1,1 @@
-/* Scoped styles for Tooltip */
-.s-tooltip {
-  box-sizing: border-box;
-}
+/* Tooltip styles are defined in packages/ui/src/styles.css. */

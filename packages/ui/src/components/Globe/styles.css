@@ -1,4 +1,1 @@
-/* Scoped styles for Globe */
-.s-globe-container {
-  box-sizing: border-box;
-}
+/* Globe styles are defined in packages/ui/src/styles.css. */

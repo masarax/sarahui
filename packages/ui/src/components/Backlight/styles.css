@@ -1,4 +1,1 @@
-/* Scoped styles for Backlight */
-.s-backlight {
-  box-sizing: border-box;
-}
+/* Backlight styles are defined in packages/ui/src/styles.css. */

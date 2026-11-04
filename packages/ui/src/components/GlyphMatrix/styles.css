@@ -1,4 +1,1 @@
-/* Scoped styles for GlyphMatrix */
-.s-glyphmatrix {
-  box-sizing: border-box;
-}
+/* GlyphMatrix styles are defined in packages/ui/src/styles.css. */

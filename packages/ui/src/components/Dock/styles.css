@@ -1,4 +1,1 @@
-/* Scoped styles for Dock */
-.s-dock {
-  box-sizing: border-box;
-}
+/* Dock styles are defined in packages/ui/src/styles.css. */

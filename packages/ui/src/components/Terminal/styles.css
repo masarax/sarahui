@@ -1,4 +1,1 @@
-/* Scoped styles for Terminal */
-.s-terminal {
-  box-sizing: border-box;
-}
+/* Terminal styles are defined in packages/ui/src/styles.css. */

@@ -1,4 +1,1 @@
-/* Scoped styles for CommandPalette */
-.s-commandpalette {
-  box-sizing: border-box;
-}
+/* CommandPalette styles are defined in packages/ui/src/styles.css. */

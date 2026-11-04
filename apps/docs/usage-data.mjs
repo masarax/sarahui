@@ -397,7 +397,7 @@ export const componentUsages = {
   },
   "VideoText": {
     "import": "import { VideoText } from 'sarahui';",
-    "usage": "<div className=\"relative h-[500px] w-full overflow-hidden\">\n  <VideoText src=\"assets/ocean.webm\">OCEAN</VideoText>\n</div>"
+    "usage": "<div className=\"relative h-[500px] w-full overflow-hidden\">\n  <VideoText>OCEAN</VideoText>\n</div>"
   },
   "Highlighter": {
     "import": "import { Highlighter } from 'sarahui';",

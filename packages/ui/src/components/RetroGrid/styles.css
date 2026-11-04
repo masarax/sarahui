@@ -1,4 +1,1 @@
-/* Scoped styles for RetroGrid */
-.s-retrogrid {
-  box-sizing: border-box;
-}
+/* RetroGrid styles are defined in packages/ui/src/styles.css. */

@@ -219,14 +219,15 @@ test('Adversarial M3-5: Package source files (packages/ui/src/**/*.js) sanitizat
     );
   }
 
-  // Verify packages/ui/src/templates.js specific fixtures
+  // Verify packages/ui/src/templates.js contains no third-party media dependencies.
   const templatesPath = path.join(uiSrcDir, 'templates.js');
   const templatesContent = fs.readFileSync(templatesPath, 'utf8');
-  assert.match(templatesContent, /assets\/ocean\.webm/);
+  assert.match(templatesContent, /export function VideoText/);
+  assert.match(templatesContent, /export function TweetCard/);
+  assert.doesNotMatch(templatesContent, /https?:\/\/(?:pbs|video)\.twimg\.com/);
+  assert.doesNotMatch(templatesContent, /https?:\/\/[^\s'"`]+\.(?:mp4|webm)/);
   assert.doesNotMatch(templatesContent, /cdn\.magicui\.design/);
   assert.doesNotMatch(templatesContent, /dillionverma/);
-  assert.match(templatesContent, /handle:\s*'sarahkhan'/);
-  assert.match(templatesContent, /sarahui\.dev/);
 });
 
 test('Adversarial M3-6: Build process execution & dist/ verification', () => {

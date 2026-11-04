@@ -1,4 +1,1 @@
-/* Scoped styles for Ripple */
-.s-ripple {
-  box-sizing: border-box;
-}
+/* Ripple styles are defined in packages/ui/src/styles.css. */

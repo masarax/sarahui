@@ -2,111 +2,12 @@
  * Native HTML templates. Interpolated strings are escaped; compose markup with
  * html tagged templates. Never put untrusted values in literal markup.
  */
-export const escapeText = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 import { Markup, raw } from './utilities/raw.js';
-export { raw };
-export const render = value => value instanceof Markup?value.value:Array.isArray(value)?value.map(render).join(''):escapeText(value);
-export const html = (parts,...values) => raw(parts.reduce((s,p,i)=>s+p+(i<values.length?render(values[i]):''),''));
-export function safeHref(value='#') {
-  const text=String(value).trim();
-  try{return ['http:','https:','mailto:','tel:'].includes(new URL(text,'https://sarahui.invalid/').protocol)?text:'#';}catch{return '#';}
-}
-const allowed = new Set('id class style name title type value placeholder required disabled checked min max step autocomplete rows role tabindex href download target rel selected hidden open multiple pattern minlength maxlength form inputmode readonly for autofocus cols wrap dir lang accept list size'.split(' '));
-export function attributes(props={}) {
-  return Object.entries(props).map(([key,value])=>{
-    if((!allowed.has(key)&&!/^(aria|data)-[a-z0-9-]+$/.test(key))||value==null||(value===false&&!key.startsWith('aria-')))return '';
-    if(key==='href')value=safeHref(value);
-    return value===true&&!key.startsWith('aria-')?' '+key:' '+key+'="'+escapeText(value)+'"';
-  }).join('');
-}
-export const formatComponentName = (name) => {
-  if (!name) return '';
-  const customMap = {
-    Floating3DParticles: 'Floating 3D Particles',
-    Text3DFlip: 'Text 3D Flip',
-    TweetCard: 'Tweet Card',
-    IconCloud: 'Icon Cloud',
-    DottedMap: 'Dotted Map',
-    BentoGrid: 'Bento Grid',
-    BentoCard: 'Bento Card',
-    BorderBeam: 'Border Beam',
-    ShineBorder: 'Shine Border',
-    RetroGrid: 'Retro Grid',
-    MagicCard: 'Magic Card',
-    BlurFade: 'Blur Fade',
-    WordRotate: 'Word Rotate',
-    TypingAnimation: 'Typing Animation',
-    NumberTicker: 'Number Ticker',
-    AnimatedShinyText: 'Animated Shiny Text',
-    ShimmerButton: 'Shimmer Button',
-    RainbowButton: 'Rainbow Button',
-    AvatarCircles: 'Avatar Circles',
-    AnimatedBeam: 'Animated Beam',
-    AnimatedSpan: 'Animated Span',
-    OrbitingCircles: 'Orbiting Circles',
-    AnimatedList: 'Animated List',
-    InteractiveHoverButton: 'Interactive Hover Button',
-    PulsatingButton: 'Pulsating Button',
-    SparklesText: 'Sparkles Text',
-    TextReveal: 'Text Reveal',
-    GridPattern: 'Grid Pattern',
-    DotPattern: 'Dot Pattern',
-    AnimatedGridPattern: 'Animated Grid Pattern',
-    FlickeringGrid: 'Flickering Grid',
-    WarpBackground: 'Warp Background',
-    NeonGradientCard: 'Neon Gradient Card',
-    CoolMode: 'Cool Mode',
-    ScrollProgress: 'Scroll Progress',
-    ProgressiveBlur: 'Progressive Blur',
-    HyperText: 'Hyper Text',
-    MorphingText: 'Morphing Text',
-    AnimatedGradientText: 'Animated Gradient Text',
-    LineShadowText: 'Line Shadow Text',
-    AuroraText: 'Aurora Text',
-    ContextMenu: 'Context Menu',
-    HoverCard: 'Hover Card',
-    GlareHover: 'Glare Hover',
-    LightRays: 'Light Rays',
-    AnimatedThemeToggler: 'Animated Theme Toggler',
-    ComicText: 'Comic Text',
-    KineticText: 'Kinetic Text',
-    DiaTextReveal: 'Dia Text Reveal',
-    SpinningText: 'Spinning Text',
-    TextAnimate: 'Text Animate',
-    VideoText: 'Video Text',
-    ScrollBasedVelocity: 'Scroll Based Velocity',
-    AnimatedSubscribeButton: 'Animated Subscribe Button',
-    ShinyButton: 'Shiny Button',
-    RippleButton: 'Ripple Button',
-    CodeComparison: 'Code Comparison',
-    FileTree: 'File Tree',
-    HeroVideoDialog: 'Hero Video Dialog',
-    PixelImage: 'Pixel Image',
-    GlyphMatrix: 'Glyph Matrix',
-    SmoothCursor: 'Smooth Cursor',
-    AnimatedCircularProgressBar: 'Animated Circular Progress Bar',
-    HexagonPattern: 'Hexagon Pattern',
-    StripedPattern: 'Striped Pattern',
-    InteractiveGridPattern: 'Interactive Grid Pattern',
-    NoiseTexture: 'Noise Texture',
-    IconButton: 'Icon Button',
-    ButtonGroup: 'Button Group',
-    CommandPalette: 'Command Palette',
-    EmptyState: 'Empty State',
-    NavItem: 'Nav Item',
-    DataTable: 'Data Table',
-    ToggleGroup: 'Toggle Group',
-    AspectRatio: 'Aspect Ratio'
-  };
-  if (customMap[name]) return customMap[name];
-  return String(name)
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
-    .trim();
-};
-let counter=0;
-const uid=(name,id)=>id||'s-'+name+'-'+(++counter);
-const choice=(v,options,fallback)=>options.includes(v)?v:fallback;
+import { escapeText, render, safeHref, uid, choice, formatComponentName } from './utilities/render.js';
+import { html } from './utilities/html.js';
+import { attributes } from './utilities/attributes.js';
+export { raw, escapeText, render, safeHref, uid, choice, formatComponentName, html, attributes };
+
 export const ICONS={
   arrow:'M5 12h14m-6-6 6 6-6 6',chevron:'m8 4 8 8-8 8',down:'m5 9 7 7 7-7',check:'m4 12 5 5L20 6',plus:'M12 5v14M5 12h14',close:'m6 6 12 12M18 6 6 18',
   search:'M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Zm4.7-1.8L21 21',
@@ -252,7 +153,7 @@ export function Avatar({name='Sarah Khan',initials='',size='md',tone='brand',sta
 export const Card=({title='',description='',children='',footer='',className=''}={})=>html`<article class="s-card ${className}">${title?html`<header class="s-card-header"><h3>${title}</h3><p>${description}</p></header>`:''}<div class="s-card-body">${children}</div>${footer?html`<footer class="s-card-footer">${footer}</footer>`:''}</article>`;
 export function Alert({title='All changes saved',description='Your workspace is up to date.',tone='success',live=false,dismissible=false,icon=''}={}) {tone=choice(tone,['success','warning','danger','info'],'info');const roleAttr=live?(tone==='danger'?' role="alert"':' role="status"'):'';const iconName=icon||(tone==='success'?'check':tone==='info'?'info':'alert');const closeBtn=dismissible?'<button type="button" class="s-alert-close" data-s-alert-close aria-label="Dismiss alert">'+render(Icon({name:'close',size:16}))+'</button>':'';return raw('<div class="s-alert s-tone-'+tone+'"'+roleAttr+'>'+render(Icon({name:iconName}))+'<div><strong>'+escapeText(title)+'</strong><p>'+escapeText(description)+'</p></div>'+closeBtn+'</div>');}
 export function Tabs({id,label='Project details',items=[{label:'Overview',content:'Overview content'},{label:'Activity',content:'Activity content'}],active=0,variant='line'}={}) {
-  id=uid('tabs',id);active=Math.max(0,Math.min(items.length-1,active));if(items[active]?.disabled)active=items.findIndex(i=>!i.disabled);
+  id=uid('tabs',id);active=Math.max(0,Math.min(items.length-1,Number(active)||0));if(items[active]?.disabled){const enabled=items.findIndex(i=>!i.disabled);if(enabled!==-1)active=enabled;}
   return raw('<div class="s-tabs s-tabs--'+choice(variant,['line','pill'],'line')+'" data-s-tabs><div class="s-tab-list" role="tablist" aria-label="'+escapeText(label)+'">'+items.map((item,i)=>'<button'+attributes({type:'button',class:'s-tab',id:id+'-tab-'+i,role:'tab','aria-selected':String(i===active),'aria-controls':id+'-panel-'+i,tabindex:i===active?0:-1,disabled:item.disabled})+'>'+escapeText(item.label)+'</button>').join('')+'</div>'+items.map((item,i)=>'<div'+attributes({class:'s-tab-panel',id:id+'-panel-'+i,role:'tabpanel','aria-labelledby':id+'-tab-'+i,tabindex:0,hidden:i!==active})+'>'+render(item.content)+'</div>').join('')+'</div>');
 }
 export const Breadcrumb=({items=[{label:'Workspace',href:'#patterns'},{label:'Design system'}],label='Breadcrumb'}={})=>html`<nav class="s-breadcrumb" aria-label="${label}"><ol>${items.map((item,i)=>html`<li>${i?Icon({name:'chevron',size:13}):''}${i===items.length-1?html`<span aria-current="page">${item.label}</span>`:html`<a href="${safeHref(item.href)}">${item.label}</a>`}</li>`)}</ol></nav>`;
@@ -283,14 +184,17 @@ export function CommandPalette({id='s-command',title='Search the library',items=
 }
 export function Toggle({label='Toggle',icon='',pressed=false,size='md',attrs={}}={}) {
   const isPressed=Boolean(pressed);
-  return raw('<button'+attributes({type:'button',class:'s-toggle s-toggle--'+choice(size,['sm','md','lg'],'md'),'aria-pressed':String(isPressed),'data-s-toggle':true,...attrs})+'>'+(icon?render(Icon({name:icon,size:size==='sm'?14:16})): '')+'<span>'+escapeText(label)+'</span></button>');
+  const {class:extraClass='',...rest}=attrs;
+  return raw('<button'+attributes({type:'button',class:'s-toggle s-toggle--'+choice(size,['sm','md','lg'],'md')+(extraClass?' '+extraClass:''),'aria-pressed':String(isPressed),'data-s-toggle':true,...rest})+'>'+(icon?render(Icon({name:icon,size:size==='sm'?14:16})): '')+'<span>'+escapeText(label)+'</span></button>');
 }
 export function ToggleGroup({label='Toggle group',items=[],type='single',attrs={}}={}) {
-  return raw('<div'+attributes({class:'s-toggle-group',role:'group','aria-label':label,'data-s-toggle-group':type,...attrs})+'>'+items.map(item=>render(Toggle(item))).join('')+'</div>');
+  const {class:extraClass='',...rest}=attrs;
+  return raw('<div'+attributes({class:'s-toggle-group'+(extraClass?' '+extraClass:''),role:'group','aria-label':label,'data-s-toggle-group':type,...rest})+'>'+items.map(item=>render(Toggle(item))).join('')+'</div>');
 }
 export function Kbd({keys=[],label='',size='md',attrs={}}={}) {
   const kList=Array.isArray(keys)&&keys.length?keys:(label?[label]:['⌘','K']);
-  return raw('<span'+attributes({class:'s-kbd s-kbd--'+choice(size,['sm','md','lg'],'md'),...attrs})+'>'+kList.map(k=>'<kbd>'+escapeText(k)+'</kbd>').join('')+'</span>');
+  const {class:extraClass='',...rest}=attrs;
+  return raw('<span'+attributes({class:'s-kbd s-kbd--'+choice(size,['sm','md','lg'],'md')+(extraClass?' '+extraClass:''),...rest})+'>'+kList.map(k=>'<kbd>'+escapeText(k)+'</kbd>').join('')+'</span>');
 }
 export function AspectRatio({ratio='16/9',children='',attrs={}}={}) {
   return raw('<div'+attributes({class:'s-aspect-ratio',style:'aspect-ratio:'+escapeText(ratio),...attrs})+'>'+render(children)+'</div>');
@@ -392,7 +296,7 @@ export function BorderBeam({size=50,duration=6,delay=0,colorFrom='#ffaa40',color
     style: containerStyle || null,
     'aria-hidden': 'true',
     ...restAttrs
-  }) + '><div class="s-border-beam-glow" style="' + glowStyle + '"></div></div>');
+  }) + '><div class="s-border-beam-glow" style="' + escapeText(glowStyle) + '"></div></div>');
 }
 export function AnimatedShinyText({text='Shimmering text animation',shimmerWidth=100,attrs={}}={}) {
   return raw('<span'+attributes({class:'s-shiny-text',style:shimmerWidth?`--shimmer-width:${shimmerWidth}px`:null,...attrs})+'>'+escapeText(text)+'</span>');
@@ -599,7 +503,7 @@ export function AvatarCircles({
     }
 
     if (linkUrl) {
-      return `<a class="s-avatar s-avatar--sm" href="${escapeText(linkUrl)}" target="_blank" rel="noopener noreferrer">${innerContent}</a>`;
+      return `<a class="s-avatar s-avatar--sm" href="${safeHref(linkUrl)}" target="_blank" rel="noopener noreferrer">${innerContent}</a>`;
     }
     return `<div class="s-avatar s-avatar--sm">${innerContent}</div>`;
   }).join('');
@@ -906,8 +810,9 @@ export function HyperText({text='SARAHUI DESIGN',duration=800,attrs={}}={}) {
   return raw('<span'+attributes({class:'s-hyper-text','data-s-hyper-text':escapeText(text),'data-duration':String(duration),...attrs})+'>'+escapeText(text)+'</span>');
 }
 export function MorphingText({texts=['Hello','Morphing','Text','Animation','Smooth','Transition'],attrs={}}={}) {
+  const filterId=uid('morph');
   const arr=Array.isArray(texts)&&texts.length?texts:['Hello','Morphing','Text','Animation','Smooth','Transition'];
-  return raw('<div'+attributes({class:'s-morphing-text-wrap',...attrs})+'><svg class="s-morphing-svg" aria-hidden="true" style="position:fixed;height:0;width:0;"><defs><filter id="threshold"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"/></filter></defs></svg><div class="s-morphing-text" data-s-morphing-text="'+escapeText(JSON.stringify(arr))+'"><span class="s-morph-text-1">'+escapeText(arr[0])+'</span><span class="s-morph-text-2">'+escapeText(arr[1]||arr[0])+'</span></div></div>');
+  return raw('<div'+attributes({class:'s-morphing-text-wrap',...attrs})+'><svg class="s-morphing-svg" aria-hidden="true" style="position:fixed;height:0;width:0;"><defs><filter id="'+filterId+'"><feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 255 -140"/></filter></defs></svg><div class="s-morphing-text" style="filter:url(#'+filterId+') blur(0.6px)" data-s-morphing-text="'+escapeText(JSON.stringify(arr))+'"><span class="s-morph-text-1">'+escapeText(arr[0])+'</span><span class="s-morph-text-2">'+escapeText(arr[1]||arr[0])+'</span></div></div>');
 }
 export function AnimatedGradientText({text='Introducing Magic Gradient Text',attrs={}}={}) {
   return raw('<span'+attributes({class:'s-anim-gradient-text',...attrs})+'>'+escapeText(text)+'</span>');
@@ -994,8 +899,9 @@ export function ComicText({text='BOOM!',fontSize=3.5,dotColor='#EF4444',backgrou
 }
 
 export function KineticText({text='KINETIC',as='h2',attrs={}}={}) {
+  const tag=choice(as,['h1','h2','h3','h4','h5','h6','p','span','div'],'h2');
   const letters=String(text).split('').map(char=>`<span class="s-kinetic-char" aria-hidden="true">${char===' '?'&nbsp;':escapeText(char)}</span>`).join('');
-  return raw('<'+as+attributes({class:'s-kinetic-text',...attrs})+'>'+letters+'<span class="s-sr-only">'+escapeText(text)+'</span></'+as+'>');
+  return raw('<'+tag+attributes({class:'s-kinetic-text',...attrs})+'>'+letters+'<span class="s-sr-only">'+escapeText(text)+'</span></'+tag+'>');
 }
 
 export function DiaTextReveal({text='DYNAMIC REVEAL',colors=['#c679c4', '#fa3d1d', '#ffb005', '#e1e1fe', '#0358f7'],duration=1.5,repeat=false,attrs={}}={}) {
@@ -1044,12 +950,13 @@ export function TextAnimate({text='Modern Animated Typography',animation='blurIn
   return raw('<div'+attributes({class:'s-text-animate s-text-animate--'+splitBy,...attrs})+'>'+spans+'<span class="s-sr-only">'+escapeText(text)+'</span></div>');
 }
 
-export function VideoText({text='OCEAN',src='assets/ocean.webm',videoSrc='',fontSize=12,attrs={}}={}) {
-  const safeSrc = safeHref(videoSrc || src || 'assets/ocean.webm');
-  const svgMask = `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><text x='50%' y='50%' font-size='160' font-weight='900' font-family='system-ui, -apple-system, sans-serif' text-anchor='middle' dominant-baseline='middle' fill='%23000'>${escapeText(text)}</text></svg>`;
+export function VideoText({text='OCEAN',src='',videoSrc='',fontSize=12,attrs={}}={}) {
+  const source = videoSrc || src;
+  const svgMask = `<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><text x='50%' y='50%' font-size='160' font-weight='900' font-family='system-ui, -apple-system, sans-serif' text-anchor='middle' dominant-baseline='middle' fill='#000'>${escapeText(text)}</text></svg>`;
   const maskUri = `url("data:image/svg+xml,${encodeURIComponent(svgMask)}")`;
   const style = `mask-image:${maskUri};-webkit-mask-image:${maskUri};mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;`;
-  return raw('<div'+attributes({class:'s-video-text',...attrs})+'><video class="s-video-text-bg" src="'+safeSrc+'" style="'+style+'" autoplay loop muted playsinline aria-label="'+escapeText(text)+'"></video><span class="s-video-text-fallback" style="position:absolute;font-size:clamp(3.5rem,8vw,6rem);font-weight:900;letter-spacing:0.02em;background:linear-gradient(135deg,#0284c7,#0d9488,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;pointer-events:none;z-index:0;">'+escapeText(text)+'</span></div>');
+  const video = source ? '<video class="s-video-text-bg" src="'+safeHref(source)+'" style="'+style+'" autoplay loop muted playsinline aria-label="'+escapeText(text)+'"></video>' : '';
+  return raw('<div'+attributes({class:'s-video-text',...attrs})+'>'+video+'<span class="s-video-text-fallback" style="position:absolute;font-size:clamp(3.5rem,8vw,6rem);font-weight:900;letter-spacing:0.02em;background:linear-gradient(135deg,#0284c7,#0d9488,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;pointer-events:none;z-index:0;">'+escapeText(text)+'</span></div>');
 }
 
 export function Highlighter({text='innovative design systems',action='highlight',color='#ffd1dc',strokeWidth=2,attrs={}}={}) {
@@ -1268,9 +1175,9 @@ export function PixelImage({src='https://images.unsplash.com/photo-1618005182384
     const c=i%cols;
     const clip=`polygon(${c*(100/cols)}% ${r*(100/rows)}%, ${(c+1)*(100/cols)}% ${r*(100/rows)}%, ${(c+1)*(100/cols)}% ${(r+1)*(100/rows)}%, ${c*(100/cols)}% ${(r+1)*(100/rows)}%)`;
     const delay=Math.random()*800;
-    return `<div class="s-pixel-piece" style="clip-path:${clip};animation-delay:${delay.toFixed(0)}ms;"><img src="${safeHref(src)}" alt="Pixel piece" class="s-pixel-img${grayscaleAnimation?' s-pixel-gray':''}"></div>`;
+    return `<div class="s-pixel-piece" style="clip-path:${clip};animation-delay:${delay.toFixed(0)}ms;"><img src="${safeHref(src)}" alt="" class="s-pixel-img${grayscaleAnimation?' s-pixel-gray':''}"></div>`;
   }).join('');
-  return raw('<div'+attributes({class:'s-pixel-image-wrap',...attrs})+'>'+pieces+'</div>');
+  return raw('<div'+attributes({class:'s-pixel-image-wrap',role:'img','aria-label':'Pixel image',...attrs})+'>'+pieces+'</div>');
 }
 
 export function GlyphMatrix({glyphs='01·•+*/\\<>=',cellSize=14,mutationRate=0.04,interval=90,color='#6B7280',attrs={}}={}) {
@@ -1491,6 +1398,7 @@ export function DottedMap({
     return false;
   }
 
+  const mapId = uid('map');
   const cols = 100;
   const rows = 50;
   const dx = w / cols;
@@ -1525,8 +1433,7 @@ export function DottedMap({
     const mSize = Number(m.size) || 3.5;
     const isPulse = m.pulse !== false;
     const lbl = m.label || (typeof m.overlay === 'object' ? m.overlay.label : (typeof m.overlay === 'string' ? m.overlay : ''));
-    const country = m.country || m.countryCode || (typeof m.overlay === 'object' ? m.overlay.countryCode : '');
-    const pillW = lbl ? lbl.length * 6.5 + (country ? 26 : 16) : 0;
+    const pillW = lbl ? lbl.length * 6.5 + 16 : 0;
 
     let pulseMarkup = '';
     if (isPulse) {
@@ -1549,8 +1456,7 @@ export function DottedMap({
         ${lbl ? `
           <g class="s-map-badge" transform="translate(8, -10)">
             <rect x="0" y="0" width="${pillW}" height="20" rx="10" fill="rgba(15,23,42,0.85)" stroke="rgba(255,255,255,0.18)" stroke-width="0.8"/>
-            ${country ? `<clipPath id="s-flag-${i}"><circle cx="10" cy="10" r="5.5"/></clipPath><image href="https://flagcdn.com/w80/${escapeText(String(country).toLowerCase())}.webp" x="4.5" y="4.5" width="11" height="11" preserveAspectRatio="xMidYMid slice" clip-path="url(#s-flag-${i})"/>` : ''}
-            <text x="${country ? 20 : 8}" y="13.5" font-size="9.5" font-family="system-ui, -apple-system, sans-serif" font-weight="600" fill="#ffffff">${escapeText(lbl)}</text>
+            <text x="8" y="13.5" font-size="9.5" font-family="system-ui, -apple-system, sans-serif" font-weight="600" fill="#ffffff">${escapeText(lbl)}</text>
           </g>
         ` : ''}
       </g>
@@ -1563,7 +1469,7 @@ export function DottedMap({
     const midX = (fromPt.x + toPt.x) / 2;
     const dist = Math.hypot(toPt.x - fromPt.x, toPt.y - fromPt.y);
     const midY = Math.min(fromPt.y, toPt.y) - dist * 0.22;
-    const lColor = line.color || 'url(#s-map-flight-gradient)';
+    const lColor = line.color || 'url(#'+mapId+'-flight-gradient)';
     return `
       <path d="M ${fromPt.x} ${fromPt.y} Q ${midX} ${midY} ${toPt.x} ${toPt.y}" fill="none" stroke="${escapeText(lColor)}" stroke-width="1.4" stroke-dasharray="4,4" opacity="0.6">
         <animate attributeName="stroke-dashoffset" values="32;0" dur="2s" repeatCount="indefinite"/>
@@ -1573,7 +1479,7 @@ export function DottedMap({
 
   const svgContent = `
     <defs>
-      <linearGradient id="s-map-flight-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient id="${mapId}-flight-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="${escapeText(markerColor)}" stop-opacity="0.9"/>
         <stop offset="100%" stop-color="var(--s-color-brand-500, #5B3DF5)" stop-opacity="0.9"/>
       </linearGradient>
@@ -1592,8 +1498,9 @@ export function DottedMap({
 }
 
 export function Pointer({name='',color='#5B3DF5',cursor='',children='',content='',attrs={}}={}) {
-  const pointerSvg = `<svg class="s-pointer-cursor" width="22" height="22" viewBox="0 0 16 16" fill="${color}" style="transform:rotate(-70deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));"><path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/></svg>`;
-  const badge = name ? `<div class="s-pointer-badge" style="background:${color};"><span>${escapeText(name)}</span></div>` : '';
+  const safeColor=escapeText(color);
+  const pointerSvg = `<svg class="s-pointer-cursor" width="22" height="22" viewBox="0 0 16 16" fill="${safeColor}" style="transform:rotate(-70deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.25));"><path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/></svg>`;
+  const badge = name ? `<div class="s-pointer-badge" style="background:${safeColor};"><span>${escapeText(name)}</span></div>` : '';
   const cursorGlyph = cursor ? render(cursor) : (children && !content ? render(children) : `${pointerSvg}${badge}`);
   const bodyContent = content ? render(content) : (children && cursor ? render(children) : '');
   return raw('<div'+attributes({class:'s-custom-pointer-wrap','data-s-pointer':true,...attrs})+'>'+bodyContent+'<div class="s-pointer-glyph" aria-hidden="true">'+cursorGlyph+'</div></div>');
@@ -1606,7 +1513,8 @@ export function SmoothCursor({
   attrs = {}
 } = {}) {
   const fillColor = color && color !== 'currentColor' ? color : 'currentColor';
-  const defaultSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="54" viewBox="0 0 50 54" fill="none" style="transform: scale(0.5); transform-origin: center center; display: block;"><g filter="url(#s-filter-cursor)"><path d="M42.6817 41.1495L27.5103 6.79925C26.7269 5.02557 24.2082 5.02558 23.3927 6.79925L7.59814 41.1495C6.75833 42.9759 8.52712 44.8902 10.4125 44.1954L24.3757 39.0496C24.8829 38.8627 25.4385 38.8627 25.9422 39.0496L39.8121 44.1954C41.6849 44.8902 43.4884 42.9759 42.6817 41.1495Z" fill="${escapeText(fillColor)}"/><path d="M43.7146 40.6933L28.5431 6.34306C27.3556 3.65428 23.5772 3.69516 22.3668 6.32755L6.57226 40.6778C5.3134 43.4156 7.97238 46.298 10.803 45.2549L24.7662 40.109C25.0221 40.0147 25.2999 40.0156 25.5494 40.1082L39.4193 45.254C42.2261 46.2953 44.9254 43.4347 43.7146 40.6933Z" stroke="var(--s-bg-canvas, #0B0D13)" stroke-width="2.25825"/></g><defs><filter id="s-filter-cursor" x="0.602397" y="0.952444" width="49.0584" height="52.428" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2.25825"/><feGaussianBlur stdDeviation="2.25825"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/></filter></defs></svg>`;
+  const cursorFilterId = uid('cursor-filter');
+  const defaultSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="50" height="54" viewBox="0 0 50 54" fill="none" style="transform: scale(0.5); transform-origin: center center; display: block;"><g filter="url(#${cursorFilterId})"><path d="M42.6817 41.1495L27.5103 6.79925C26.7269 5.02557 24.2082 5.02558 23.3927 6.79925L7.59814 41.1495C6.75833 42.9759 8.52712 44.8902 10.4125 44.1954L24.3757 39.0496C24.8829 38.8627 25.4385 38.8627 25.9422 39.0496L39.8121 44.1954C41.6849 44.8902 43.4884 42.9759 42.6817 41.1495Z" fill="${escapeText(fillColor)}"/><path d="M43.7146 40.6933L28.5431 6.34306C27.3556 3.65428 23.5772 3.69516 22.3668 6.32755L6.57226 40.6778C5.3134 43.4156 7.97238 46.298 10.803 45.2549L24.7662 40.109C25.0221 40.0147 25.2999 40.0156 25.5494 40.1082L39.4193 45.254C42.2261 46.2953 44.9254 43.4347 43.7146 40.6933Z" stroke="var(--s-bg-canvas, #0B0D13)" stroke-width="2.25825"/></g><defs><filter id="${cursorFilterId}" x="0.602397" y="0.952444" width="49.0584" height="52.428" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2.25825"/><feGaussianBlur stdDeviation="2.25825"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0"/><feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/><feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/></filter></defs></svg>`;
 
   const glyph = cursor ? render(cursor) : defaultSvg;
   const cls = ['s-smooth-cursor-container', className].filter(Boolean).join(' ');
@@ -1617,108 +1525,6 @@ export function SmoothCursor({
     '</div>'
   );
 }
-
-const KNOWN_TWEETS = {
-  '2095541863956742174': {
-    name: 'Figma',
-    handle: 'figma',
-    avatar: 'https://pbs.twimg.com/profile_images/2068849889753333760/YE3KJq___normal.jpg',
-    verified: true,
-    text: 'Controlling opacity, now at scale (see?)\n\nEasily apply and adjust opacity to a linked color in the variables modal without needing to detach.',
-    video: {
-      src: 'https://video.twimg.com/amplify_video/2095531100940754944/vid/avc1/1280x720/aqEfN-LourstcF9k.mp4',
-      poster: 'https://pbs.twimg.com/amplify_video_thumb/2095531100940754944/img/HbCLHG4-7DKexpMs.jpg'
-    },
-    postUrl: 'https://x.com/figma/status/2095541863956742174'
-  },
-  '2103111024257954291': {
-    name: 'HONOR',
-    handle: 'Honorglobal',
-    avatar: 'https://pbs.twimg.com/profile_images/2080208705375932416/SJad_e7L_normal.jpg',
-    verified: true,
-    text: 'Happy 20th Birthday, Gerrard! 🎂\nGet well soon and come back stronger! May you always keep your courage, love the drive, and keep chasing your dreams on the track. See you back in action soon!',
-    images: [
-      'https://pbs.twimg.com/media/HS_AK-vbAAAsDsB.jpg',
-      'https://pbs.twimg.com/media/HS_AM7laMAAMMPp.jpg',
-      'https://pbs.twimg.com/media/HS_ANeGaEAAU5Kj.jpg'
-    ],
-    postUrl: 'https://x.com/Honorglobal/status/2103111024257954291'
-  },
-  '2075272590822625405': {
-    name: 'Figma',
-    handle: 'figma',
-    avatar: 'https://pbs.twimg.com/profile_images/2068849889753333760/YE3KJq___normal.jpg',
-    verified: true,
-    text: 'GPT-5.6 from @OpenAI is available in Figma Make starting today\n\nEarly test results show\n→ Stronger outputs building from existing designs\n→ Greater token efficiency',
-    video: {
-      src: 'https://video.twimg.com/tweet_video/HMzZGqZW8AAdmFx.mp4',
-      poster: 'https://pbs.twimg.com/tweet_video_thumb/HMzZGqZW8AAdmFx.jpg'
-    },
-    postUrl: 'https://x.com/figma/status/2075272590822625405'
-  },
-  '2103155873623540169': {
-    name: 'Figma',
-    handle: 'figma',
-    avatar: 'https://pbs.twimg.com/profile_images/2068849889753333760/YE3KJq___normal.jpg',
-    verified: true,
-    text: 'Catch up on everything we shared in the notes: https://figma.bot/ReleaseNotes008',
-    urlPreview: {
-      domain: 'fig-events.figma.com',
-      title: 'Release Notes',
-      description: 'Join us for the latest updates, a Q&A with Yuhki Yamashita (Figma\'s Chief Product Officer), and plus, a few other surprises along the way',
-      image: 'https://pbs.twimg.com/card_img/2103151818905980929/NPk0SiD_?format=jpg&name=420x420_2',
-      url: 'https://fig-events.figma.com'
-    },
-    postUrl: 'https://x.com/figma/status/2103155873623540169'
-  },
-  '1668408059125702661': {
-    name: 'Sarah Khan',
-    handle: 'sarahkhan',
-    avatar: 'https://pbs.twimg.com/profile_images/1902402394475880448/w8lUXnEe_normal.jpg',
-    verified: true,
-    text: 'Companies spend $30,000+ and several weeks to build beautiful landing pages like @linear, @wopehq and @reflectnotes 🤷‍♂️\n\nI built @reactjs + @tailwindcss components for you to do the same in hours, starting at just $29\n\nPre-order link + demo below 👇\n\n#buildinpublic @buildspace',
-    video: {
-      src: 'https://video.twimg.com/ext_tw_video/1668388166598787079/pu/vid/640x360/nYFKhWYN3GwKzWL1.mp4',
-      poster: 'https://pbs.twimg.com/ext_tw_video_thumb/1668388166598787079/pu/img/mA7mfmJyXKLcGmo_.jpg'
-    },
-    postUrl: 'https://x.com/sarahkhan/status/1668408059125702661'
-  },
-  '1678577280489234432': {
-    name: 'Sarah Khan',
-    handle: 'sarahkhan',
-    avatar: 'https://pbs.twimg.com/profile_images/1902402394475880448/w8lUXnEe_normal.jpg',
-    verified: true,
-    text: 'first day at @_buildspace sf campus irl',
-    images: [
-      'https://pbs.twimg.com/media/F0uA8CkaUAAK8Ka.jpg',
-      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80'
-    ],
-    postUrl: 'https://x.com/sarahkhan/status/1678577280489234432'
-  },
-  '1675849118445436929': {
-    name: 'Sarah Khan',
-    handle: 'sarahkhan',
-    avatar: 'https://pbs.twimg.com/profile_images/1902402394475880448/w8lUXnEe_normal.jpg',
-    verified: true,
-    text: 'it took an insane amount of effort to craft 120 modular components and 319 design tokens\n\ni hope yall like it 🤝\n\nWhat components do you want to see next?\n\nhttps://sarahui.dev/components/magic-card',
-    urlPreview: {
-      domain: 'sarahui.dev',
-      title: 'Magic Card - SarahUI',
-      description: 'A spotlight effect that highlights the borders and content on mouse hover.',
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-      url: 'https://sarahui.dev/components/magic-card'
-    },
-    postUrl: 'https://x.com/sarahkhan/status/1675849118445436929'
-  },
-  '1441032681968212480': {
-    name: 'Guillermo Rauch',
-    handle: 'rauchg',
-    avatar: 'https://pbs.twimg.com/profile_images/1783856060249595904/8NnJe4kF_normal.jpg',
-    verified: true,
-    text: 'Next.js 12 is coming soon.',
-    postUrl: 'https://x.com/rauchg/status/1441032681968212480'
-  }
-};
 
 function formatTweetText(text) {
   if (!text) return '';
@@ -1758,19 +1564,19 @@ export function TweetCard({
   apiUrl='',
   attrs={}
 }={}) {
-  const tweetData = (id && KNOWN_TWEETS[id]) || (id ? null : KNOWN_TWEETS['2095541863956742174']);
-  const finalId = id || '2095541863956742174';
-  const finalName = name || authorName || (tweetData ? tweetData.name : 'Figma');
-  const finalHandle = handle || (tweetData ? tweetData.handle : 'figma');
-  const finalAvatar = avatar || (tweetData ? tweetData.avatar : 'https://pbs.twimg.com/profile_images/2068849889753333760/YE3KJq___normal.jpg');
-  const isVerified = verified !== undefined ? verified : (tweetData ? tweetData.verified : true);
-  const rawText = content || text || (tweetData ? tweetData.text : '');
-  const finalVideo = video !== undefined ? video : (videoUrl || (tweetData ? tweetData.video : null));
-  const finalMedia = mediaUrl || media || (tweetData ? (tweetData.mediaUrl || '') : '');
-  const finalImages = images !== undefined ? images : (tweetData ? (tweetData.images || []) : []);
-  const finalUrlPreview = urlPreview !== undefined ? urlPreview : (tweetData ? (tweetData.urlPreview || null) : null);
-  const postUrl = (tweetData && tweetData.postUrl) || (finalHandle ? `https://x.com/${finalHandle}/status/${finalId}` : `https://x.com/i/status/${finalId}`);
-  const profileUrl = finalHandle ? `https://x.com/${finalHandle}` : 'https://x.com';
+  const finalId = id || '';
+  const finalName = name || authorName || 'Sarah Khan';
+  const finalHandle = handle || 'sarahui';
+  const finalAvatar = avatar || '';
+  const isVerified = verified !== undefined ? verified : true;
+  const rawText = content || text || 'Design systems should feel invisible: every state, color, and motion has one clear job.';
+  const finalVideo = video !== undefined ? video : (videoUrl || null);
+  const finalMedia = mediaUrl || media || '';
+  const finalImages = images !== undefined ? images : [];
+  const finalUrlPreview = urlPreview !== undefined ? urlPreview : null;
+  const postUrl = finalId ? `https://x.com/${finalHandle}/status/${finalId}` : 'https://github.com/masarax/sarahui';
+  const profileUrl = finalHandle ? `https://x.com/${finalHandle}` : 'https://github.com/masarax/sarahui';
+  const avatarInitials = finalName.trim().split(/s+/).map(part => Array.from(part)[0] || '').slice(0, 2).join('').toUpperCase();
 
   const formattedContent = formatTweetText(rawText);
 
@@ -1817,7 +1623,9 @@ export function TweetCard({
     '<header class="s-tweet-header">' +
       '<div class="s-tweet-author">' +
         '<a href="' + safeHref(profileUrl) + '" target="_blank" rel="noopener noreferrer" class="s-tweet-avatar-link">' +
-          '<img src="' + safeHref(finalAvatar) + '" alt="' + escapeText(finalName) + '" class="s-tweet-avatar" loading="lazy" />' +
+          (finalAvatar
+            ? '<img src="' + safeHref(finalAvatar) + '" alt="' + escapeText(finalName) + '" class="s-tweet-avatar" loading="lazy" />'
+            : '<span class="s-tweet-avatar" aria-hidden="true">' + escapeText(avatarInitials) + '</span>') +
         '</a>' +
         '<div class="s-tweet-author-info">' +
           '<div class="s-tweet-name-row">' +
@@ -1845,7 +1653,7 @@ export function TweetCard({
 
 export function AnimatedCircularProgressBar({value=72,min=0,max=100,gaugePrimaryColor='#5B3DF5',gaugeSecondaryColor='rgba(255,255,255,0.1)',attrs={}}={}) {
   const circumference=2*Math.PI*45;
-  const currentPercent=Math.round(((value-min)/(max-min))*100);
+  const range=Number(max)-Number(min);const currentPercent=range>0?Math.max(0,Math.min(100,Math.round(((Number(value)-Number(min))/range)*100))):0;
   const strokeDashoffset=circumference-((currentPercent/100)*circumference);
   return raw('<div'+attributes({class:'s-circular-progress-wrap',style:`--circle-val:${currentPercent};`,...attrs})+'><svg class="s-circular-progress-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" class="s-circular-progress-bg" stroke="'+escapeText(gaugeSecondaryColor)+'" stroke-width="8" fill="none"/><circle cx="50" cy="50" r="45" class="s-circular-progress-bar" stroke="'+escapeText(gaugePrimaryColor)+'" stroke-width="8" stroke-dasharray="'+circumference.toFixed(2)+'" stroke-dashoffset="'+strokeDashoffset.toFixed(2)+'" stroke-linecap="round" fill="none"/></svg><span class="s-circular-progress-text">'+currentPercent+'%</span></div>');
 }

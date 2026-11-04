@@ -17,6 +17,8 @@
   "exports": {
     ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
     "./templates": { "types": "./src/templates.d.ts", "default": "./src/templates.js" },
+    "./components": { "types": "./src/index.d.ts", "default": "./src/components/index.js" },
+    "./components/*": { "types": "./src/index.d.ts", "default": "./src/components/*/index.js" },
     "./tokens": { "types": "./src/theme-tokens.d.ts", "default": "./src/theme-tokens.js" },
     "./tokens.json": "./tokens/sarah.tokens.json",
     "./resolved-tokens.json": "./tokens/sarah.resolved.json",

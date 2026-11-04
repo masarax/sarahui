@@ -1,4 +1,1 @@
-/* Scoped styles for CodeComparison */
-.s-codecomparison {
-  box-sizing: border-box;
-}
+/* CodeComparison styles are defined in packages/ui/src/styles.css. */

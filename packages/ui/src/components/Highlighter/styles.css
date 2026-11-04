@@ -1,4 +1,1 @@
-/* Scoped styles for Highlighter */
-.s-highlighter {
-  box-sizing: border-box;
-}
+/* Highlighter styles are defined in packages/ui/src/styles.css. */

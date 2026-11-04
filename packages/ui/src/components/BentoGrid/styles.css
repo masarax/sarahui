@@ -1,4 +1,1 @@
-/* Scoped styles for BentoGrid */
-.s-bento-grid {
-  box-sizing: border-box;
-}
+/* BentoGrid styles are defined in packages/ui/src/styles.css. */

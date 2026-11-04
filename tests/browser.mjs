@@ -20,6 +20,7 @@ try {
   const page=await context.newPage();page.setDefaultTimeout(10000);
   page.on('pageerror',error=>errors.push(error.message));
   page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
+  page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+' '+response.url());});
   const base=process.env.BROWSER_URL||'http://127.0.0.1:4179';
   const goto=async hash=>{await page.goto(base+'/'+hash);await page.waitForSelector('html[data-ready=true]');await page.evaluate(()=>document.fonts.ready);};
   const check=async(name,fn)=>{try{await fn();results.push({name,passed:true});console.log('PASS '+name);}catch(error){results.push({name,passed:false,error:error.message});console.error('FAIL '+name+'\n'+error.stack);await page.screenshot({path:path.join(output,'failure-'+results.length+'.png'),fullPage:false}).catch(()=>{});await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));}};
@@ -36,15 +37,15 @@ try {
   await shot('overview-light');
   await check('Command search filters, keyboard selects, and routes to a component',async()=>{
     await page.keyboard.press('Control+k');await page.locator('#library-search').waitFor({state:'visible'});
-    await page.locator('[data-s-command-input]').fill('Slider');await page.keyboard.press('Enter');
+    await page.locator('#library-search [data-s-command-input]').fill('Slider');await page.keyboard.press('Enter');
     await page.waitForFunction(()=>document.documentElement.dataset.route==='#components/Slider');assert.equal(await page.locator('#library-search').evaluate(d=>d.open),false);
     assert.equal(await page.locator('#component-slider').isVisible(),true);
   });
   await check('Search has a meaningful empty state and Escape restores focus',async()=>{
-    await page.locator('.search-trigger').click();await page.locator('[data-s-command-input]').fill('nothing-will-match-8231');
-    assert.equal(await page.locator('[data-s-command-empty]').isVisible(),true);await page.keyboard.press('Escape');
+    await page.locator('.search-trigger').click();await page.locator('#library-search [data-s-command-input]').fill('nothing-will-match-8231');
+    assert.equal(await page.locator('#library-search [data-s-command-empty]').isVisible(),true);await page.keyboard.press('Escape');
     await page.waitForFunction(()=>document.activeElement.matches('.search-trigger'));
-    await page.locator('.search-trigger').click();await page.locator('[data-s-command-input]').fill('');await page.keyboard.press('Escape');
+    await page.locator('.search-trigger').click();await page.locator('#library-search [data-s-command-input]').fill('');await page.keyboard.press('Escape');
   });
   await route('#components');
   await check('Component search and category filters compose and clear',async()=>{
@@ -97,15 +98,15 @@ try {
     await route('#components/Button');
     assert.equal(await page.locator('#detail-toc').isVisible(),true);
     const card=page.locator('#component-button');
-    assert.equal(await card.locator('.tab-panel-preview').isVisible(),true);
-    assert.equal(await card.locator('.tab-panel-code').isVisible(),false);
-    await card.locator('[data-preview-tab="code"]').click();
-    assert.equal(await card.locator('.tab-panel-preview').isVisible(),false);
-    assert.equal(await card.locator('.tab-panel-code').isVisible(),true);
+    assert.equal(await card.locator('.tab-panel-preview').first().isVisible(),true);
+    assert.equal(await card.locator('.tab-panel-code').first().isVisible(),false);
+    await card.locator('[data-preview-tab="code"]').first().click();
+    assert.equal(await card.locator('.tab-panel-preview').first().isVisible(),false);
+    assert.equal(await card.locator('.tab-panel-code').first().isVisible(),true);
     assert.ok(await card.locator('.tab-panel-code .token-keyword').count() > 0);
     assert.ok(await card.locator('.tab-panel-code .token-string').count() > 0);
-    await card.locator('[data-preview-tab="preview"]').click();
-    assert.equal(await card.locator('.tab-panel-preview').isVisible(),true);
+    await card.locator('[data-preview-tab="preview"]').first().click();
+    assert.equal(await card.locator('.tab-panel-preview').first().isVisible(),true);
     assert.equal(await page.locator('#component-marquee').count(),1);
     assert.equal(await page.locator('#component-borderbeam').count(),1);
     assert.equal(await page.locator('#component-ripple').count(),1);
@@ -160,7 +161,7 @@ try {
   await check('Theme controls work under reduced motion and focus is visible',async()=>{
     const button=page.locator('[data-s-theme-toggle]');await button.focus();await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
     assert.notEqual(await button.evaluate(el=>getComputedStyle(el).outlineStyle),'none');
-    assert.equal(await page.locator('#component-spinner .s-spinner').evaluate(el=>getComputedStyle(el).animationName),'none');
+    assert.equal(await page.locator('#component-spinner .s-spinner').first().evaluate(el=>getComputedStyle(el).animationName),'none');
     await page.emulateMedia({forcedColors:'active'});assert.equal(await page.locator('#demo-checkbox-a').evaluate(el=>getComputedStyle(el).appearance),'auto');await page.emulateMedia({forcedColors:'none'});
   });
   await check('All views fit narrow, mobile and tablet viewports',async()=>{

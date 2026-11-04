@@ -1,4 +1,1 @@
-/* Scoped styles for LineShadowText */
-.s-lineshadowtext {
-  box-sizing: border-box;
-}
+/* LineShadowText styles are defined in packages/ui/src/styles.css. */

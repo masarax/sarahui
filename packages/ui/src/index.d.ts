@@ -120,7 +120,7 @@ export function SpinningText(props?: { text?: string; radius?: number; duration?
 export function Text3DFlip(props?: { frontText?: string; backText?: string; duration?: number; className?: string; attrs?: Attributes }): Markup;
 export function TextAnimate(props?: { text?: string; animation?: 'fadeIn' | 'scaleUp' | 'slideUp' | 'blurIn'; delay?: number; className?: string; attrs?: Attributes }): Markup;
 export function VideoText(props?: { text?: string; videoSrc?: string; fontSize?: number; className?: string; attrs?: Attributes }): Markup;
-export function Highlighter(props?: { children?: Content; color?: string; strokeWidth?: number; className?: string; attrs?: Attributes }): Markup;
+export function Highlighter(props?: { text?: string; action?: 'highlight' | 'underline' | 'box' | 'circle' | 'strike-through' | 'bracket'; color?: string; strokeWidth?: number; attrs?: Attributes }): Markup;
 export function ScrollBasedVelocity(props?: { text?: string; defaultVelocity?: number; className?: string; attrs?: Attributes }): Markup;
 export function AnimatedSubscribeButton(props?: { initialText?: string; subscribedText?: string; className?: string; attrs?: Attributes }): Markup;
 export function ShinyButton(props?: { label?: string; icon?: string; trailing?: string; className?: string; attrs?: Attributes }): Markup;
@@ -130,9 +130,9 @@ export function FileTree(props?: { tree?: { name: string; type?: 'file' | 'folde
 export function HeroVideoDialog(props?: { videoSrc?: string; thumbnailSrc?: string; thumbnailAlt?: string; animationStyle?: 'from-center' | 'from-bottom' | 'from-top' | 'from-left' | 'from-right' | 'fade' | 'top-in-bottom-out' | 'left-in-right-out'; className?: string; attrs?: Attributes }): Markup;
 export function IconCloud(props?: { iconSlugs?: string[]; slugs?: string[]; icons?: string[] | Content[]; images?: string[]; size?: number; showControl?: boolean; className?: string; attrs?: Attributes }): Markup;
 export function Lens(props?: { children?: Content; zoom?: number; lensSize?: number; className?: string; attrs?: Attributes }): Markup;
-export function PixelImage(props?: { src?: string; alt?: string; pixelSize?: number; width?: number; height?: number; className?: string; attrs?: Attributes }): Markup;
+export function PixelImage(props?: { src?: string; grid?: '6x4' | '8x8' | '4x6' | '8x3'; grayscaleAnimation?: boolean; attrs?: Attributes }): Markup;
 export function GlyphMatrix(props?: { characters?: string; speed?: number; color?: string; fontSize?: number; className?: string; attrs?: Attributes }): Markup;
-export function Pointer(props?: { label?: string; color?: string; className?: string; attrs?: Attributes }): Markup;
+export function Pointer(props?: { name?: string; color?: string; cursor?: Content; children?: Content; content?: Content; attrs?: Attributes }): Markup;
 export interface MapMarker { lat?: number; lng?: number; x?: number; y?: number; size?: number; pulse?: boolean; color?: string; label?: string; country?: string; countryCode?: string; overlay?: { countryCode?: string; label?: string } | string; }
 export interface MapLine { from?: { lat?: number; lng?: number; x?: number; y?: number }; to?: { lat?: number; lng?: number; x?: number; y?: number }; start?: { lat?: number; lng?: number; x?: number; y?: number }; end?: { lat?: number; lng?: number; x?: number; y?: number }; color?: string; }
 export function DottedMap(props?: { width?: number; height?: number; dotRadius?: number; dotSize?: number; dotColor?: string; markerColor?: string; markers?: MapMarker[]; points?: MapMarker[]; lines?: MapLine[]; routes?: MapLine[]; connections?: MapLine[]; glow?: boolean; className?: string; attrs?: Attributes }): Markup;
@@ -141,7 +141,7 @@ export function TweetCard(props?: { id?: string; name?: string; authorName?: str
 export function AnimatedCircularProgressBar(props?: { value?: number; max?: number; min?: number; gaugePrimaryColor?: string; gaugeSecondaryColor?: string; className?: string; attrs?: Attributes }): Markup;
 export function HexagonPattern(props?: { size?: number; strokeWidth?: number; color?: string; className?: string; attrs?: Attributes }): Markup;
 export function StripedPattern(props?: { width?: number; height?: number; angle?: number; color?: string; className?: string; attrs?: Attributes }): Markup;
-export function InteractiveGridPattern(props?: { width?: number; height?: number; squares?: [number, number][]; className?: string; attrs?: Attributes }): Markup;
+export function InteractiveGridPattern(props?: { width?: number; height?: number; squares?: [number, number]; attrs?: Attributes }): Markup;
 export function NoiseTexture(props?: { opacity?: number; patternSize?: number; className?: string; attrs?: Attributes }): Markup;
 /** Idempotent per root. Call cleanup on unmount. Safe to import without a DOM. */
 export function enhanceUI(root?: Document | HTMLElement): () => void;

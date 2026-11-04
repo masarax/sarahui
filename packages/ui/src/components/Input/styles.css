@@ -1,4 +1,1 @@
-/* Scoped styles for Input */
-.s-input {
-  box-sizing: border-box;
-}
+/* Input styles are defined in packages/ui/src/styles.css. */

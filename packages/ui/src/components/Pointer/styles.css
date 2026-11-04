@@ -1,4 +1,1 @@
-/* Scoped styles for Pointer */
-.s-custom-pointer-wrap {
-  box-sizing: border-box;
-}
+/* Pointer styles are defined in packages/ui/src/styles.css. */

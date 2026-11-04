@@ -16,7 +16,7 @@ All audit findings, remediation strategies, and token taxonomy expansions must s
 1. **Framework-Neutral Tagged HTML Templates**: `packages/ui/src/templates.js` exports pure ES module template functions (`html`, `raw`, `render`, `attributes`) producing clean, accessible native HTML markup strings.
 2. **Zero Runtime Dependencies**: The core package relies solely on standard CSS custom properties (`tokens.css`), pure CSS keyframe animations, and lightweight vanilla JavaScript progressive enhancement (`packages/ui/src/index.js`, `enhanceUI()`).
 3. **Dynamic Tailwind CSS Integration**: `@sarahui/tailwind-preset` (`packages/ui/src/tailwind-preset.js`) provides utility mapping for colors, animations, borders, and shadows without overriding dynamic utility classes.
-4. **Registry-Based Distribution**: Component registry architecture supporting `npx sarahui add <component>` distribution.
+4. **Registry Metadata**: Component registry data powers the documentation catalog and per-component entry points. No CLI binary is shipped.
 
 ---
 
@@ -87,9 +87,9 @@ Every component declared in Spectrum formalizes:
 - **Implementation**: Step-by-step setup guide with package manager tabs (pnpm, npm, yarn, bun), CSS import instructions, framework configuration guides, and custom token override tables.
 - **Benchmark Evaluation**:
   - Keyboard interaction for package manager tabs is present via `sarah:tabchange`.
-  - Framework integration code examples lack explicit CLI commands for native component registry retrieval.
+  - Framework integration code examples lack explicit import paths for native component registry retrieval.
 - **Remediation**:
-  - Add native registry CLI commands (`npx sarahui add <component>`) to installation workflows.
+  - Document per-component entry points (`sarahui/components/<Name>`) in installation workflows.
 
 ### 3.3 Foundations (`apps/docs/site.mjs: foundations()`)
 - **Location**: Rendered by `foundations()` in `apps/docs/site.mjs:54-74` responding to `#foundations`.
