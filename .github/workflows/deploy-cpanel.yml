@@ -1,6 +1,9 @@
 name: Deploy documentation to cPanel
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   workflow_call:
     secrets:
@@ -40,10 +43,10 @@ jobs:
           names = ['CPANEL_FTP_HOST', 'CPANEL_FTP_USERNAME', 'CPANEL_FTP_PASSWORD', 'CPANEL_FTP_PATH']
           missing = [name for name in names if not os.environ.get(name)]
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write('ready=' + ('false' if missing else 'true') + '\n')
+              output.write('ready=' + ('false' if missing else 'true') + '\\n')
           if missing:
               with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-                  summary.write('## cPanel deployment skipped\n\nAdd the following repository secrets, then run this workflow on main:\n\n' + '\n'.join('- `' + name + '`' for name in missing) + '\n\nSee docs/deployment.md for the FTP path and protocol settings.\n')
+                  summary.write('## cPanel deployment skipped\\n\\nAdd the following repository secrets, then run this workflow on main:\\n\\n' + '\\n'.join('- `' + name + '`' for name in missing) + '\\n\\nSee the repository deployment settings for the FTP path and protocol.\\n')
           PY
 
       - uses: actions/checkout@v4
@@ -57,3 +60,15 @@ jobs:
       - name: Build static documentation
         if: steps.config.outputs.ready == 'true'
         run: npm run build
+
+      - name: Deploy static files to cPanel
+        if: steps.config.outputs.ready == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.CPANEL_FTP_HOST }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          protocol: ${{ vars.CPANEL_FTP_PROTOCOL || 'ftps' }}
+          port: ${{ vars.CPANEL_FTP_PORT || '21' }}
+          server-dir: ${{ secrets.CPANEL_FTP_PATH }}
+          local-dir: ./dist/
