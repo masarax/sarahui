@@ -1,1 +1,4 @@
-/* Chip styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Chip */
+.s-chip {
+  box-sizing: border-box;
+}

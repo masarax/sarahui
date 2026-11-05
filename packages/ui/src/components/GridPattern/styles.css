@@ -1,1 +1,4 @@
-/* GridPattern styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for GridPattern */
+.s-gridpattern {
+  box-sizing: border-box;
+}

@@ -1,1 +1,4 @@
-/* TweetCard styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for TweetCard */
+.s-tweet-card {
+  box-sizing: border-box;
+}

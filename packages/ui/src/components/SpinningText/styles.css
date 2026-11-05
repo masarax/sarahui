@@ -1,1 +1,4 @@
-/* SpinningText styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for SpinningText */
+.s-spinningtext {
+  box-sizing: border-box;
+}

@@ -464,6 +464,18 @@ export function Dock({
     ...attrs
   }) + '>' + content + '</nav>');
 }
+function avatarPlaceholder(initials, index = 0) {
+  const palettes = [
+    ['#0f172a', '#38bdf8'],
+    ['#1e1b4b', '#c4b5fd'],
+    ['#3f1d38', '#f9a8d4'],
+    ['#12312b', '#6ee7b7']
+  ];
+  const [background, foreground] = palettes[index % palettes.length];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" rx="20" fill="${background}"/><text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="${foreground}">${initials}</text></svg>`;
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
 export function AvatarCircles({
   numPeople = 99,
   avatarUrls = null,
@@ -472,10 +484,10 @@ export function AvatarCircles({
   attrs = {}
 } = {}) {
   const rawList = Array.isArray(avatarUrls) && avatarUrls.length ? avatarUrls : (Array.isArray(avatars) && avatars.length ? avatars : [
-    { initials: 'AK' },
-    { initials: 'MR' },
-    { initials: 'JS' },
-    { initials: 'LN' }
+    { imageUrl: avatarPlaceholder('AK', 0), name: 'AK' },
+    { imageUrl: avatarPlaceholder('MR', 1), name: 'MR' },
+    { imageUrl: avatarPlaceholder('JS', 2), name: 'JS' },
+    { imageUrl: avatarPlaceholder('LN', 3), name: 'LN' }
   ]);
 
   const list = rawList.map(item => {
@@ -1009,6 +1021,11 @@ export function FileTree({elements=[{id:'src',name:'src',type:'folder',children:
   return raw('<div'+attributes({class:'s-file-tree','data-s-file-tree':true,...attrs})+'><div class="s-file-tree-actions"><button type="button" class="s-tree-toggle-all" data-s-tree-toggle-all><span>Expand / Collapse All</span></button></div><div class="s-file-tree-content" role="tree">'+renderTree(elements)+'</div></div>');
 }
 
+function heroVideoPlaceholder() {
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f172a"/><stop offset="1" stop-color="#312e81"/></linearGradient></defs><rect width="1280" height="720" fill="url(#g)"/><circle cx="640" cy="360" r="92" fill="rgba(255,255,255,0.16)"/><path d="M614 312v96l78-48z" fill="#fff"/></svg>';
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
 export function HeroVideoDialog({
   videoSrc = '',
   thumbnailSrc = '',
@@ -1032,9 +1049,7 @@ export function HeroVideoDialog({
 
   return raw('<div' + attributes({ class: 's-hero-video-wrap' + extraClass, ...attrs }) + '>' +
     '<button type="button" class="s-hero-video-thumbnail" data-s-video-open="' + id + '" aria-haspopup="dialog" aria-label="Play video">' +
-      (thumbnailSrc
-        ? '<img src="' + safeHref(thumbnailSrc) + '" alt="' + escapeText(thumbnailAlt) + '" class="s-hero-video-img">'
-        : '<span class="s-hero-video-img s-hero-video-placeholder" aria-hidden="true"></span>') +
+      '<img src="' + (thumbnailSrc ? safeHref(thumbnailSrc) : heroVideoPlaceholder()) + '" alt="' + escapeText(thumbnailAlt) + '" class="s-hero-video-img' + (thumbnailSrc ? '' : ' s-hero-video-placeholder') + '">' +
       '<div class="s-hero-video-play-backdrop">' +
         '<div class="s-hero-video-play-halo">' +
           '<div class="s-hero-video-play-btn">' +
@@ -1083,8 +1098,9 @@ export function IconCloud({
   ];
 
   let resolvedImages = images;
+  let sourceSlugs = [];
   if (!resolvedImages) {
-    const sourceSlugs = iconSlugs || slugs || (Array.isArray(icons) && typeof icons[0] === 'string' ? icons : defaultSlugs);
+    sourceSlugs = iconSlugs || slugs || (Array.isArray(icons) && typeof icons[0] === 'string' ? icons : defaultSlugs);
     if (Array.isArray(sourceSlugs)) {
       resolvedImages = sourceSlugs.map(slug => {
         const s = String(slug).toLowerCase().trim();
@@ -1094,13 +1110,16 @@ export function IconCloud({
   }
 
   const extraClass = className ? ` ${className}` : '';
+  const sourceAttr = Array.isArray(sourceSlugs) && sourceSlugs.length
+    ? ` data-icon-sources="${escapeText(JSON.stringify(sourceSlugs.map(slug => 'https://cdn.simpleicons.org/' + String(slug).toLowerCase().trim())))}"`
+    : '';
 
   return raw('<div' + attributes({
     class: 's-icon-cloud-wrap' + extraClass,
     ...attrs
   }) + '>' +
     `<canvas class="s-icon-cloud-canvas" data-s-icon-cloud ` +
-    `data-images="${escapeText(JSON.stringify(resolvedImages || []))}" ` +
+    `data-images="${escapeText(JSON.stringify(resolvedImages || []))}"` + sourceAttr + ` ` +
     `width="340" height="340" role="img" aria-label="Interactive 3D Icon Cloud"></canvas>` +
     (showControl ? `<button type="button" class="s-icon-cloud-ctrl" data-s-cloud-toggle aria-label="Pause animation" title="Pause animation"><span class="s-icon-cloud-ctrl-icon">${render(Icon({ name: 'pause', size: 14 }))}</span></button>` : '') +
   '</div>');

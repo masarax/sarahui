@@ -1,1 +1,4 @@
-/* HyperText styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for HyperText */
+.s-hypertext {
+  box-sizing: border-box;
+}

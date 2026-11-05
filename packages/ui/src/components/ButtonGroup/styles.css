@@ -1,1 +1,4 @@
-/* ButtonGroup styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for ButtonGroup */
+.s-buttongroup {
+  box-sizing: border-box;
+}

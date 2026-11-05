@@ -1,1 +1,4 @@
-/* Avatar styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Avatar */
+.s-avatar {
+  box-sizing: border-box;
+}

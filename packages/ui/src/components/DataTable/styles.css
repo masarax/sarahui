@@ -1,1 +1,4 @@
-/* DataTable styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for DataTable */
+.s-datatable {
+  box-sizing: border-box;
+}

@@ -1,1 +1,4 @@
-/* IconCloud styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for IconCloud */
+.s-icon-cloud-wrap {
+  box-sizing: border-box;
+}

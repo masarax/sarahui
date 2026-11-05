@@ -1,1 +1,4 @@
-/* MorphingText styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for MorphingText */
+.s-morphingtext {
+  box-sizing: border-box;
+}

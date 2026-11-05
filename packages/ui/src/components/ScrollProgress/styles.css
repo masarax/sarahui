@@ -1,1 +1,4 @@
-/* ScrollProgress styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for ScrollProgress */
+.s-scrollprogress {
+  box-sizing: border-box;
+}

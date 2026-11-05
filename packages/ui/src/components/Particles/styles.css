@@ -1,1 +1,4 @@
-/* Particles styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Particles */
+.s-particles {
+  box-sizing: border-box;
+}

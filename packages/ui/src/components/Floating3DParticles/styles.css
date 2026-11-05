@@ -1,1 +1,4 @@
-/* Floating3DParticles styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Floating3DParticles */
+.s-floating3dparticles {
+  box-sizing: border-box;
+}

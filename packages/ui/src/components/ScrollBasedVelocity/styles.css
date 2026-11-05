@@ -1,1 +1,4 @@
-/* ScrollBasedVelocity styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for ScrollBasedVelocity */
+.s-scrollbasedvelocity {
+  box-sizing: border-box;
+}

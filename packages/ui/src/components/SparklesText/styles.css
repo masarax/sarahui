@@ -1,1 +1,4 @@
-/* SparklesText styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for SparklesText */
+.s-sparklestext {
+  box-sizing: border-box;
+}

@@ -1,1 +1,4 @@
-/* Card styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Card */
+.s-card {
+  box-sizing: border-box;
+}

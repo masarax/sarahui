@@ -1,1 +1,4 @@
-/* Iphone styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Iphone */
+.s-iphone {
+  box-sizing: border-box;
+}

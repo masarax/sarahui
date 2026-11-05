@@ -1,1 +1,4 @@
-/* DottedMap styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for DottedMap */
+.s-dotted-map-container {
+  box-sizing: border-box;
+}

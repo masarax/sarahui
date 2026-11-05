@@ -1,1 +1,4 @@
-/* Separator styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Separator */
+.s-separator {
+  box-sizing: border-box;
+}

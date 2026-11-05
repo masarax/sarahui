@@ -1,1 +1,4 @@
-/* Android styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Android */
+.s-android {
+  box-sizing: border-box;
+}

@@ -1,1 +1,4 @@
-/* Tabs styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Tabs */
+.s-tabs {
+  box-sizing: border-box;
+}

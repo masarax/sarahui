@@ -1,1 +1,4 @@
-/* DiaTextReveal styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for DiaTextReveal */
+.s-diatextreveal {
+  box-sizing: border-box;
+}

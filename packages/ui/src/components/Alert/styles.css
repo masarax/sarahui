@@ -1,1 +1,4 @@
-/* Alert styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Alert */
+.s-alert {
+  box-sizing: border-box;
+}

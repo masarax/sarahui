@@ -1,1 +1,4 @@
-/* Progress styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Progress */
+.s-progress {
+  box-sizing: border-box;
+}

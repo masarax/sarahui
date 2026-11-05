@@ -1,1 +1,4 @@
-/* Button styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Button */
+.s-button {
+  box-sizing: border-box;
+}

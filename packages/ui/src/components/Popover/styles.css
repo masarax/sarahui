@@ -1,1 +1,4 @@
-/* Popover styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Popover */
+.s-popover {
+  box-sizing: border-box;
+}

@@ -1,1 +1,4 @@
-/* TextAnimate styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for TextAnimate */
+.s-textanimate {
+  box-sizing: border-box;
+}

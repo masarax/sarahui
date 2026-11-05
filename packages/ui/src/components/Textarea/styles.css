@@ -1,1 +1,4 @@
-/* Textarea styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Textarea */
+.s-textarea {
+  box-sizing: border-box;
+}

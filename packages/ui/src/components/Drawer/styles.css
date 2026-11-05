@@ -1,1 +1,4 @@
-/* Drawer styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Drawer */
+.s-drawer {
+  box-sizing: border-box;
+}

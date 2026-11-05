@@ -1,1 +1,4 @@
-/* InteractiveGridPattern styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for InteractiveGridPattern */
+.s-interactivegridpattern {
+  box-sizing: border-box;
+}

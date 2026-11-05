@@ -1,1 +1,4 @@
-/* SmoothCursor styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for SmoothCursor */
+.s-smooth-cursor-container {
+  box-sizing: border-box;
+}

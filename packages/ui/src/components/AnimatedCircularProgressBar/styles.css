@@ -1,1 +1,4 @@
-/* AnimatedCircularProgressBar styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for AnimatedCircularProgressBar */
+.s-animatedcircularprogressbar {
+  box-sizing: border-box;
+}

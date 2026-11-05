@@ -1,1 +1,4 @@
-/* Radio styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for Radio */
+.s-radio {
+  box-sizing: border-box;
+}

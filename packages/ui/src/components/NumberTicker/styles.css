@@ -1,1 +1,4 @@
-/* NumberTicker styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for NumberTicker */
+.s-numberticker {
+  box-sizing: border-box;
+}

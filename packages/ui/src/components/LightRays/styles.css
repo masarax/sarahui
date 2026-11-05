@@ -1,1 +1,4 @@
-/* LightRays styles are defined in packages/ui/src/styles.css. */
+/* Scoped styles for LightRays */
+.s-lightrays {
+  box-sizing: border-box;
+}
