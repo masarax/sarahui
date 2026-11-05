@@ -1,4 +1,5 @@
 /* Complete sarahUI styling. Bundlers resolve the bundled, self-hosted fonts. */
 @import "./fonts.css";
 @import "./tokens.css";
+@import "./tailwind.generated.css";
 @import "./styles.css";

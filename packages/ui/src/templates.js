@@ -292,11 +292,11 @@ export function BorderBeam({size=50,duration=6,delay=0,colorFrom='#ffaa40',color
 
   const { class: _c, style: _s, ...restAttrs } = attrs;
   return raw('<div' + attributes({
-    class: 's-border-beam' + revClass + extraClass,
+    class: 's-border-beam absolute inset-0 rounded-[inherit] pointer-events-none box-border' + revClass + extraClass,
     style: containerStyle || null,
     'aria-hidden': 'true',
     ...restAttrs
-  }) + '><div class="s-border-beam-glow" style="' + escapeText(glowStyle) + '"></div></div>');
+  }) + '><div class="s-border-beam-glow absolute aspect-square" style="' + escapeText(glowStyle) + '"></div></div>');
 }
 export function AnimatedShinyText({text='Shimmering text animation',shimmerWidth=100,attrs={}}={}) {
   return raw('<span'+attributes({class:'s-shiny-text',style:shimmerWidth?`--shimmer-width:${shimmerWidth}px`:null,...attrs})+'>'+escapeText(text)+'</span>');
@@ -317,44 +317,65 @@ export function Ripple({mainCircleSize=180,numCircles=8,attrs={}}={}) {
 export function RetroGrid({angle=65,attrs={}}={}) {
   return raw('<div'+attributes({class:'s-retro-grid','aria-hidden':'true',...attrs})+'><div class="s-retro-grid-plane" style="transform:rotateX('+Number(angle||65)+'deg)"></div></div>');
 }
-export function ShineBorder({children='',borderWidth=1,duration=14,color='',shineColor='',attrs={}}={}) {
-  const col = shineColor || color || '#5B3DF5';
+export function ShineBorder({children='',borderWidth=1,duration=14,color='',shineColor='',className='',attrs={}}={}) {
+  const col = shineColor || color || '#000000';
   const colStr = Array.isArray(col) ? col.join(',') : col;
   const bw = Number(borderWidth) || 1;
   const dur = Number(duration) || 14;
+  const extraClass = className ? ' ' + className : '';
   const style = `border-width:${bw}px;--border-width:${bw}px;--shine-duration:${dur}s;--duration:${dur}s;--shine-color:${colStr};`;
-  return raw('<div'+attributes({class:'s-shine-border',style:style||null,...attrs})+'><div class="s-shine-border-inner">'+render(children)+'</div></div>');
+  return raw('<div'+attributes({class:'s-shine-border absolute inset-0 rounded-[inherit] overflow-hidden pointer-events-none box-border'+extraClass,style:style||null,...attrs})+'><div class="s-shine-border-inner relative z-2 w-full h-full pointer-events-auto">'+render(children)+'</div></div>');
 }
-export function Meteors({number=12,attrs={}}={}) {
-  const meteors=Array.from({length:Math.max(1,Math.min(30,Number(number)||12))},(_,i)=>{
-    const left=Math.floor((i/12)*100);
-    const delay=((i%5)*0.4).toFixed(1);
-    const duration=(4+(i%4)*0.8).toFixed(1);
-    return `<span class="s-meteor" style="top:0;left:${left}%;animation-delay:${delay}s;animation-duration:${duration}s;"></span>`;
+export function Meteors({number=20,minDelay=0.2,maxDelay=1.2,minDuration=2,maxDuration=10,angle=215,className='',attrs={}}={}) {
+  const count = Math.max(1, Math.min(60, Number(number) || 20));
+  const delayMin = Number(minDelay) || 0;
+  const delayMax = Math.max(delayMin, Number(maxDelay) || delayMin);
+  const durationMin = Math.max(0.1, Number(minDuration) || 2);
+  const durationMax = Math.max(durationMin, Number(maxDuration) || durationMin);
+  const rotation = Number(angle) || 215;
+  const extraClass = className ? ' ' + className : '';
+  const meteors = Array.from({length: count}, (_, i) => {
+    const left = (i * 37 + 13) % 100;
+    const delay = delayMin + (((i * 7) % 10) / 10) * (delayMax - delayMin);
+    const duration = durationMin + (((i * 3) % 10) / 10) * (durationMax - durationMin);
+    return `<span class="s-meteor" style="top:-5%;left:${left}%;--angle:-${rotation}deg;animation-delay:${delay.toFixed(2)}s;animation-duration:${duration.toFixed(2)}s;"></span>`;
   }).join('');
-  return raw('<div'+attributes({class:'s-meteors','aria-hidden':'true',...attrs})+'>'+meteors+'</div>');
+  return raw('<div'+attributes({class:'s-meteors absolute inset-0 overflow-hidden pointer-events-none'+extraClass,'aria-hidden':'true',...attrs})+'>'+meteors+'</div>');
 }
-export function Particles({quantity=30,staticity=50,ease=50,color='',attrs={}}={}) {
-  return raw('<div'+attributes({class:'s-particles','data-s-particles':String(quantity),'data-color':color||'',...attrs})+'><canvas class="s-particles-canvas"></canvas></div>');
+export function Particles({quantity=100,staticity=50,ease=50,size=0.4,refresh=false,color='#ffffff',vx=0,vy=0,className='',attrs={}}={}) {
+  const extraClass = className ? ' ' + className : '';
+  return raw('<div'+attributes({
+    class:'s-particles relative overflow-hidden w-full min-h-40 flex items-center justify-center'+extraClass,
+    'data-s-particles':String(quantity),
+    'data-quantity':String(quantity),
+    'data-staticity':String(staticity),
+    'data-ease':String(ease),
+    'data-size':String(size),
+    'data-refresh':refresh?'true':'false',
+    'data-color':color||'#ffffff',
+    'data-vx':String(vx),
+    'data-vy':String(vy),
+    ...attrs
+  })+'><canvas class="s-particles-canvas"></canvas></div>');
 }
 export function Confetti({label='Celebrate',icon='spark',mode='basic',attrs={}}={}) {
-  return raw('<button type="button"'+attributes({class:'s-button s-button--primary s-confetti-btn','data-s-confetti':mode||'basic',...attrs})+'>'+(icon?render(Icon({name:icon,size:16}))+' ':'')+'<span>'+escapeText(label)+'</span></button>');
+  return raw('<button type="button"'+attributes({class:'s-button s-button--primary s-confetti-btn relative inline-flex','data-s-confetti':mode||'basic',...attrs})+'>'+(icon?render(Icon({name:icon,size:16}))+' ':'')+'<span>'+escapeText(label)+'</span></button>');
 }
 export function MagicCard({
   children = '',
   className = '',
   mode = 'gradient',
   gradientSize = 200,
-  gradientColor = '',
+  gradientColor = '#262626',
   gradientOpacity = 0.8,
   gradientFrom = '#9E7AFF',
   gradientTo = '#FE8BBB',
   glowFrom = '#ee4f27',
   glowTo = '#6b21ef',
   glowAngle = 90,
-  glowSize = 340,
-  glowBlur = 65,
-  glowOpacity = 0.38,
+  glowSize = 420,
+  glowBlur = 60,
+  glowOpacity = 0.9,
   style = '',
   attrs = {}
 } = {}) {
@@ -375,7 +396,7 @@ export function MagicCard({
   const styleAttr = styles.length ? styles.join(';') : null;
 
   return raw('<div' + attributes({
-    class: 's-magic-card' + extraClass,
+    class: 's-magic-card relative isolate overflow-hidden w-full h-full flex flex-col rounded-[var(--s-radius-xl)] border border-transparent box-border' + extraClass,
     'data-s-magic-card': 'true',
     'data-mode': mode,
     'data-gradient-size': String(gradientSize),
@@ -383,9 +404,11 @@ export function MagicCard({
     style: styleAttr,
     ...attrs
   }) + '>' +
-  '<div class="s-magic-card-bg" aria-hidden="true"></div>' +
-  (mode === 'orb' ? '<div class="s-magic-card-orb" aria-hidden="true"></div>' : '<div class="s-magic-card-spotlight" aria-hidden="true"></div>') +
-  '<div class="s-magic-card-content">' + render(children) + '</div>' +
+  '<div class="s-magic-card-bg absolute inset-0 rounded-[inherit] pointer-events-none z-1 bg-[var(--s-bg-surface)]" aria-hidden="true"></div>' +
+  (mode === 'orb'
+    ? '<div class="s-magic-card-orb absolute z-2 pointer-events-none rounded-full" aria-hidden="true"></div>'
+    : '<div class="s-magic-card-spotlight absolute inset-0 rounded-[inherit] pointer-events-none z-2" aria-hidden="true"></div>') +
+  '<div class="s-magic-card-content relative z-10 w-full h-full flex flex-col">' + render(children) + '</div>' +
   '</div>');
 }
 export function TypingAnimation({text='',children='',duration=60,delay=0,className='',attrs={}}={}) {
@@ -872,12 +895,26 @@ export function Safari({url='https://sarahui.dev',imageSrc='',videoSrc='',mode='
   return raw('<div'+attributes({class:'s-safari-mockup s-safari--'+choice(mode,['default','simple'],'default'),...attrs})+'><div class="s-safari-header"><div class="s-safari-traffic-lights"><span class="s-safari-dot s-dot-red"></span><span class="s-safari-dot s-dot-yellow"></span><span class="s-safari-dot s-dot-green"></span></div><div class="s-safari-address-bar"><svg class="s-safari-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span class="s-safari-url">'+escapeText(url)+'</span><button type="button" class="s-safari-reload" aria-label="Reload page">'+render(Icon({name:'refresh',size:12}))+'</button></div><div class="s-safari-actions"><button type="button" aria-label="Share">'+render(Icon({name:'link',size:13}))+'</button></div></div><div class="s-safari-viewport">'+media+'</div></div>');
 }
 
-export function GlareHover({children='',color='#ffffff',opacity=0.35,background='',angle=-45,size=250,duration=650,playOnce=false,width,height,className='',attrs={}}={}) {
-  let style=`--gh-angle:${angle}deg;--gh-duration:${duration}ms;--gh-size:${size}%;--gh-color:${color};--gh-opacity:${opacity};`;
+function hexToRgba(color, opacity = 1) {
+  const value = String(color || '').trim();
+  const hex = value.replace('#', '');
+  const parse = part => Number.parseInt(part, 16);
+  if (/^[0-9a-f]{6}$/i.test(hex)) {
+    return `rgba(${parse(hex.slice(0, 2))},${parse(hex.slice(2, 4))},${parse(hex.slice(4, 6))},${Number(opacity)})`;
+  }
+  if (/^[0-9a-f]{3}$/i.test(hex)) {
+    return `rgba(${parse(hex[0] + hex[0])},${parse(hex[1] + hex[1])},${parse(hex[2] + hex[2])},${Number(opacity)})`;
+  }
+  return value;
+}
+
+export function GlareHover({children='',color='#ffffff',opacity=0.5,background='#000',angle=-45,size=250,duration=650,playOnce=false,width,height,className='',attrs={}}={}) {
+  let style=`--gh-angle:${angle}deg;--gh-duration:${duration}ms;--gh-size:${size}%;--gh-color:${color};--gh-opacity:${opacity};--gh-rgba:${hexToRgba(color, opacity)};`;
   if(background) style+=`background:${background};`;
   if(width!==undefined) style+=`width:${typeof width==='number'?width+'px':width};`;
   if(height!==undefined) style+=`height:${typeof height==='number'?height+'px':height};`;
-  return raw('<div'+attributes({class:'s-glare-hover'+(playOnce?' s-glare-hover--once':'')+' '+(className||''),style,...attrs})+'><div class="s-glare-hover-surface">'+render(children)+'</div><div class="s-glare-hover-glare" aria-hidden="true"></div></div>');
+  const classes = ['s-glare-hover', 'relative', 'inline-grid', 'place-items-center', 'overflow-hidden', 'box-border', playOnce ? 's-glare-hover--once' : '', className || ''].filter(Boolean).join(' ');
+  return raw('<div'+attributes({class:classes,style,...attrs})+'><div class="s-glare-hover-surface relative z-1 w-full box-border">'+render(children)+'</div><div class="s-glare-hover-glare absolute inset-0 pointer-events-none z-10" aria-hidden="true"></div></div>');
 }
 
 export function Backlight({children='',blur=20,attrs={}}={}) {
@@ -902,7 +939,7 @@ export function LightRays({count=7,color='rgba(160, 210, 255, 0.2)',blur=36,spee
 }
 
 export function AnimatedThemeToggler({variant='circle',duration=400,fromCenter=false,attrs={}}={}) {
-  return raw('<button type="button"'+attributes({class:'s-animated-theme-toggler s-button s-icon-button s-button--outline s-button--md','data-s-theme-toggler':variant,'data-duration':String(duration),'data-from-center':fromCenter?'true':'false','aria-label':'Toggle theme',...attrs})+'><span class="s-theme-icon-sun">'+render(Icon({name:'sun',size:18}))+'</span><span class="s-theme-icon-moon">'+render(Icon({name:'moon',size:18}))+'</span></button>');
+  return raw('<button type="button"'+attributes({class:'s-animated-theme-toggler s-button s-icon-button s-button--outline s-button--md relative overflow-hidden inline-flex items-center justify-center','data-s-theme-toggler':variant,'data-duration':String(duration),'data-from-center':fromCenter?'true':'false','aria-label':'Toggle theme',...attrs})+'><span class="s-theme-icon-sun inline-flex items-center justify-center">'+render(Icon({name:'sun',size:18}))+'</span><span class="s-theme-icon-moon inline-flex items-center justify-center">'+render(Icon({name:'moon',size:18}))+'</span></button>');
 }
 
 export function ComicText({text='BOOM!',fontSize=3.5,dotColor='#EF4444',backgroundColor='#FACC15',attrs={}}={}) {

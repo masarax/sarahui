@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import './build-tokens.mjs';
+import './build-tailwind.mjs';
 import './prepare-package.mjs';
 import {buildSite} from '../apps/docs/site.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),dist=path.join(root,'dist');

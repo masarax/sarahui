@@ -1516,97 +1516,141 @@ export function initConfetti(container) {
   });
 }
 
+function hexToRgb(value) {
+  let hex = String(value || '#ffffff').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(char => char + char).join('');
+  const number = Number.parseInt(hex, 16);
+  if (!Number.isFinite(number)) return [255, 255, 255];
+  return [(number >> 16) & 255, (number >> 8) & 255, number & 255];
+}
+
 export function initParticles(canvas) {
   if (!canvas || canvas.dataset.particlesInitialized === 'true') return;
   canvas.dataset.particlesInitialized = 'true';
   const ctx = canvas.getContext?.('2d');
   if (!ctx) return;
-  const win = docOf(canvas).defaultView;
-
+  const doc = docOf(canvas);
+  const win = doc.defaultView;
   const host = canvas.closest('[data-s-particles]');
-  const count = Number(canvas.dataset.quantity || host?.dataset.sParticles) || 80;
+  const dataset = host?.dataset || {};
+  const quantity = Math.max(1, Number(canvas.dataset.quantity || dataset.sParticles || 100));
+  const staticity = Number(canvas.dataset.staticity || dataset.staticity || 50);
+  const ease = Math.max(1, Number(canvas.dataset.ease || dataset.ease || 50));
+  const baseSize = Number(canvas.dataset.size || dataset.size || 0.4);
+  const vx = Number(canvas.dataset.vx || dataset.vx || 0);
+  const vy = Number(canvas.dataset.vy || dataset.vy || 0);
+  const rgb = hexToRgb(canvas.dataset.color || dataset.color || '#ffffff');
+  const dpr = win.devicePixelRatio || 1;
   const reduceMotion = win.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
-  const particles = [];
-  let mouseX = -1000, mouseY = -1000;
+  const circles = [];
+  const mouse = { x: 0, y: 0 };
+  const canvasSize = { w: 0, h: 0 };
+  let rafID = null;
 
-  const resize = () => {
-    const rect = canvas.parentElement?.getBoundingClientRect() || canvas.getBoundingClientRect();
-    const w = rect.width || 600, h = rect.height || 400;
-    canvas.width = w * 2;
-    canvas.height = h * 2;
-    ctx.scale(2, 2);
-    if (particles.length === 0) {
-      for (let i = 0; i < count; i++) {
-        particles.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.8,
-          vy: (Math.random() - 0.5) * 0.8,
-          r: 1 + Math.random() * 2,
-          alpha: 0.2 + Math.random() * 0.6
-        });
-      }
-    }
+  const circleParams = () => ({
+    x: Math.floor(Math.random() * canvasSize.w),
+    y: Math.floor(Math.random() * canvasSize.h),
+    translateX: 0,
+    translateY: 0,
+    size: Math.floor(Math.random() * 2) + baseSize,
+    alpha: 0,
+    targetAlpha: Number.parseFloat((Math.random() * 0.6 + 0.1).toFixed(1)),
+    dx: (Math.random() - 0.5) * 0.1,
+    dy: (Math.random() - 0.5) * 0.1,
+    magnetism: 0.1 + Math.random() * 4
+  });
+
+  const drawCircle = (circle, update = false) => {
+    ctx.translate(circle.translateX, circle.translateY);
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${rgb.join(', ')}, ${circle.alpha})`;
+    ctx.fill();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!update) circles.push(circle);
   };
-  resize();
 
-  canvas.addEventListener('mousemove', e => {
+  const drawParticles = () => {
+    circles.length = 0;
+    for (let i = 0; i < quantity; i++) drawCircle(circleParams());
+  };
+
+  const resizeCanvas = () => {
+    const container = canvas.parentElement || canvas;
+    canvasSize.w = container.offsetWidth || 600;
+    canvasSize.h = container.offsetHeight || 400;
+    canvas.width = canvasSize.w * dpr;
+    canvas.height = canvasSize.h * dpr;
+    canvas.style.width = `${canvasSize.w}px`;
+    canvas.style.height = `${canvasSize.h}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawParticles();
+  };
+
+  const remapValue = (value, start1, end1, start2, end2) => {
+    const remapped = ((value - start1) * (end2 - start2)) / (end1 - start1) + start2;
+    return remapped > 0 ? remapped : 0;
+  };
+
+  const animate = () => {
+    ctx.clearRect(0, 0, canvasSize.w, canvasSize.h);
+    circles.forEach((circle, index) => {
+      const edges = [
+        circle.x + circle.translateX - circle.size,
+        canvasSize.w - circle.x - circle.translateX - circle.size,
+        circle.y + circle.translateY - circle.size,
+        canvasSize.h - circle.y - circle.translateY - circle.size
+      ];
+      const closestEdge = edges.reduce((a, b) => Math.min(a, b));
+      const remapped = Number.parseFloat(remapValue(closestEdge, 0, 20, 0, 1).toFixed(2));
+      if (remapped > 1) {
+        circle.alpha = Math.min(circle.alpha + 0.02, circle.targetAlpha);
+      } else {
+        circle.alpha = circle.targetAlpha * remapped;
+      }
+
+      circle.x += circle.dx + vx;
+      circle.y += circle.dy + vy;
+      circle.translateX += (mouse.x / (staticity / circle.magnetism) - circle.translateX) / ease;
+      circle.translateY += (mouse.y / (staticity / circle.magnetism) - circle.translateY) / ease;
+
+      drawCircle(circle, true);
+
+      if (
+        circle.x < -circle.size ||
+        circle.x > canvasSize.w + circle.size ||
+        circle.y < -circle.size ||
+        circle.y > canvasSize.h + circle.size
+      ) {
+        circles.splice(index, 1);
+        drawCircle(circleParams());
+      }
+    });
+    if (!reduceMotion && canvas.isConnected) rafID = win.requestAnimationFrame(animate);
+  };
+
+  const onPointerMove = event => {
     const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
-  });
-  canvas.addEventListener('mouseleave', () => {
-    mouseX = -1000;
-    mouseY = -1000;
-  });
-
-  const render = () => {
-    if (!canvas.isConnected) return;
-    const w = canvas.width / 2, h = canvas.height / 2;
-    ctx.clearRect(0, 0, w, h);
-
-    const isDark = docOf(canvas).documentElement.dataset.theme === 'dark';
-    const color = isDark ? '#ffffff' : '#0f172a';
-
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > w) p.vx *= -1;
-      if (p.y < 0 || p.y > h) p.vy *= -1;
-
-      const dx = mouseX - p.x, dy = mouseY - p.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < 80) {
-        p.x -= (dx / dist) * 2;
-        p.y -= (dy / dist) * 2;
-      }
-
-      ctx.fillStyle = color;
-      ctx.globalAlpha = p.alpha;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fill();
-
-      for (let j = i + 1; j < particles.length; j++) {
-        const p2 = particles[j];
-        const d = Math.hypot(p.x - p2.x, p.y - p2.y);
-        if (d < 70) {
-          ctx.strokeStyle = color;
-          ctx.globalAlpha = (1 - d / 70) * 0.15;
-          ctx.lineWidth = 0.6;
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
-        }
-      }
+    const x = event.clientX - rect.left - canvasSize.w / 2;
+    const y = event.clientY - rect.top - canvasSize.h / 2;
+    if (x < canvasSize.w / 2 && x > -canvasSize.w / 2 && y < canvasSize.h / 2 && y > -canvasSize.h / 2) {
+      mouse.x = x;
+      mouse.y = y;
     }
-
-    ctx.globalAlpha = 1;
-    if (!reduceMotion) win.requestAnimationFrame(render);
   };
-  render();
+
+  const onResize = () => {
+    if (rafID != null) win.cancelAnimationFrame(rafID);
+    resizeCanvas();
+    if (reduceMotion) animate();
+    else rafID = win.requestAnimationFrame(animate);
+  };
+
+  win.addEventListener('mousemove', onPointerMove, { passive: true });
+  win.addEventListener('resize', onResize, { passive: true });
+  resizeCanvas();
+  if (reduceMotion) animate();
+  else rafID = win.requestAnimationFrame(animate);
 }
 
 export function initFloating3DParticles(canvas) {
@@ -2436,6 +2480,7 @@ export function enhanceUI(root = globalThis.document) {
       handled.add(event);
       const variant = b.dataset.sThemeToggler || 'circle';
       const duration = Number(b.dataset.duration) || 400;
+      const fromCenter = b.dataset.fromCenter === 'true';
       const rootEl = doc.documentElement;
       const isDark = rootEl.classList.contains('dark') || rootEl.dataset.theme === 'dark';
       const toggleFn = () => {
@@ -2445,53 +2490,68 @@ export function enhanceUI(root = globalThis.document) {
       };
       if (doc.startViewTransition) {
         const rect = b.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const vw = win.innerWidth, vh = win.innerHeight;
+        const vw = win.innerWidth;
+        const vh = win.innerHeight;
+        const cx = fromCenter ? vw / 2 : rect.left + rect.width / 2;
+        const cy = fromCenter ? vh / 2 : rect.top + rect.height / 2;
         const maxRadius = Math.hypot(Math.max(cx, vw - cx), Math.max(cy, vh - cy));
-        
-        let startClip = `circle(0% at ${cx}px ${cy}px)`;
-        let endClip = `circle(${maxRadius}px at ${cx}px ${cy}px)`;
+        const toX = value => `${(value / vw) * 100}%`;
+        const toY = value => `${(value / vh) * 100}%`;
+        const point = (x, y) => `${toX(x)} ${toY(y)}`;
+        const toRadius = value => `${(value / (Math.hypot(vw, vh) / Math.SQRT2)) * 100}%`;
+        const collapsed = (count) => `polygon(${Array(count).fill(point(cx, cy)).join(', ')})`;
 
-        if (variant === 'square' || variant === 'rectangle') {
-          const s = maxRadius * 1.1;
-          startClip = `polygon(${cx}px ${cy}px, ${cx}px ${cy}px, ${cx}px ${cy}px, ${cx}px ${cy}px)`;
-          endClip = `polygon(${cx - s}px ${cy - s}px, ${cx + s}px ${cy - s}px, ${cx + s}px ${cy + s}px, ${cx - s}px ${cy + s}px)`;
+        let startClip = `circle(0% at ${point(cx, cy)})`;
+        let endClip = `circle(${toRadius(maxRadius)} at ${point(cx, cy)})`;
+
+        if (variant === 'square') {
+          const halfSide = Math.max(Math.max(cx, vw - cx), Math.max(cy, vh - cy)) * 1.05;
+          startClip = collapsed(4);
+          endClip = `polygon(${point(cx - halfSide, cy - halfSide)}, ${point(cx + halfSide, cy - halfSide)}, ${point(cx + halfSide, cy + halfSide)}, ${point(cx - halfSide, cy + halfSide)})`;
+        } else if (variant === 'rectangle') {
+          const halfW = Math.max(cx, vw - cx);
+          const halfH = Math.max(cy, vh - cy);
+          startClip = collapsed(4);
+          endClip = `polygon(${point(cx - halfW, cy - halfH)}, ${point(cx + halfW, cy - halfH)}, ${point(cx + halfW, cy + halfH)}, ${point(cx - halfW, cy + halfH)})`;
         } else if (variant === 'diamond') {
-          const s = maxRadius * 1.45;
-          startClip = `polygon(${cx}px ${cy}px, ${cx}px ${cy}px, ${cx}px ${cy}px, ${cx}px ${cy}px)`;
-          endClip = `polygon(${cx}px ${cy - s}px, ${cx + s}px ${cy}px, ${cx}px ${cy + s}px, ${cx - s}px ${cy}px)`;
+          const radius = maxRadius * Math.SQRT2;
+          startClip = collapsed(4);
+          endClip = `polygon(${point(cx, cy - radius)}, ${point(cx + radius, cy)}, ${point(cx, cy + radius)}, ${point(cx - radius, cy)})`;
         } else if (variant === 'hexagon') {
-          const s = maxRadius * 1.3;
-          const verts = [];
+          const radius = maxRadius * Math.SQRT2;
+          const vertices = [];
           for (let i = 0; i < 6; i++) {
-            const a = -Math.PI / 2 + (i * Math.PI) / 3;
-            verts.push(`${cx + s * Math.cos(a)}px ${cy + s * Math.sin(a)}px`);
+            const angle = -Math.PI / 2 + (i * Math.PI) / 3;
+            vertices.push(point(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)));
           }
-          startClip = `polygon(${Array(6).fill(`${cx}px ${cy}px`).join(', ')})`;
-          endClip = `polygon(${verts.join(', ')})`;
+          startClip = collapsed(6);
+          endClip = `polygon(${vertices.join(', ')})`;
         } else if (variant === 'triangle') {
-          const s = maxRadius * 2.2;
-          const dx = (Math.sqrt(3) / 2) * s;
-          startClip = `polygon(${cx}px ${cy}px, ${cx}px ${cy}px, ${cx}px ${cy}px)`;
-          endClip = `polygon(${cx}px ${cy - s}px, ${cx + dx}px ${cy + 0.5 * s}px, ${cx - dx}px ${cy + 0.5 * s}px)`;
+          const scale = maxRadius * 2.2;
+          const dx = (Math.sqrt(3) / 2) * scale;
+          startClip = collapsed(3);
+          endClip = `polygon(${point(cx, cy - scale)}, ${point(cx + dx, cy + 0.5 * scale)}, ${point(cx - dx, cy + 0.5 * scale)})`;
         } else if (variant === 'star') {
-          const outer = maxRadius * 1.5, inner = outer * 0.45;
-          const verts = [];
-          for (let i = 0; i < 10; i++) {
-            const r = i % 2 === 0 ? outer : inner;
-            const a = -Math.PI / 2 + (i * Math.PI) / 5;
-            verts.push(`${cx + r * Math.cos(a)}px ${cy + r * Math.sin(a)}px`);
-          }
-          startClip = `polygon(${Array(10).fill(`${cx}px ${cy}px`).join(', ')})`;
-          endClip = `polygon(${verts.join(', ')})`;
+          const radius = maxRadius * Math.SQRT2 * 1.03;
+          const starPolygon = r => {
+            const vertices = [];
+            for (let i = 0; i < 5; i++) {
+              const outerAngle = -Math.PI / 2 + (i * 2 * Math.PI) / 5;
+              vertices.push(point(cx + r * Math.cos(outerAngle), cy + r * Math.sin(outerAngle)));
+              const innerAngle = outerAngle + Math.PI / 5;
+              vertices.push(point(cx + r * 0.42 * Math.cos(innerAngle), cy + r * 0.42 * Math.sin(innerAngle)));
+            }
+            return `polygon(${vertices.join(', ')})`;
+          };
+          startClip = starPolygon(Math.max(2, radius * 0.025));
+          endClip = starPolygon(radius);
         }
 
         const transition = doc.startViewTransition(toggleFn);
         transition.ready?.then?.(() => {
           rootEl.animate(
             { clipPath: [startClip, endClip] },
-            { duration, easing: variant === 'star' ? 'linear' : 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
+            { duration, easing: variant === 'star' ? 'linear' : 'ease-in-out', fill: 'forwards', pseudoElement: '::view-transition-new(root)' }
           );
         });
       } else {
