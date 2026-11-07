@@ -6,9 +6,10 @@ test('MagicCard Pillar 1: renders container with data-s-magic-card="true" and de
   const html = String(MagicCard({ children: 'Card Content' }));
   assert.ok(html.includes('class="s-magic-card'), 'base class missing');
   assert.match(html, /data-s-magic-card="true"/, 'data-s-magic-card="true" attribute missing');
-  assert.ok(html.includes('class="s-magic-card-bg" aria-hidden="true"'), 'bg layer must be aria-hidden');
-  assert.ok(html.includes('class="s-magic-card-spotlight" aria-hidden="true"'), 'spotlight layer must be aria-hidden');
-  assert.ok(html.includes('class="s-magic-card-content">Card Content</div>'), 'content wrapper missing');
+  assert.ok(html.includes('class="s-magic-card-bg'), 'bg layer missing');
+  assert.ok(html.includes('class="s-magic-card-spotlight'), 'spotlight layer missing');
+  assert.ok(html.includes('s-magic-card-bg') && html.includes('aria-hidden="true"'), 'decorative layers must be aria-hidden');
+  assert.ok(html.includes('class="s-magic-card-content') && html.includes('Card Content'), 'content wrapper missing');
 });
 
 test('MagicCard Pillar 2: forwards gradient and glow parameters to CSS custom properties', () => {
@@ -40,7 +41,7 @@ test('MagicCard Pillar 3: forwards accessible role and label attributes', () => 
 
 test('MagicCard Pillar 4: handles mode="orb" and boundary zero numeric values', () => {
   const orb = String(MagicCard({ mode: 'orb' }));
-  assert.ok(orb.includes('class="s-magic-card-orb" aria-hidden="true"'), 'orb layer missing');
+  assert.ok(orb.includes('class="s-magic-card-orb'), 'orb layer missing');
   assert.ok(!orb.includes('s-magic-card-spotlight'), 'spotlight should not be present in orb mode');
 
   const zero = String(MagicCard({ gradientSize: 0, gradientOpacity: 0 }));

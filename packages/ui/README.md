@@ -106,6 +106,65 @@ module.exports = {
 
 ---
 
+## Scoped Themes
+
+Set theme attributes on `<html>` for a global theme, or on any section for a local theme. Every nested section inherits the nearest values and overrides only what it sets.
+
+```html
+<html
+  data-theme="dark"
+  data-s-accent="violet"
+  data-s-radius="lg"
+  data-s-card-radius="full"
+  data-s-border="subtle"
+  data-s-shadow="lg"
+  data-s-density="compact"
+>
+  <section data-s-accent="emerald" data-s-card-radius="sm">
+    <article class="s-card">Local emerald theme</article>
+  </section>
+</html>
+```
+
+| Attribute | Values |
+| --- | --- |
+| `data-theme` | `light`, `dark` |
+| `data-s-accent` | `indigo`, `violet`, `blue`, `emerald`, `amber`, `red` |
+| `data-s-radius` | `none`, `sm`, `md`, `lg`, `xl`, `full` |
+| `data-s-card-radius` | `none`, `sm`, `md`, `lg`, `xl`, `full` |
+| `data-s-border` | `none`, `subtle`, `default`, `strong` |
+| `data-s-shadow` | `none`, `sm`, `md`, `lg` |
+| `data-s-density` | `compact`, `comfortable`, `spacious` |
+
+The same options are available from JavaScript:
+
+```js
+import { setTheme, setThemeOptions } from 'sarahui';
+
+setTheme('dark', {
+  accent: 'violet',
+  radius: 'lg',
+  cardRadius: 'full',
+  border: 'subtle',
+  shadow: 'lg',
+  density: 'compact'
+});
+
+// Scope a style to one section. persistence is opt-in per call.
+setThemeOptions({ accent: 'emerald' }, { root: section, persist: false });
+```
+
+`sarahui/themes.css` is included by `sarahui/css` and ships separately for consumers who import stylesheets one by one:
+
+```js
+import 'sarahui/fonts.css';
+import 'sarahui/tokens.css';
+import 'sarahui/themes.css';
+import 'sarahui/styles.css';
+```
+
+---
+
 ## React, Vue, and Laravel Integration
 
 Use sarahUI's CSS classes with your framework's native state management, or mount components directly.

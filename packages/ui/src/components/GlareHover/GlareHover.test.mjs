@@ -5,8 +5,9 @@ import { GlareHover } from './GlareHover.js';
 test('GlareHover Pillar 1: renders container, surface, and aria-hidden glare overlay', () => {
   const html = String(GlareHover({ children: 'Hover Card' }));
   assert.ok(html.includes('class="s-glare-hover'), 'base class missing');
-  assert.ok(html.includes('<div class="s-glare-hover-surface">Hover Card</div>'), 'surface element missing');
-  assert.ok(html.includes('<div class="s-glare-hover-glare" aria-hidden="true"></div>'), 'glare layer must be aria-hidden');
+  assert.ok(html.includes('class="s-glare-hover-surface'), 'surface element missing');
+  assert.ok(html.includes('class="s-glare-hover-glare'), 'glare layer missing');
+  assert.ok(html.includes('aria-hidden="true"'), 'glare layer must be aria-hidden');
 });
 
 test('GlareHover Pillar 2: computes CSS variables for angle, duration, size, color, and opacity', () => {

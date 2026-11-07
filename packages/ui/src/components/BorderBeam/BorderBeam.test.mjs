@@ -5,7 +5,7 @@ import { BorderBeam } from './BorderBeam.js';
 test('BorderBeam Pillar 1: renders border beam container and glow element', () => {
   const html = String(BorderBeam());
   assert.ok(html.includes('class="s-border-beam'), 'base class missing');
-  assert.ok(html.includes('class="s-border-beam-glow"'), 'glow element missing');
+  assert.ok(html.includes('class="s-border-beam-glow'), 'glow element missing');
 });
 
 test('BorderBeam Pillar 2: binds CSS variables for dimensions, duration, delay, and border width', () => {

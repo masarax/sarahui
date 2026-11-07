@@ -145,13 +145,30 @@ export function InteractiveGridPattern(props?: { width?: number; height?: number
 export function NoiseTexture(props?: { opacity?: number; patternSize?: number; className?: string; attrs?: Attributes }): Markup;
 /** Idempotent per root. Call cleanup on unmount. Safe to import without a DOM. */
 export function enhanceUI(root?: Document | HTMLElement): () => void;
-export function setTheme(preference?: Theme, options?: { root?: HTMLElement; persist?: boolean }): string;
+export type ThemeAccent = 'indigo' | 'violet' | 'blue' | 'emerald' | 'amber' | 'red';
+export type ThemeRadius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type ThemeBorder = 'none' | 'subtle' | 'default' | 'strong';
+export type ThemeShadow = 'none' | 'sm' | 'md' | 'lg';
+export type ThemeDensity = 'compact' | 'comfortable' | 'spacious';
+export interface ThemeOptions {
+  accent?: ThemeAccent;
+  radius?: ThemeRadius;
+  cardRadius?: ThemeRadius;
+  border?: ThemeBorder;
+  shadow?: ThemeShadow;
+  density?: ThemeDensity;
+}
+export interface ThemeOptionsRoot { root?: HTMLElement; persist?: boolean; }
+export function setThemeOptions(options?: ThemeOptions, config?: ThemeOptionsRoot): Partial<ThemeOptions>;
+export function applyStoredThemeOptions(root?: HTMLElement): Partial<ThemeOptions>;
+export function setTheme(preference?: Theme, options?: ThemeOptionsRoot & ThemeOptions): string;
 export function openDialog(dialog: HTMLDialogElement | null, trigger?: HTMLElement): void;
 export function closeDialog(dialog: HTMLDialogElement | null, value?: string): void;
 export function toast(description: string, options?: { title?: string; tone?: Tone; duration?: number; document?: Document }): () => void;
 export function copyText(value: unknown, document?: Document): Promise<boolean>;
 export interface SarahEvents {
   'sarah:themechange': { preference: Theme; theme: 'light' | 'dark' };
+  'sarah:stylechange': Partial<ThemeOptions>;
   'sarah:tabchange': { index: number; id: string };
   'sarah:selectionchange': { selected: string[]; count: number };
   'sarah:sortchange': { key: string; direction: 'ascending' | 'descending' };

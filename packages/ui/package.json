@@ -25,6 +25,8 @@
     "./css": "./src/sarahui.css",
     "./styles.css": "./src/styles.css",
     "./tokens.css": "./src/tokens.css",
+    "./themes.css": "./src/themes.css",
+    "./tailwind.generated.css": "./src/tailwind.generated.css",
     "./fonts.css": "./src/fonts.css",
     "./tailwind-preset": "./src/tailwind-preset.js",
     "./tailwind": "./src/tailwind-preset.js",

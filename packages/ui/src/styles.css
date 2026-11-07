@@ -323,8 +323,8 @@
 @keyframes s-word-slide{0%{transform:translateY(100%);opacity:0}100%{transform:translateY(0);opacity:1}}
 
 /* BlurFade */
-.s-blur-fade{animation:s-blur-fade-in 0.6s cubic-bezier(0.16,1,0.3,1) both}
-@keyframes s-blur-fade-in{0%{filter:blur(8px);opacity:0;transform:translateY(12px)}100%{filter:blur(0px);opacity:1;transform:translateY(0)}}
+.s-blur-fade{animation:s-blur-fade-in var(--s-blur-fade-duration,0.4s) ease-out var(--s-blur-fade-delay,0s) both;animation-play-state:var(--s-blur-fade-play,running)}
+@keyframes s-blur-fade-in{0%{filter:blur(var(--s-blur-fade-blur,6px));opacity:0;transform:translate(var(--s-blur-fade-x,0),var(--s-blur-fade-y,0))}100%{filter:blur(0px);opacity:1;transform:translate(0,0)}}
 
 /* ShimmerButton */
 .s-shimmer-button{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:0 24px;min-height:var(--s-button-height);border-radius:var(--s-button-radius,100px);background:var(--s-action-primary);color:var(--s-action-on-primary);font-weight:600;font-size:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);cursor:pointer;transition:transform var(--s-duration-fast),box-shadow 0.3s;box-shadow:none!important}

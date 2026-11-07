@@ -340,7 +340,7 @@ export const demos={
       <span style="pointer-events:none;white-space:pre-wrap;background:linear-gradient(to bottom, var(--s-text-primary), color-mix(in srgb, var(--s-text-muted) 30%, transparent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;font-size:clamp(4rem, 10vw, 7rem);font-weight:800;line-height:1;letter-spacing:-0.05em;user-select:none;">
         Particles
       </span>
-      ${U.Particles({quantity:60,staticity:30})}
+      ${U.Particles({quantity:60,staticity:30,className:'h-[400px]'})}
     </div>
   `,
 

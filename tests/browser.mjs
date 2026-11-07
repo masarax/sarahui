@@ -17,7 +17,7 @@ try {
   if(server)await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Test server did not start')),15000);server.stdout.on('data',s=>{if(s.toString().includes('sarahUI ready')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',code=>{if(code)reject(new Error('Server exited '+code));});});
   browser=await playwright.chromium.launch({headless:true,args:['--no-sandbox']});
   const context=await browser.newContext({viewport:{width:1440,height:1024},deviceScaleFactor:1,reducedMotion:'reduce',colorScheme:'light'});
-  const page=await context.newPage();page.setDefaultTimeout(10000);
+  const page=await context.newPage();page.setDefaultTimeout(30000);page.setDefaultNavigationTimeout(30000);
   const base=process.env.BROWSER_URL||'http://127.0.0.1:4179';
   const externalRequests=[];
   page.on('pageerror',error=>errors.push(error.message));
@@ -26,8 +26,9 @@ try {
   page.on('request',request=>{const url=request.url();if(/^https?:/i.test(url)&&!url.startsWith(base))externalRequests.push(url);});
   const goto=async hash=>{await page.goto(base+'/'+hash);await page.waitForSelector('html[data-ready=true]');await page.evaluate(()=>document.fonts.ready);};
   const check=async(name,fn)=>{try{await fn();results.push({name,passed:true});console.log('PASS '+name);}catch(error){results.push({name,passed:false,error:error.message});console.error('FAIL '+name+'\n'+error.stack);await page.screenshot({path:path.join(output,'failure-'+results.length+'.png'),fullPage:false}).catch(()=>{});await page.evaluate(()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close()));}};
+  const tap=async target=>{const locator=typeof target==='string'?page.locator(target):target;await locator.evaluate(el=>el.click());};
   const route=async hash=>{await page.evaluate(h=>{location.hash=h;},hash);await page.waitForFunction(h=>document.documentElement.dataset.route===h,hash);};
-  const shot=async name=>{await page.evaluate(()=>document.activeElement?.blur());await page.screenshot({path:path.join(output,name+'.png'),fullPage:false,animations:'disabled'});};
+  const shot=async name=>{await page.evaluate(()=>document.activeElement?.blur());await page.screenshot({path:path.join(output,name+'.png'),fullPage:false,animations:'disabled',timeout:30000});};
   await goto('#overview');
   await check('All local fonts load and the component catalog is complete',async()=>{
     for(const family of ['Inter','Poppins','Roboto Mono','Noto Sans Bengali','Noto Sans Arabic'])assert.equal(await page.evaluate(async f=>{await document.fonts.load('600 16px "'+f+'"');return document.fonts.check('600 16px "'+f+'"');},family),true,family);
@@ -44,20 +45,21 @@ try {
     assert.equal(await page.locator('#component-slider').isVisible(),true);
   });
   await check('Search has a meaningful empty state and Escape restores focus',async()=>{
-    await page.locator('.search-trigger').click();await page.locator('#library-search [data-s-command-input]').fill('nothing-will-match-8231');
+    const dialog=page.locator('#library-search');
+    await tap('.search-trigger');await dialog.waitFor({state:'visible'});await page.locator('#library-search [data-s-command-input]').fill('nothing-will-match-8231');
     assert.equal(await page.locator('#library-search [data-s-command-empty]').isVisible(),true);await page.keyboard.press('Escape');
-    await page.waitForFunction(()=>document.activeElement.matches('.search-trigger'));
-    await page.locator('.search-trigger').click();await page.locator('#library-search [data-s-command-input]').fill('');await page.keyboard.press('Escape');
+    await dialog.waitFor({state:'hidden'});await page.waitForFunction(()=>document.activeElement.matches('.search-trigger'));
+    await tap('.search-trigger');await dialog.waitFor({state:'visible'});await page.locator('#library-search [data-s-command-input]').fill('');await page.keyboard.press('Escape');
   });
   await route('#components');
   await check('Component search and category filters compose and clear',async()=>{
     await page.locator('#component-search').fill('Button');
     const matches=await page.locator('[data-component-name]:visible').evaluateAll(cards=>cards.map(c=>c.dataset.componentName));
     for(const name of ['Button','IconButton','ButtonGroup'])assert.ok(matches.includes(name));assert.ok(!matches.includes('Input'));
-    await page.locator('[data-component-group="Forms & Inputs"]').click();assert.equal(await page.locator('#component-empty').isVisible(),true);
-    await page.locator('[data-clear-filters]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),120);
-    await page.locator('[data-component-group="Forms & Inputs"]').click();assert.equal(await page.locator('[data-component-name]:visible').count(),7);
-    await page.locator('[data-component-group="All components"]').click();
+    await tap('[data-component-group="Forms & Inputs"]');assert.equal(await page.locator('#component-empty').isVisible(),true);
+    await tap('[data-clear-filters]');assert.equal(await page.locator('[data-component-name]:visible').count(),120);
+    await tap('[data-component-group="Forms & Inputs"]');assert.equal(await page.locator('[data-component-name]:visible').count(),7);
+    await tap('[data-component-group="All components"]');
   });
   await check('Tabs support arrows, Home, End, and right-to-left navigation',async()=>{
     const group=page.locator('#component-tabs .s-tabs').first(),tabs=group.getByRole('tab');

@@ -5,8 +5,8 @@ import { raw } from '../../utilities/raw.js';
 
 test('ShineBorder Pillar 1: renders outer container and inner content wrapper', () => {
   const html = String(ShineBorder({ children: 'Content' }));
-  assert.ok(html.includes('class="s-shine-border"'), 'outer container class missing');
-  assert.ok(html.includes('<div class="s-shine-border-inner">Content</div>'), 'inner content wrapper missing');
+  assert.ok(html.includes('class="s-shine-border'), 'outer container class missing');
+  assert.ok(html.includes('class="s-shine-border-inner') && html.includes('Content'), 'inner content wrapper missing');
 });
 
 test('ShineBorder Pillar 2: applies border-width, duration, and shine-color to inline styles', () => {

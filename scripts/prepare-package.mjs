@@ -18,6 +18,6 @@ if(!indexDts.includes('SarahComponentToken')){
 const names=[...read('packages/ui/src/templates.js').matchAll(/export (?:function|const) (\w+)/g)].map(match=>match[1]);
 write('src/templates.d.ts','// Templates are also safe to import during server rendering.\nexport { '+names.join(', ')+' } from "./index.js";\nexport type { Markup, Content, Attributes, Size, Variant, Tone, ButtonProps, FieldProps, ChoiceProps } from "./index.js";\n');
 // Keep the modular mirror folders byte-identical to the canonical entry files.
-for(const name of ['styles.css','fonts.css','sarahui.css','tokens.css'])fs.copyFileSync(new URL('src/'+name,pkg),new URL('src/styles/'+name,pkg));
+for(const name of ['styles.css','fonts.css','sarahui.css','tokens.css','themes.css'])fs.copyFileSync(new URL('src/'+name,pkg),new URL('src/styles/'+name,pkg));
 for(const name of ['tokens.css','theme-tokens.js','theme-tokens.d.ts'])fs.copyFileSync(new URL('src/'+name,pkg),new URL('src/tokens/'+name,pkg));
 console.log('sarahUI: prepared unscoped npm package, token exports and notices.');

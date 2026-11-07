@@ -9,7 +9,51 @@ const docOf = node => node.nodeType === 9 ? node : node.ownerDocument;
 const emit = (node, name, detail) => node.dispatchEvent(new (docOf(node).defaultView.CustomEvent)('sarah:' + name, { detail, bubbles: true }));
 const closest = (event, selector) => event.target?.closest?.(selector);
 
-export function setTheme(preference = 'system', { root = globalThis.document?.documentElement, persist = true } = {}) {
+const themeOptionAttrs = {
+  accent: 'sAccent',
+  radius: 'sRadius',
+  cardRadius: 'sCardRadius',
+  border: 'sBorder',
+  shadow: 'sShadow',
+  density: 'sDensity'
+};
+
+export function setThemeOptions(options = {}, { root = globalThis.document?.documentElement, persist = true } = {}) {
+  if (!root) return options;
+  const win = docOf(root).defaultView;
+  const applied = {};
+  for (const [name, key] of Object.entries(themeOptionAttrs)) {
+    const value = options[name];
+    if (value === undefined) continue;
+    if (value === null || value === '') {
+      delete root.dataset[key];
+      applied[name] = null;
+    } else {
+      root.dataset[key] = String(value);
+      applied[name] = String(value);
+    }
+  }
+  if (persist) {
+    try {
+      const stored = JSON.parse(win.localStorage.getItem('sarah-theme-options') || '{}');
+      win.localStorage.setItem('sarah-theme-options', JSON.stringify({ ...stored, ...applied }));
+    } catch {}
+  }
+  emit(root, 'stylechange', applied);
+  return applied;
+}
+
+export function applyStoredThemeOptions(root = globalThis.document?.documentElement) {
+  if (!root) return {};
+  try {
+    const stored = JSON.parse(docOf(root).defaultView.localStorage.getItem('sarah-theme-options') || '{}');
+    return setThemeOptions(stored, { root, persist: false });
+  } catch {
+    return {};
+  }
+}
+
+export function setTheme(preference = 'system', { root = globalThis.document?.documentElement, persist = true, ...options } = {}) {
   if (!root) return preference;
   const doc = docOf(root), win = doc.defaultView;
   preference = ['light', 'dark', 'system'].includes(preference) ? preference : 'system';
@@ -17,6 +61,7 @@ export function setTheme(preference = 'system', { root = globalThis.document?.do
   root.dataset.theme = theme;
   root.dataset.themePreference = preference;
   if (persist) try { win.localStorage.setItem('sarah-theme', preference); } catch {}
+  if (Object.keys(options).length) setThemeOptions(options, { root, persist });
   doc.querySelectorAll('[data-s-theme-toggle]').forEach(button => {
     button.setAttribute('aria-label', 'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' theme');
     const glyph = button.querySelector('[data-theme-icon]');
@@ -2260,6 +2305,7 @@ export function reinitComponent(root) {
 
 export function enhanceUI(root = globalThis.document) {
   if (!root?.addEventListener) return () => {};
+  if (root.nodeType === 9) applyStoredThemeOptions(root.documentElement);
   if (installations.has(root)) {
     reinitComponent(root);
     return installations.get(root);
@@ -2270,6 +2316,15 @@ export function enhanceUI(root = globalThis.document) {
 
   root.querySelectorAll('[data-s-select-all]').forEach(b => tableSelection(b.closest('table')));
   root.querySelectorAll('[data-s-command]').forEach(filterCommand);
+  root.querySelectorAll('[data-s-blur-fade][data-in-view="true"]').forEach(node => {
+    const reveal = () => node.style.setProperty('--s-blur-fade-play', 'running');
+    if (typeof win.IntersectionObserver === 'undefined') { reveal(); return; }
+    const observer = new win.IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) { reveal(); observer.disconnect(); }
+    }, { rootMargin: node.dataset.inViewMargin || '0px' });
+    observer.observe(node);
+    signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+  });
   root.querySelectorAll('.s-tweet-carousel-track').forEach(track => {
     const carousel = track.closest('.s-tweet-carousel');
     const dots = carousel?.querySelectorAll('.s-tweet-dot');

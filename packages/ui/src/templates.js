@@ -429,9 +429,19 @@ export function WordRotate({words=['Components','Motion','Design','Craft'],durat
   const arr=Array.isArray(words)&&words.length?words:['Components','Motion','Design'];
   return raw('<span'+attributes({class:'s-word-rotate','data-s-word-rotate':JSON.stringify(arr),'data-duration':String(duration),...attrs})+'><span class="s-word-rotate-item">'+escapeText(arr[0])+'</span></span>');
 }
-export function BlurFade({children='',delay=0,duration=0.6,yOffset=12,blur=8,attrs={}}={}) {
-  const style=`animation-delay:${Number(delay||0)}s;animation-duration:${Number(duration||0.6)}s;`;
-  return raw('<div'+attributes({class:'s-blur-fade',style,...attrs})+'>'+render(children)+'</div>');
+export function BlurFade({children='',delay=0,duration=0.4,offset=6,direction='down',inView=false,inViewMargin='-50px',blur='6px',className='',yOffset,attrs={}}={}) {
+  if(yOffset!==undefined)offset=yOffset;
+  const horizontal=direction==='left'||direction==='right';
+  const distance=(direction==='right'||direction==='down'?-1:1)*Number(offset||0);
+  const blurValue=typeof blur==='number'?blur+'px':String(blur||'6px');
+  const style=[
+    `--s-blur-fade-duration:${Number(duration||0.4)}s`,
+    `--s-blur-fade-delay:${0.04+Number(delay||0)}s`,
+    `--s-blur-fade-blur:${blurValue}`,
+    horizontal?`--s-blur-fade-x:${distance}px`:`--s-blur-fade-y:${distance}px`,
+    inView?'--s-blur-fade-play:paused':null
+  ].filter(Boolean).join(';')+';';
+  return raw('<div'+attributes({class:'s-blur-fade'+(className?' '+className:''),style,'data-s-blur-fade':'','data-in-view':inView?'true':'false','data-in-view-margin':inViewMargin,...attrs})+'>'+render(children)+'</div>');
 }
 export function ShimmerButton({label='Shimmer Action',icon='',trailing='',attrs={}}={}) {
   return raw('<button type="button"'+attributes({class:'s-shimmer-button',...attrs})+'>'+(icon?render(Icon({name:icon,size:16}))+' ':'')+'<span>'+escapeText(label)+'</span>'+(trailing?' '+render(Icon({name:trailing,size:14})):'')+'</button>');

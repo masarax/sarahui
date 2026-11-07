@@ -202,11 +202,13 @@ export function startPage({heading,code,link}){
         <div class="docs-step-badge">5</div>
         <div class="docs-step-content">
           <h2>Theming & custom tokens</h2>
-          <p>Toggle between light and dark modes with <code>setTheme()</code>, or override standard CSS variables to match your brand:</p>
+          <p>Toggle light and dark with <code>setTheme()</code>. Choose an accent, radius, border, shadow, or density with scoped attributes — put them on <code>&lt;html&gt;</code> for a global theme, or on any section for a local theme:</p>
           <div class="theming-code-grid">
-            ${code('setup-theming-js',"import { setTheme } from 'sarahui';\n\n// Options: 'light' | 'dark' | 'system'\nsetTheme('dark');",'JavaScript')}
-            ${code('setup-theming-css',":root {\n  --s-action-primary: #5B3DF5;\n  --s-card-radius: 16px;\n}\n\n/* Scoped container override */\n.my-section {\n  --s-card-padding: 32px;\n}",'CSS')}
+            ${code('setup-theming-html',"<html\n  data-theme=\"dark\"\n  data-s-accent=\"violet\"\n  data-s-radius=\"lg\"\n  data-s-card-radius=\"full\"\n  data-s-border=\"subtle\"\n  data-s-shadow=\"lg\"\n  data-s-density=\"compact\"\n>\n  <section data-s-accent=\"emerald\" data-s-card-radius=\"sm\">\n    <article class=\"s-card\">Local emerald card</article>\n  </section>\n</html>",'HTML')}
+            ${code('setup-theming-js',"import { setTheme, setThemeOptions } from 'sarahui';\n\nsetTheme('dark', {\n  accent: 'violet',\n  radius: 'lg',\n  cardRadius: 'full',\n  border: 'subtle',\n  shadow: 'lg',\n  density: 'compact'\n});\n\n// Scope a style to one section without persisting it.\nsetThemeOptions({ accent: 'emerald' }, { root: section, persist: false });",'JavaScript')}
+            ${code('setup-theming-css',":root {\n  --s-action-primary: #5B3DF5;\n  --s-card-radius: 16px;\n}\n\n/* Scoped custom token override */\n.my-section {\n  --s-card-padding: 32px;\n}",'CSS')}
           </div>
+          <p class=\"setup-framework-note\">Accents: indigo, violet, blue, emerald, amber, red. Radius: none, sm, md, lg, xl, full. Border: none, subtle, default, strong. Shadow: none, sm, md, lg. Density: compact, comfortable, spacious.</p>
         </div>
       </div>
     </div>

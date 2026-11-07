@@ -38,7 +38,7 @@ assert.equal(typeof templates.Dialog,'function');
 assert.equal('enhanceUI' in templates,false);
 assert.equal(sarahTokens.count,319);
 assert.equal(Object.keys(sarahTokens.light).length,48);
-for(const name of ['css','fonts.css','tokens.css','styles.css','tokens.json','resolved-tokens.json']){
+for(const name of ['css','fonts.css','tokens.css','themes.css','styles.css','tokens.json','resolved-tokens.json']){
   assert(fs.statSync(fileURLToPath(import.meta.resolve('sarahui/'+name))).isFile(),name);
 }
 const css=fileURLToPath(import.meta.resolve('sarahui/fonts.css'));
